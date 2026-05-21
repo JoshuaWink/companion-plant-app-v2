@@ -3,14 +3,15 @@
 //! Loads plant relationship data and answers graph queries:
 //! - companions/antagonists for a given plant
 //! - conflict detection for a set of plants
-//! - path finding between plants through shared relationships
+//! - temporal succession dependencies
+//! - planting window calculations
 
 mod graph;
 mod model;
 mod timeline;
 
 pub use graph::CompanionGraph;
-pub use model::{Edge, Plant, RelationType};
+pub use model::{Edge, Plant, RelationType, TemporalDep};
 pub use timeline::{compute_window, PlantTiming, PlantingWindow};
 
 use wasm_bindgen::prelude::*;
@@ -52,6 +53,14 @@ impl Garden {
         let plant_ids: Vec<String> =
             serde_json::from_str(plant_ids_json).unwrap_or_default();
         let result = self.inner.conflicts(&plant_ids);
+        serde_json::to_string(&result).unwrap_or_else(|_| "[]".to_string())
+    }
+
+    /// Given a set of plant IDs (JSON array), return temporal succession dependencies.
+    pub fn temporal_deps(&self, plant_ids_json: &str) -> String {
+        let plant_ids: Vec<String> =
+            serde_json::from_str(plant_ids_json).unwrap_or_default();
+        let result = self.inner.temporal_deps(&plant_ids);
         serde_json::to_string(&result).unwrap_or_else(|_| "[]".to_string())
     }
 

@@ -4,18 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Companion Garden</title>
-  <meta name="description" content="Explore plant companion relationships with an interactive graph">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="description" content="Plan your garden with companion planting — see what grows well together">
+  <meta name="theme-color" content="#588157">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
   <a href="#main" class="cup-skip-link">Skip to main content</a>
 
+  <button class="night-toggle" id="night-toggle" aria-label="Toggle night mode">
+    <span class="night-toggle-icon" id="night-toggle-icon">🌙</span>
+    <span id="night-toggle-label">Night</span>
+  </button>
+
+  <!-- Night decorations (hidden in day mode via CSS opacity) -->
+  <div class="firefly-canvas" id="firefly-canvas"></div>
+  <div class="night-moon" aria-hidden="true">🌙</div>
+
   <header class="app-header">
-    <h1 class="app-title">🌱 Companion Garden</h1>
-    <p class="app-subtitle">Select plants → see companions & conflicts</p>
+    <h1 class="app-title">🌻 Companion Garden</h1>
+    <p class="app-subtitle">Pick your plants — discover what grows happily together</p>
   </header>
 
   <main id="main">
@@ -32,12 +44,11 @@
         </label>
       </div>
       <div id="plant-grid" class="plant-grid" role="listbox" aria-label="Available plants">
-        <!-- plant chips render here -->
       </div>
     </section>
 
     <section class="card garden-bed" aria-label="Your garden selection">
-      <h2 class="section-title">Your Garden <span id="selected-count" class="badge" hidden>0</span></h2>
+      <h2 class="section-title">🌿 Your Garden <span id="selected-count" class="badge" hidden>0</span></h2>
       <div id="selected-plants" class="selected-plants" aria-live="polite">
         <p class="empty-state">Pick some plants above to get started</p>
       </div>
@@ -45,19 +56,23 @@
 
     <section class="card results-panel" aria-label="Companion results">
       <div id="no-selection-msg" class="empty-state center-text">Select plants to see relationships</div>
-      <div id="all-clear-msg" class="all-clear" hidden>✓ No conflicts — these plants grow well together</div>
+      <div id="all-clear-msg" class="all-clear" hidden>🌈 No conflicts — these plants grow well together!</div>
       <div id="conflicts-panel" class="conflicts-panel" hidden>
-        <h2 class="section-title section-title--danger">Conflicts <span id="conflict-count" class="badge badge--danger"></span></h2>
+        <h2 class="section-title section-title--danger">⚠️ Conflicts <span id="conflict-count" class="badge badge--danger"></span></h2>
         <ul id="conflict-list" class="conflict-list"></ul>
       </div>
       <div id="companions-panel" class="companions-panel" hidden>
-        <h2 class="section-title section-title--success">Shared Companions <span id="companion-count" class="badge badge--success"></span></h2>
+        <h2 class="section-title section-title--success">🤝 Shared Companions <span id="companion-count" class="badge badge--success"></span></h2>
         <ul id="companion-list" class="companion-list"></ul>
+      </div>
+      <div id="succession-panel" class="succession-panel" hidden>
+        <h2 class="section-title section-title--succession">🔄 Succession Plan <span id="succession-count" class="badge badge--succession"></span></h2>
+        <ul id="succession-list" class="succession-list"></ul>
       </div>
     </section>
 
     <section class="card timeline-panel" aria-label="Planting timeline">
-      <h2 class="section-title">Planting Timeline</h2>
+      <h2 class="section-title">📅 Planting Timeline</h2>
       <div class="zone-selector">
         <label for="zone-select" class="field-label">USDA Hardiness Zone</label>
         <select id="zone-select" class="field-input">

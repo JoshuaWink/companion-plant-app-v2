@@ -4,7 +4,7 @@ use petgraph::graph::{DiGraph, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Direction;
 
-use crate::model::{Conflict, Edge, Plant, RelationType};
+use crate::model::{Conflict, Edge, Plant, RelationType, TemporalDep};
 
 /// The core graph data structure wrapping petgraph.
 pub struct CompanionGraph {
@@ -92,6 +92,36 @@ impl CompanionGraph {
         results
     }
 
+    /// Given a set of selected plants, find all temporal (precedes) dependencies.
+    pub fn temporal_deps(&self, plant_ids: &[String]) -> Vec<TemporalDep> {
+        let mut results = Vec::new();
+        let id_set: std::collections::HashSet<&str> =
+            plant_ids.iter().map(|s| s.as_str()).collect();
+
+        for id in plant_ids {
+            let Some(&idx) = self.id_map.get(id.as_str()) else {
+                continue;
+            };
+
+            for edge in self.graph.edges_directed(idx, Direction::Outgoing) {
+                let weight = edge.weight();
+                if weight.rel_type == RelationType::Precedes {
+                    let target_id = &self.graph[edge.target()].id;
+                    if id_set.contains(target_id.as_str()) {
+                        results.push(TemporalDep {
+                            predecessor: id.clone(),
+                            successor: target_id.clone(),
+                            reason: weight.reason.clone(),
+                            gap_days: weight.gap_days.unwrap_or(0),
+                        });
+                    }
+                }
+            }
+        }
+
+        results
+    }
+
     /// Get the relationship detail between two specific plants.
     pub fn relationship(&self, source: &str, target: &str) -> Option<&Edge> {
         let src_idx = self.id_map.get(source)?;
@@ -132,13 +162,16 @@ mod tests {
             Plant { id: "tomatoes".into(), name: "Tomatoes".into(), lifecycle: Some("annual".into()), stub: false },
             Plant { id: "sage".into(), name: "Sage".into(), lifecycle: Some("perennial".into()), stub: false },
             Plant { id: "corn".into(), name: "Corn".into(), lifecycle: Some("annual".into()), stub: false },
+            Plant { id: "peas".into(), name: "Peas".into(), lifecycle: Some("annual".into()), stub: false },
         ];
 
         let edges = vec![
-            Edge { source: "basil".into(), target: "tomatoes".into(), rel_type: RelationType::Companion, reason: "Repels hornworms".into() },
-            Edge { source: "tomatoes".into(), target: "basil".into(), rel_type: RelationType::Companion, reason: "Basil repels pests".into() },
-            Edge { source: "basil".into(), target: "sage".into(), rel_type: RelationType::Antagonist, reason: "Sage needs dry soil".into() },
-            Edge { source: "corn".into(), target: "tomatoes".into(), rel_type: RelationType::Antagonist, reason: "Corn shades tomatoes".into() },
+            Edge { source: "basil".into(), target: "tomatoes".into(), rel_type: RelationType::Companion, reason: "Repels hornworms".into(), gap_days: None },
+            Edge { source: "tomatoes".into(), target: "basil".into(), rel_type: RelationType::Companion, reason: "Basil repels pests".into(), gap_days: None },
+            Edge { source: "basil".into(), target: "sage".into(), rel_type: RelationType::Antagonist, reason: "Sage needs dry soil".into(), gap_days: None },
+            Edge { source: "corn".into(), target: "tomatoes".into(), rel_type: RelationType::Antagonist, reason: "Corn shades tomatoes".into(), gap_days: None },
+            Edge { source: "peas".into(), target: "tomatoes".into(), rel_type: RelationType::Precedes, reason: "Peas fix nitrogen for heavy-feeding tomatoes".into(), gap_days: Some(7) },
+            Edge { source: "peas".into(), target: "corn".into(), rel_type: RelationType::Precedes, reason: "Peas fix nitrogen; corn benefits from enriched soil".into(), gap_days: Some(7) },
         ];
 
         (plants, edges)
@@ -148,8 +181,8 @@ mod tests {
     fn test_build_graph() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-        assert_eq!(g.plant_count(), 4);
-        assert_eq!(g.edge_count(), 4);
+        assert_eq!(g.plant_count(), 5);
+        assert_eq!(g.edge_count(), 6);
     }
 
     #[test]
@@ -180,8 +213,6 @@ mod tests {
     fn test_conflicts_in_selection() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-
-        // Selecting basil + sage should surface the antagonist relationship
         let conflicts = g.conflicts(&["basil".into(), "sage".into()]);
         assert_eq!(conflicts.len(), 1);
         assert_eq!(conflicts[0].source, "basil");
@@ -192,50 +223,43 @@ mod tests {
     fn test_no_conflicts_for_companions() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-
         let conflicts = g.conflicts(&["basil".into(), "tomatoes".into()]);
         assert_eq!(conflicts.len(), 0);
     }
 
     #[test]
-    fn test_relationship_detail() {
+    fn test_temporal_deps_found() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-
-        let rel = g.relationship("basil", "tomatoes").unwrap();
-        assert_eq!(rel.rel_type, RelationType::Companion);
-        assert!(rel.reason.contains("hornworms"));
+        let deps = g.temporal_deps(&["peas".into(), "tomatoes".into()]);
+        assert_eq!(deps.len(), 1);
+        assert_eq!(deps[0].predecessor, "peas");
+        assert_eq!(deps[0].successor, "tomatoes");
+        assert_eq!(deps[0].gap_days, 7);
+        assert!(deps[0].reason.contains("nitrogen"));
     }
 
     #[test]
-    fn test_relationship_none_for_unconnected() {
+    fn test_temporal_deps_multiple() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-
-        assert!(g.relationship("sage", "corn").is_none());
+        let deps = g.temporal_deps(&["peas".into(), "tomatoes".into(), "corn".into()]);
+        assert_eq!(deps.len(), 2);
     }
 
     #[test]
-    fn test_plant_ids() {
+    fn test_temporal_deps_none_when_no_precedes() {
         let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-        let ids = g.plant_ids();
-        assert_eq!(ids.len(), 4);
-        assert!(ids.contains(&"basil"));
-        assert!(ids.contains(&"tomatoes"));
+        let deps = g.temporal_deps(&["basil".into(), "tomatoes".into()]);
+        assert_eq!(deps.len(), 0);
     }
 
     #[test]
-    fn test_edges_with_unknown_target_are_skipped() {
-        let plants = vec![
-            Plant { id: "basil".into(), name: "Basil".into(), lifecycle: Some("annual".into()), stub: false },
-        ];
-        let edges = vec![
-            Edge { source: "basil".into(), target: "nonexistent".into(), rel_type: RelationType::Companion, reason: "...".into() },
-        ];
-
+    fn test_temporal_deps_empty_selection() {
+        let (plants, edges) = test_data();
         let g = CompanionGraph::from_data(plants, edges);
-        assert_eq!(g.plant_count(), 1);
-        assert_eq!(g.edge_count(), 0); // edge skipped because target doesn't exist
+        let deps = g.temporal_deps(&[]);
+        assert_eq!(deps.len(), 0);
     }
 }

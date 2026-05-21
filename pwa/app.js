@@ -2,7 +2,7 @@
  * Companion Garden — App Module
  *
  * Loads WASM graph engine, renders plant chips, handles selection,
- * and queries the graph for companions/conflicts.
+ * queries the graph for companions/conflicts/succession dependencies.
  */
 import init, { Garden } from './pkg/companion_graph.js';
 
@@ -10,6 +10,44 @@ let garden = null;
 let plants = [];
 let selected = new Set();
 let showStubs = false;
+
+// --- Plant Emoji Map ---
+const PLANT_EMOJI = {
+  'basil': '🌿',
+  'bell-peppers': '🫑',
+  'broccoli': '🥦',
+  'brussels-sprouts': '🥬',
+  'cabbage': '🥬',
+  'carrots': '🥕',
+  'cauliflower': '🥦',
+  'celery': '🌿',
+  'chives': '🌱',
+  'cilantro': '🌿',
+  'corn': '🌽',
+  'cucumbers': '🥒',
+  'dill': '🌾',
+  'habanero-peppers': '🌶️',
+  'jalapeno-peppers': '🌶️',
+  'lettuce': '🥬',
+  'okra': '🌺',
+  'oregano': '🌿',
+  'parsley': '🌿',
+  'peas': '🫛',
+  'potatoes': '🥔',
+  'poblano-peppers': '🌶️',
+  'rosemary': '🌿',
+  'sage': '🍃',
+  'serrano-peppers': '🌶️',
+  'spinach': '🥬',
+  'sweet-potatoes': '🍠',
+  'summer-squash': '🎃',
+  'thyme': '🌱',
+  'tomatoes': '🍅',
+};
+
+function emojiFor(id) {
+  return PLANT_EMOJI[id] || '🌱';
+}
 
 // --- Helpers ---
 
@@ -73,7 +111,6 @@ function renderPlantGrid(visiblePlants) {
   const grid = document.getElementById('plant-grid');
   grid.innerHTML = '';
 
-  // Sort: full plants first (alphabetical), stubs after
   const sorted = [...visiblePlants].sort((a, b) => {
     if (a.stub !== b.stub) return a.stub ? 1 : -1;
     return a.name.localeCompare(b.name);
@@ -82,7 +119,7 @@ function renderPlantGrid(visiblePlants) {
   for (const plant of sorted) {
     const chip = document.createElement('button');
     chip.className = 'plant-chip' + (plant.stub ? ' stub' : '');
-    chip.textContent = plant.name;
+    chip.innerHTML = `<span class="plant-emoji">${emojiFor(plant.id)}</span> ${plant.name}`;
     chip.dataset.id = plant.id;
     chip.setAttribute('role', 'option');
     chip.setAttribute('aria-selected', selected.has(plant.id) ? 'true' : 'false');
@@ -115,6 +152,7 @@ function updateUI() {
   updateSelectedPanel();
   updateHighlights();
   updateResults();
+  updateSuccession();
   updateTimeline();
 }
 
@@ -139,7 +177,7 @@ function updateSelectedPanel() {
     const chip = document.createElement('button');
     chip.className = 'plant-chip';
     chip.setAttribute('aria-selected', 'true');
-    chip.textContent = plant.name + ' ×';
+    chip.innerHTML = `<span class="plant-emoji">${emojiFor(id)}</span> ${plant.name} ×`;
     chip.addEventListener('click', () => togglePlant(id));
     container.appendChild(chip);
   }
@@ -148,7 +186,6 @@ function updateSelectedPanel() {
 function updateHighlights() {
   const chips = document.querySelectorAll('.plant-chip[data-id]');
 
-  // Gather all companions and antagonists of selected plants
   const companionSet = new Set();
   const antagonistSet = new Set();
 
@@ -189,14 +226,13 @@ function updateResults() {
 
   if (noSelectionMsg) noSelectionMsg.hidden = true;
 
-  // Conflicts among selected plants
   const plantIds = JSON.stringify([...selected]);
   const conflicts = JSON.parse(garden.conflicts(plantIds));
 
   if (conflicts.length > 0) {
     conflictsPanel.hidden = false;
     conflictList.innerHTML = conflicts.map(c =>
-      `<li><strong>${nameFor(c.source)}</strong> ✕ <strong>${nameFor(c.target)}</strong>` +
+      `<li>${emojiFor(c.source)} <strong>${nameFor(c.source)}</strong> ✕ ${emojiFor(c.target)} <strong>${nameFor(c.target)}</strong>` +
       (c.reason ? `<span class="reason">${c.reason}</span>` : '') +
       `</li>`
     ).join('');
@@ -206,7 +242,6 @@ function updateResults() {
 
   if (conflictCount) conflictCount.textContent = conflicts.length || '';
 
-  // Shared companions (plants that are companions to ALL selected)
   const companionSets = [...selected].map(id =>
     new Set(JSON.parse(garden.companions(id)))
   );
@@ -215,19 +250,17 @@ function updateResults() {
     ? companionSets.reduce((acc, s) => new Set([...acc].filter(x => s.has(x))))
     : new Set();
 
-  // Remove already-selected from shared companions
   shared = new Set([...shared].filter(x => !selected.has(x)));
 
   if (shared.size > 0) {
     companionsPanel.hidden = false;
     companionList.innerHTML = [...shared].map(id => {
-      // Get why it's a companion for each selected plant
       const reasons = [...selected].map(sel => {
         const rel = JSON.parse(garden.relationship(sel, id));
         return rel && rel.reason ? `${nameFor(sel)}: ${rel.reason}` : null;
       }).filter(Boolean);
 
-      return `<li><strong>${nameFor(id)}</strong>` +
+      return `<li>${emojiFor(id)} <strong>${nameFor(id)}</strong>` +
         (reasons.length > 0 ? `<span class="reason">${reasons.join(' | ')}</span>` : '') +
         `</li>`;
     }).join('');
@@ -237,10 +270,47 @@ function updateResults() {
 
   if (companionCount) companionCount.textContent = shared.size || '';
 
-  // Show "all clear" when plants selected but no conflicts
   if (allClearMsg) {
     allClearMsg.hidden = conflicts.length > 0 || selected.size === 0;
   }
+}
+
+// --- Succession ---
+
+function updateSuccession() {
+  const panel = document.getElementById('succession-panel');
+  const list = document.getElementById('succession-list');
+  const countBadge = document.getElementById('succession-count');
+
+  if (!panel || !list) return;
+
+  if (selected.size < 2) {
+    panel.hidden = true;
+    return;
+  }
+
+  const plantIds = JSON.stringify([...selected]);
+  const deps = JSON.parse(garden.temporal_deps(plantIds));
+
+  if (deps.length === 0) {
+    panel.hidden = true;
+    return;
+  }
+
+  panel.hidden = false;
+  if (countBadge) countBadge.textContent = deps.length;
+
+  list.innerHTML = deps.map(d => {
+    const gapText = d.gap_days > 0
+      ? `<span class="succession-gap">(${d.gap_days} day gap)</span>`
+      : '';
+    return `<li>${emojiFor(d.predecessor)} <strong>${nameFor(d.predecessor)}</strong>` +
+      `<span class="succession-arrow">→</span>` +
+      `${emojiFor(d.successor)} <strong>${nameFor(d.successor)}</strong>` +
+      gapText +
+      (d.reason ? `<span class="reason">${d.reason}</span>` : '') +
+      `</li>`;
+  }).join('');
 }
 
 function nameFor(id) {
@@ -347,7 +417,7 @@ function updateTimeline() {
 
     const label = document.createElement('div');
     label.className = 'timeline-row-label';
-    label.textContent = nameFor(w.plant_id);
+    label.textContent = `${emojiFor(w.plant_id)} ${nameFor(w.plant_id)}`;
     label.title = nameFor(w.plant_id);
 
     const bars = document.createElement('div');
@@ -408,3 +478,89 @@ boot().catch(err => {
   document.getElementById('main').innerHTML =
     `<p style="color: var(--cup-color-error)">Failed to load: ${err.message}</p>`;
 });
+
+// --- Night Mode ---
+
+function initNightMode() {
+  const toggle = document.getElementById('night-toggle');
+  const icon = document.getElementById('night-toggle-icon');
+  const label = document.getElementById('night-toggle-label');
+  if (!toggle) return;
+
+  // Restore saved preference
+  const saved = localStorage.getItem('garden-theme');
+  if (saved === 'night') {
+    document.documentElement.setAttribute('data-theme', 'night');
+    icon.textContent = '\u2600\uFE0F';
+    label.textContent = 'Day';
+    spawnNightDecorations();
+  }
+
+  toggle.addEventListener('click', () => {
+    const isNight = document.documentElement.getAttribute('data-theme') === 'night';
+    if (isNight) {
+      document.documentElement.removeAttribute('data-theme');
+      icon.textContent = '\uD83C\uDF19';
+      label.textContent = 'Night';
+      localStorage.setItem('garden-theme', 'day');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'night');
+      icon.textContent = '\u2600\uFE0F';
+      label.textContent = 'Day';
+      localStorage.setItem('garden-theme', 'night');
+      spawnNightDecorations();
+    }
+  });
+}
+
+function spawnNightDecorations() {
+  const canvas = document.getElementById('firefly-canvas');
+  if (!canvas || canvas.childElementCount > 0) return;
+
+  // Fireflies — 18 drifting luminous dots
+  for (let i = 0; i < 18; i++) {
+    const fly = document.createElement('div');
+    fly.className = 'firefly';
+    fly.style.left = Math.random() * 95 + '%';
+    fly.style.top = (20 + Math.random() * 70) + '%';
+    fly.style.setProperty('--fly-duration', (10 + Math.random() * 14) + 's');
+    fly.style.setProperty('--fly-delay', (Math.random() * -15) + 's');
+    fly.style.setProperty('--glow-duration', (2 + Math.random() * 4) + 's');
+    fly.style.setProperty('--glow-delay', (Math.random() * -5) + 's');
+    fly.style.setProperty('--dx1', (-80 + Math.random() * 160) + 'px');
+    fly.style.setProperty('--dy1', (-60 + Math.random() * 120) + 'px');
+    fly.style.setProperty('--dx2', (-80 + Math.random() * 160) + 'px');
+    fly.style.setProperty('--dy2', (-60 + Math.random() * 120) + 'px');
+    fly.style.setProperty('--dx3', (-80 + Math.random() * 160) + 'px');
+    fly.style.setProperty('--dy3', (-60 + Math.random() * 120) + 'px');
+    canvas.appendChild(fly);
+  }
+
+  // Stars — 25 tiny twinklers in the upper portion
+  for (let i = 0; i < 25; i++) {
+    const star = document.createElement('div');
+    star.className = 'night-star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 35 + '%';
+    star.style.setProperty('--twinkle-dur', (3 + Math.random() * 5) + 's');
+    star.style.setProperty('--twinkle-delay', (Math.random() * -6) + 's');
+    if (Math.random() > 0.7) {
+      star.style.width = '3px';
+      star.style.height = '3px';
+    }
+    canvas.appendChild(star);
+  }
+
+  // Crickets — 6 pulsing green dots near the bottom
+  for (let i = 0; i < 6; i++) {
+    const cricket = document.createElement('div');
+    cricket.className = 'cricket';
+    cricket.style.left = (10 + Math.random() * 80) + '%';
+    cricket.style.bottom = (10 + Math.random() * 40) + 'px';
+    cricket.style.animationDelay = (Math.random() * 3) + 's';
+    canvas.appendChild(cricket);
+  }
+}
+
+// Init night mode immediately (no WASM dependency)
+initNightMode();

@@ -16,6 +16,7 @@ pub struct Plant {
 pub enum RelationType {
     Companion,
     Antagonist,
+    Precedes,
 }
 
 /// A directed edge between two plants.
@@ -27,6 +28,9 @@ pub struct Edge {
     pub rel_type: RelationType,
     #[serde(default)]
     pub reason: String,
+    /// Minimum gap in days between predecessor harvest and successor planting.
+    #[serde(default)]
+    pub gap_days: Option<u16>,
 }
 
 /// A conflict detected in a garden selection.
@@ -35,4 +39,13 @@ pub struct Conflict {
     pub source: String,
     pub target: String,
     pub reason: String,
+}
+
+/// A temporal succession dependency between two plants.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TemporalDep {
+    pub predecessor: String,
+    pub successor: String,
+    pub reason: String,
+    pub gap_days: u16,
 }
