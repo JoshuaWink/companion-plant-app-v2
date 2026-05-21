@@ -118,6 +118,66 @@ const CITIES = [
 let plants = [];
 let seasonData = null;
 
+function setDayFromChartClientX(canvas, clientX) {
+  if (!seasonData || seasonData.length < 2 || !canvas._chartParams) return;
+
+  const slider = document.getElementById('growth-day-slider');
+  if (!slider) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const { pad, cw } = canvas._chartParams;
+  const rawX = clientX - rect.left;
+  const clampedX = Math.max(pad.left, Math.min(pad.left + cw, rawX));
+  const ratio = cw > 0 ? (clampedX - pad.left) / cw : 0;
+  const day = Math.round(ratio * (seasonData.length - 1));
+
+  const nextValue = String(day);
+  if (slider.value !== nextValue) {
+    slider.value = nextValue;
+    onDaySlider();
+  }
+}
+
+function bindChartScrubber(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || canvas._scrubberBound) return;
+
+  canvas._scrubberBound = true;
+  canvas.style.cursor = 'ew-resize';
+  canvas.style.touchAction = 'none';
+
+  let dragging = false;
+
+  canvas.addEventListener('pointerdown', (event) => {
+    if (!seasonData) return;
+    dragging = true;
+    canvas.setPointerCapture(event.pointerId);
+    setDayFromChartClientX(canvas, event.clientX);
+    event.preventDefault();
+  });
+
+  canvas.addEventListener('pointermove', (event) => {
+    if (!dragging) return;
+    setDayFromChartClientX(canvas, event.clientX);
+    event.preventDefault();
+  });
+
+  const stopDragging = (event) => {
+    dragging = false;
+    if (
+      event &&
+      typeof event.pointerId === 'number' &&
+      canvas.hasPointerCapture(event.pointerId)
+    ) {
+      canvas.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  canvas.addEventListener('pointerup', stopDragging);
+  canvas.addEventListener('pointercancel', stopDragging);
+  canvas.addEventListener('lostpointercapture', () => { dragging = false; });
+}
+
 function setLatitude(lat, label) {
   document.getElementById('growth-latitude').value = lat.toFixed(1);
   const el = document.getElementById('growth-loc-label');
@@ -253,6 +313,10 @@ export function initGrowthSim(plantList) {
   // Day slider
   document.getElementById('growth-day-slider')
     .addEventListener('input', onDaySlider);
+
+  // Click/drag directly on charts to scrub days.
+  bindChartScrubber('growth-chart-height');
+  bindChartScrubber('growth-chart-stress');
 
   // Planting date picker → DOY sync
   const dateInput = document.getElementById('growth-planting-date');
@@ -610,4 +674,7 @@ function drawStressChart() {
   ctx.textAlign = 'right';
   ctx.fillText('0%', pad.left - 6, pad.top + ch + 4);
   ctx.fillText('100%', pad.left - 6, pad.top + 4);
+
+  // Store chart params for drag scrubbing.
+  canvas._chartParams = { pad, cw, ch };
 }

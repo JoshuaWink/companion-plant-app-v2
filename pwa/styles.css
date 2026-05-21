@@ -2294,3 +2294,15 @@ select.bed-action {
 .growth-snap-metric[title] {
   cursor: help;
 }
+
+
+.growth-chart-hint {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  color: #8899aa;
+}
+
+#growth-chart-height,
+#growth-chart-stress {
+  cursor: ew-resize;
+}
