@@ -1038,9 +1038,8 @@ function renderBedStats(bed) {
     }
   }
 
-  // Water budget: sum water_ml_per_day for each planted cell
+  // Water budget & yield
   let waterMlDay = 0;
-  let nitrogenGM2 = 0;
   let yieldKgM2 = 0;
   let metricPlants = 0;
 
@@ -1050,14 +1049,58 @@ function renderBedStats(bed) {
     if (!m) continue;
     metricPlants++;
     waterMlDay += (m.water_ml_per_day || 0) * count;
-    nitrogenGM2 += (m.nitrogen_g_per_m2 || 0); // per variety contribution
     yieldKgM2 += (m.yield_kg_per_m2 || 0);
   }
 
   const waterLWeek = (waterMlDay * 7) / 1000;
-  const nBalance = nitrogenGM2; // g/m² — positive = surplus, negative = needs fertilizer
-  const nStatus = nBalance >= 0 ? 'surplus' : (nBalance >= -15 ? 'moderate' : 'deficit');
-  const nClass = nBalance >= 0 ? 'bed-stat--good' : (nBalance >= -15 ? '' : 'bed-stat--bad');
+
+  // ── Nitrogen: proximity-aware (fixers only benefit nearby cells) ──
+  // Build list of fixer cells and feeder cells
+  const fixerCells = [];  // {r, c, nGm2, radiusCm}
+  const feederCells = []; // {r, c, nGm2, pid}
+  for (let r = 0; r < bed.rows; r++) {
+    for (let c = 0; c < bed.cols; c++) {
+      const pid = bed.cells[r]?.[c];
+      if (!pid || !isInsideShape(bed, r, c)) continue;
+      const p = plannerPlants.find(pp => pp.id === pid);
+      const m = p?.properties?.metric;
+      if (!m || m.nitrogen_g_per_m2 === undefined) continue;
+      const nVal = m.nitrogen_g_per_m2;
+      if (nVal > 0) {
+        // Fixer: nitrogen influence radius = root_depth_cm (lateral diffusion ~ root depth)
+        const radiusCm = m.root_depth_cm || m.spacing_cm || 30;
+        fixerCells.push({ r, c, nGm2: nVal, radiusCm });
+      } else if (nVal < 0) {
+        feederCells.push({ r, c, nGm2: nVal, pid });
+      }
+    }
+  }
+
+  // For each feeder cell, check if any fixer is within root-diffusion range
+  let coveredFeeders = 0;
+  let totalFeeders = feederCells.length;
+  let localNitrogenSum = 0; // sum of per-cell net nitrogen (proximity-weighted)
+
+  feederCells.forEach(fc => {
+    let bestFixerContrib = 0;
+    fixerCells.forEach(fx => {
+      const distCm = Math.sqrt((fc.r - fx.r) ** 2 + (fc.c - fx.c) ** 2) * DEFAULT_CELL_CM;
+      if (distCm <= fx.radiusCm) {
+        // Fixer is in range — contribution scales with distance (closer = more)
+        const factor = 1 - (distCm / fx.radiusCm) * 0.5; // 100% at center, 50% at edge
+        bestFixerContrib = Math.max(bestFixerContrib, fx.nGm2 * factor);
+      }
+    });
+    const cellNet = fc.nGm2 + bestFixerContrib;
+    localNitrogenSum += cellNet;
+    if (bestFixerContrib > 0) coveredFeeders++;
+  });
+
+  // Also add fixer cells' own contribution (they're producing nitrogen)
+  fixerCells.forEach(fx => { localNitrogenSum += fx.nGm2; });
+
+  const nCoverage = totalFeeders > 0 ? Math.round((coveredFeeders / totalFeeders) * 100) : 100;
+  const nClass = nCoverage >= 75 ? 'bed-stat--good' : (nCoverage >= 40 ? '' : 'bed-stat--bad');
 
   // ── Build HTML ──
   let html = '';
@@ -1084,8 +1127,12 @@ function renderBedStats(bed) {
     html += '<div class="bed-stat"><span class="bed-stat-label">Soil Volume</span><span class="bed-stat-value">' + displayVolume(soilVolL) + '</span></div>';
     html += '<div class="bed-stat"><span class="bed-stat-label">💧 Water</span><span class="bed-stat-value">' + displayVolume(waterLWeek) + '/week</span></div>';
 
-    const nLabel = nBalance >= 0 ? '+' + Math.abs(nBalance).toFixed(0) + ' g/m²' : nBalance.toFixed(0) + ' g/m²';
-    html += '<div class="bed-stat"><span class="bed-stat-label">🌿 Nitrogen</span><span class="bed-stat-value ' + nClass + '">' + nLabel + ' ' + nStatus + '</span></div>';
+    if (totalFeeders > 0) {
+      const nIcon = nCoverage >= 75 ? '✓' : (nCoverage >= 40 ? '~' : '⚠');
+      html += '<div class="bed-stat"><span class="bed-stat-label">🌿 N₂ Coverage</span><span class="bed-stat-value ' + nClass + '">' + coveredFeeders + '/' + totalFeeders + ' feeders near fixers ' + nIcon + '</span></div>';
+    } else if (fixerCells.length > 0) {
+      html += '<div class="bed-stat"><span class="bed-stat-label">🌿 N₂</span><span class="bed-stat-value bed-stat--good">All fixers ✓</span></div>';
+    }
 
     if (yieldKgM2 > 0) {
       const totalYieldKg = yieldKgM2 * areaM2;
