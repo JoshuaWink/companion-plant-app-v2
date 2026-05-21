@@ -254,6 +254,9 @@
     </section>
     <section class="card growth-panel" id="growth-panel" aria-label="Growth Simulator">
       <h2 class="section-title">🌱 Growth Simulator</h2>
+      <p class="growth-intro">Model how a plant grows day-by-day based on your local climate, soil, and watering.
+        The engine uses a <strong>sigmoid growth curve</strong> shaped by temperature, sunlight hours,
+        water availability, and soil type — the same factors that drive real-world plant development.</p>
       <div class="growth-controls">
         <div class="growth-control-row">
           <div class="growth-field">
@@ -261,7 +264,7 @@
             <select id="growth-plant-select" class="field-input"></select>
           </div>
           <div class="growth-field growth-field--location">
-            <label class="field-label">Location</label>
+            <label class="field-label">Location <span class="growth-hint">Sets latitude for sunlight calculation</span></label>
             <div class="growth-location-row">
               <select id="growth-loc-method" class="field-input growth-loc-select">
                 <option value="zone">Grow Zone</option>
@@ -276,51 +279,60 @@
             </div>
           </div>
           <div class="growth-field">
-            <label for="growth-planting-doy" class="field-label">Plant Date (day of year) <span id="growth-doy-cal" class="growth-loc-label"></span></label>
-            <input type="number" id="growth-planting-doy" class="field-input" value="120" min="1" max="365">
+            <label for="growth-planting-date" class="field-label">Planting Date</label>
+            <input type="date" id="growth-planting-date" class="field-input" value="">
+            <input type="hidden" id="growth-planting-doy" value="120">
           </div>
         </div>
         <div class="growth-control-row">
           <div class="growth-field">
-            <label for="growth-temp-high" class="field-label">Avg High °C</label>
+            <label for="growth-temp-high" class="field-label">Avg Summer High <span id="growth-temp-high-f" class="growth-hint"></span></label>
             <input type="number" id="growth-temp-high" class="field-input" value="28" step="0.5">
+            <span class="growth-hint">Typical hottest-month daytime temp</span>
           </div>
           <div class="growth-field">
-            <label for="growth-temp-low" class="field-label">Avg Low °C</label>
+            <label for="growth-temp-low" class="field-label">Avg Summer Low <span id="growth-temp-low-f" class="growth-hint"></span></label>
             <input type="number" id="growth-temp-low" class="field-input" value="16" step="0.5">
+            <span class="growth-hint">Typical coolest overnight temp</span>
           </div>
           <div class="growth-field">
-            <label for="growth-water" class="field-label">Water (mL/day)</label>
+            <label for="growth-water" class="field-label">Water <span id="growth-water-equiv" class="growth-hint"></span></label>
             <input type="number" id="growth-water" class="field-input" value="600" min="0" max="3000" step="50">
+            <span class="growth-hint">mL per day per plant</span>
           </div>
           <div class="growth-field">
             <label for="growth-soil-select" class="field-label">Soil Type</label>
             <select id="growth-soil-select" class="field-input">
-              <option value="loam">Loam</option>
-              <option value="sandy">Sandy</option>
-              <option value="sandy-loam">Sandy Loam</option>
-              <option value="silt-loam">Silt Loam</option>
-              <option value="clay-loam">Clay Loam</option>
-              <option value="clay">Clay</option>
+              <option value="loam">Loam — balanced (most gardens)</option>
+              <option value="sandy">Sandy — drains fast, warms quickly</option>
+              <option value="sandy-loam">Sandy Loam — light, easy roots</option>
+              <option value="silt-loam">Silt Loam — holds moisture well</option>
+              <option value="clay-loam">Clay Loam — rich but slow drainage</option>
+              <option value="clay">Clay — heavy, retains water</option>
             </select>
           </div>
         </div>
         <button id="growth-run-btn" class="btn btn--primary">▶ Run Simulation</button>
       </div>
-      <div id="growth-empty" class="empty-state center-text">Select a plant and click Run to simulate its growth season</div>
+      <div id="growth-empty" class="empty-state center-text">Select a plant and click <strong>Run</strong> to simulate its full growing season day by day</div>
       <div id="growth-results" hidden>
         <div class="growth-snapshot-card" id="growth-snapshot"></div>
         <div class="growth-day-control">
           <label for="growth-day-slider" class="field-label">Day <span id="growth-day-label">0</span></label>
           <input type="range" id="growth-day-slider" min="0" max="180" value="0" class="growth-slider">
-          <div class="growth-stage-badge" id="growth-stage-badge">seed</div>
+          <div class="growth-stage-row">
+            <div class="growth-stage-badge" id="growth-stage-badge">seed</div>
+            <span class="growth-stage-desc" id="growth-stage-desc"></span>
+          </div>
         </div>
         <div class="growth-charts">
+          <div class="growth-chart-label">📈 Growth Curves — height, spread, and root depth over the season (cm)</div>
           <canvas id="growth-chart-height" width="600" height="220"></canvas>
+          <div class="growth-chart-label">⚠️ Stress Timeline — when conditions hurt growth (frost, heat, drought, etc.)</div>
           <canvas id="growth-chart-stress" width="600" height="120"></canvas>
         </div>
         <details class="growth-data-details">
-          <summary>Raw Data</summary>
+          <summary>Raw Data (JSON)</summary>
           <pre id="growth-raw-json" class="growth-raw"></pre>
         </details>
       </div>

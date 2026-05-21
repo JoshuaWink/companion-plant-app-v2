@@ -36,6 +36,33 @@ function doyToDate(doy) {
   return `${MONTH_ABBR[d.getMonth()]} ${d.getDate()}`;
 }
 
+function dateToDoy(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const start = new Date(d.getFullYear(), 0, 0);
+  return Math.floor((d - start) / 86400000);
+}
+
+function doyToIso(doy) {
+  const d = new Date(new Date().getFullYear(), 0);
+  d.setDate(doy);
+  return d.toISOString().slice(0, 10);
+}
+
+function cToF(c) { return (c * 9 / 5 + 32).toFixed(0); }
+function mlToGalPerWeek(ml) { return (ml * 7 / 3785.41).toFixed(1); }
+function cmToIn(cm) { return (cm / 2.54).toFixed(1); }
+function kgM2ToLbFt2(kg) { return (kg * 0.2048).toFixed(2); }
+
+const STAGE_DESC = {
+  seed:         'Planted in soil, waiting for moisture and warmth to trigger germination',
+  germinating:  'Root tip emerging, seed coat splitting — the plant is waking up',
+  seedling:     'First true leaves visible, building its root system underground',
+  vegetative:   'Rapid leaf and stem growth — this is when it needs the most nutrients',
+  flowering:    'Producing flowers for pollination — reduce nitrogen, increase phosphorus',
+  fruiting:     'Setting and ripening fruit or seed — keep watering consistently',
+  senescence:   'Growth slowing down, leaves yellowing — the natural end of the season',
+};
+
 // ── Zone → latitude mapping (approximate center of each zone band) ──
 const ZONE_LAT = {
   '1a': 65, '1b': 63, '2a': 60, '2b': 58,
@@ -227,15 +254,39 @@ export function initGrowthSim(plantList) {
   document.getElementById('growth-day-slider')
     .addEventListener('input', onDaySlider);
 
-  // Planting DOY -> show calendar date
-  const doyInput = document.getElementById('growth-planting-doy');
-  const doyCalSpan = document.getElementById('growth-doy-cal');
-  function updateDoyCal() {
-    const v = parseInt(doyInput.value) || 120;
-    if (doyCalSpan) doyCalSpan.textContent = '= ' + doyToDate(v);
+  // Planting date picker → DOY sync
+  const dateInput = document.getElementById('growth-planting-date');
+  const doyHidden = document.getElementById('growth-planting-doy');
+  if (dateInput) {
+    dateInput.value = doyToIso(parseInt(doyHidden.value) || 120);
+    dateInput.addEventListener('change', () => {
+      const doy = dateToDoy(dateInput.value);
+      if (doy > 0 && doy <= 365) doyHidden.value = doy;
+    });
   }
-  doyInput.addEventListener('input', updateDoyCal);
-  updateDoyCal();
+
+  // Live °F display on temp fields
+  const tempH = document.getElementById('growth-temp-high');
+  const tempL = document.getElementById('growth-temp-low');
+  const tempHF = document.getElementById('growth-temp-high-f');
+  const tempLF = document.getElementById('growth-temp-low-f');
+  function updateTempF() {
+    if (tempHF) tempHF.textContent = '(' + cToF(parseFloat(tempH.value) || 0) + ' °F)';
+    if (tempLF) tempLF.textContent = '(' + cToF(parseFloat(tempL.value) || 0) + ' °F)';
+  }
+  tempH.addEventListener('input', updateTempF);
+  tempL.addEventListener('input', updateTempF);
+  updateTempF();
+
+  // Live gallon/week display on water field
+  const waterInput = document.getElementById('growth-water');
+  const waterEquiv = document.getElementById('growth-water-equiv');
+  function updateWaterEquiv() {
+    const ml = parseFloat(waterInput.value) || 0;
+    if (waterEquiv) waterEquiv.textContent = '≈ ' + mlToGalPerWeek(ml) + ' gal/week';
+  }
+  waterInput.addEventListener('input', updateWaterEquiv);
+  updateWaterEquiv();
 }
 
 // ── Run simulation ──
@@ -311,52 +362,58 @@ function onDaySlider() {
   const calDate = doyToDate(plantDoy + day);
   document.getElementById('growth-day-label').textContent = `${day} \u2014 ${calDate}`;
 
-  // Stage badge
+  // Stage badge + description
   const badge = document.getElementById('growth-stage-badge');
   badge.textContent = snap.stage.replace('_', ' ');
   badge.style.backgroundColor = STAGE_COLORS[snap.stage] || '#666';
+  const stageDesc = document.getElementById('growth-stage-desc');
+  if (stageDesc) stageDesc.textContent = STAGE_DESC[snap.stage] || '';
 
-  // Snapshot card
+  // Growth rate as percentage
+  const grPct = (snap.growth_rate * 100).toFixed(0);
+  const grWord = grPct >= 80 ? 'thriving' : grPct >= 50 ? 'moderate' : 'stressed';
+
+  // Snapshot card with dual units and context
   const card = document.getElementById('growth-snapshot');
   const stressHtml = snap.stress_events.length > 0
     ? snap.stress_events.map(s =>
         `<span class="growth-stress-tag growth-stress--${s.severity > 0.5 ? 'high' : 'low'}">${s.kind.replace(/_/g, ' ')}</span>`
       ).join(' ')
-    : '<span class="growth-no-stress">No stress</span>';
+    : '<span class="growth-no-stress">No stress detected</span>';
 
   card.innerHTML = `
     <div class="growth-snap-grid">
       <div class="growth-snap-metric">
-        <span class="growth-snap-val">${snap.height_cm.toFixed(1)}</span>
-        <span class="growth-snap-unit">cm height</span>
+        <span class="growth-snap-val">${snap.height_cm.toFixed(1)}<small> cm</small></span>
+        <span class="growth-snap-unit">Height <span class="growth-alt">${cmToIn(snap.height_cm)} in</span></span>
       </div>
       <div class="growth-snap-metric">
-        <span class="growth-snap-val">${snap.spread_cm.toFixed(1)}</span>
-        <span class="growth-snap-unit">cm spread</span>
+        <span class="growth-snap-val">${snap.spread_cm.toFixed(1)}<small> cm</small></span>
+        <span class="growth-snap-unit">Canopy Spread <span class="growth-alt">${cmToIn(snap.spread_cm)} in</span></span>
       </div>
       <div class="growth-snap-metric">
-        <span class="growth-snap-val">${snap.root_depth_cm.toFixed(1)}</span>
-        <span class="growth-snap-unit">cm root depth</span>
+        <span class="growth-snap-val">${snap.root_depth_cm.toFixed(1)}<small> cm</small></span>
+        <span class="growth-snap-unit">Root Depth <span class="growth-alt">${cmToIn(snap.root_depth_cm)} in</span></span>
       </div>
       <div class="growth-snap-metric">
         <span class="growth-snap-val">${snap.leaf_count}</span>
-        <span class="growth-snap-unit">leaves</span>
+        <span class="growth-snap-unit">Leaves</span>
       </div>
       <div class="growth-snap-metric">
-        <span class="growth-snap-val">${snap.growth_rate.toFixed(2)}</span>
-        <span class="growth-snap-unit">growth rate</span>
+        <span class="growth-snap-val">${grPct}<small>%</small></span>
+        <span class="growth-snap-unit">Growth Rate <span class="growth-alt">${grWord}</span></span>
       </div>
-      <div class="growth-snap-metric">
+      <div class="growth-snap-metric" title="Daily Light Integral — total photosynthetically active light per day. Plants need 12–30+ depending on species.">
         <span class="growth-snap-val">${snap.dli.toFixed(1)}</span>
-        <span class="growth-snap-unit">DLI mol/m²/d</span>
+        <span class="growth-snap-unit">DLI <span class="growth-alt">mol/m²/day light</span></span>
       </div>
-      <div class="growth-snap-metric">
+      <div class="growth-snap-metric" title="Growing Degree Days — accumulated heat units above base temp. Determines growth stage transitions.">
         <span class="growth-snap-val">${snap.gdd_accumulated.toFixed(0)}</span>
-        <span class="growth-snap-unit">GDD accumulated</span>
+        <span class="growth-snap-unit">GDD <span class="growth-alt">heat units</span></span>
       </div>
       <div class="growth-snap-metric">
-        <span class="growth-snap-val">${snap.yield_projected_kg.toFixed(2)}</span>
-        <span class="growth-snap-unit">kg/m² yield</span>
+        <span class="growth-snap-val">${snap.yield_projected_kg.toFixed(2)}<small> kg</small></span>
+        <span class="growth-snap-unit">Yield / m² <span class="growth-alt">${kgM2ToLbFt2(snap.yield_projected_kg)} lb/ft²</span></span>
       </div>
     </div>
     <div class="growth-snap-stress">${stressHtml}</div>
