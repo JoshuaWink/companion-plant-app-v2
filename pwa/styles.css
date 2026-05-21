@@ -686,14 +686,31 @@ body {
 /* Drifting clouds */
 .day-cloud {
   position: fixed;
+  left: 0;
   pointer-events: none;
   z-index: 0;
   opacity: 0.22;
   transition: opacity 1.5s ease;
   filter: blur(0.3px) drop-shadow(0 2px 4px rgba(0,0,0,0.04));
+  animation: cloud-ltr var(--cloud-dur, 80s) var(--cloud-delay, 0s) linear infinite;
+}
+
+/* Toggle: clicking sun switches direction. data-cloud-dir="rtl" on <html> */
+[data-cloud-dir="rtl"] .day-cloud {
+  animation-name: cloud-rtl;
 }
 
 [data-theme="night"] .day-cloud { opacity: 0; }
+
+@keyframes cloud-ltr {
+  0%   { transform: translateX(-160px); }
+  100% { transform: translateX(calc(100vw + 160px)); }
+}
+
+@keyframes cloud-rtl {
+  0%   { transform: translateX(calc(100vw + 160px)); }
+  100% { transform: translateX(-160px); }
+}
 
 /* Butterflies */
 .day-butterfly {

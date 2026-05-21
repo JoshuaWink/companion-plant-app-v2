@@ -950,14 +950,37 @@ function spawnDayDecorations() {
   ray.className = 'day-ray';
   canvas.appendChild(ray);
 
-  // Clouds — 5 fixed in the header area (like stars in night mode)
+  // Sun click → toggle cloud direction (ltr / rtl)
+  const sunEl = document.querySelector('.day-sun');
+  if (sunEl && !sunEl._cloudToggleWired) {
+    sunEl._cloudToggleWired = true;
+    sunEl.style.cursor = 'pointer';
+    sunEl.title = 'Click to flip cloud direction';
+    sunEl.addEventListener('click', () => {
+      const isRtl = document.documentElement.dataset.cloudDir === 'rtl';
+      if (isRtl) {
+        delete document.documentElement.dataset.cloudDir;
+        localStorage.setItem('cloud-dir', 'ltr');
+      } else {
+        document.documentElement.dataset.cloudDir = 'rtl';
+        localStorage.setItem('cloud-dir', 'rtl');
+      }
+    });
+    // Restore saved preference
+    if (localStorage.getItem('cloud-dir') === 'rtl') {
+      document.documentElement.dataset.cloudDir = 'rtl';
+    }
+  }
+
+  // Clouds — 5 drifting in header band, L→R by default (click sun to toggle)
   for (let i = 0; i < 5; i++) {
     const cloud = document.createElement('div');
     cloud.className = 'day-cloud';
     cloud.textContent = '\u2601\uFE0F';
-    cloud.style.left = (5 + Math.random() * 85) + '%';
     cloud.style.top = (3 + Math.random() * 12) + '%';
     cloud.style.fontSize = (1.6 + Math.random() * 1.2) + 'rem';
+    cloud.style.setProperty('--cloud-dur', (70 + Math.random() * 50) + 's');
+    cloud.style.setProperty('--cloud-delay', (-Math.random() * 100) + 's');
     canvas.appendChild(cloud);
   }
 
