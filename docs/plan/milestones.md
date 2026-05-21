@@ -11,51 +11,41 @@
 
 ---
 
-## M1: Data Enrichment — Timing Properties
+## M1: Data Enrichment — Timing Properties (DONE ✓)
 
-> Add temporal data to the 30 full plants. Pure data work, no engine changes.
-
-- [ ] Research DTM, frost tolerance, indoor start weeks for all 30 plants
-- [ ] Define `timing` schema in a JSON Schema file
-- [ ] Add `timing{}` block to all 30 full plants in `plants.json`
-- [ ] Add `family` field (botanical family) to all 30 full plants
-- [ ] Create `zones.json` with USDA zones 4a–10a frost date averages
-- [ ] Write validation test: every non-stub plant has complete timing data
-- [ ] Write validation test: every plant has a family assignment
-- [ ] Document data sources used for each plant's timing values
-
-**Done when**: All 30 plants have timing data, tests pass, sources documented.
+- [x] Research DTM, frost tolerance, indoor start weeks for all 30 plants
+- [x] Define `timing` schema in a JSON Schema file
+- [x] Add `timing{}` block to all 30 full plants in `plants.json`
+- [x] Add `family` field (botanical family) to all 30 full plants
+- [x] Create `zones.json` with USDA zones 3a–10b frost date averages
+- [x] Write validation test: every non-stub plant has complete timing data
+- [x] Write validation test: every plant has a family assignment
+- [x] Document data sources used for each plant's timing values
 
 ---
 
-## M2: Planting Window Calculator
+## M2: Planting Window Calculator (DONE ✓)
 
-> Given a zone and a plant, compute when to start indoors, transplant, and direct-sow.
-
-- [ ] Define `PlantingWindow` struct: indoor_start, transplant_earliest, direct_sow_earliest, harvest_start, harvest_end
-- [ ] Implement calculator in Rust (zone-agnostic: takes frost_date as input)
-- [ ] TDD: 10+ test cases covering different frost tolerances and start methods
-- [ ] WASM binding: `planting_windows(plant_id, last_frost_mmdd)` → JSON
-- [ ] JS zone engine: resolve zone → frost dates, call WASM, get calendar dates
-- [ ] Unit test the JS zone resolution
-
-**Done when**: Given "tomatoes" + "Zone 6b", returns correct planting window dates. Tests green.
+- [x] Define `PlantingWindow` struct: indoor_start, outdoor_earliest, harvest_start, harvest_end
+- [x] Implement calculator in Rust (zone-agnostic: takes frost_date as input)
+- [x] TDD: 10 test cases covering different frost tolerances and start methods
+- [x] WASM binding: `planting_windows(timing_json, last_frost_doy)` → JSON
+- [x] JS zone engine: resolve zone → frost dates, call WASM, get calendar dates
 
 ---
 
-## M3: Timeline UI (Experimental)
+## M3: Timeline UI (DONE ✓)
 
-> Render planting windows as a visual timeline in the PWA.
-
-- [ ] Add "Experimental: Timeline" section/tab to the PWA (behind feature flag or separate section)
-- [ ] Zone selector UI (dropdown of zones, or zip code → zone lookup)
-- [ ] Gantt-style timeline: horizontal bars per plant on a month axis (Jan–Dec)
-- [ ] Color coding: 🟡 Indoor start | 🟢 Transplant window | 🔵 Direct sow | 🟤 Harvest
-- [ ] Current date marker ("you are here")
-- [ ] Responsive: works on phone screen (stacked layout below breakpoint)
-- [ ] Integration: selecting plants in the spatial picker updates the timeline
-
-**Done when**: User picks Zone 6b, selects 5 plants, sees a correct visual timeline.
+- [x] Add "Planting Timeline" section to the PWA
+- [x] Zone selector UI (dropdown of 16 USDA zones 3a–10b)
+- [x] Gantt-style timeline: horizontal bars per plant on a month axis (Jan–Dec)
+- [x] Color coding: 🟣 Indoor start | 🟢 Outdoor | 🟡 Harvest
+- [x] Last frost line (red) per row
+- [x] Current date marker ("you are here" — cyan today line)
+- [x] Responsive: mobile layout (<600px) with stacked rows and full-width bars
+- [x] Integration: selecting plants in the spatial picker updates the timeline
+- [x] Legend with all 5 visual elements
+- [x] Deployed to GitHub Pages: joshuawink.github.io/companion-plant-app-v2
 
 ---
 
@@ -79,11 +69,7 @@
 
 > Extract temporal hints from existing 584 relationship reason strings.
 
-- [ ] Categorize reason strings by temporal implication:
-  - "provides structure for" → implies established first
-  - "fixes nitrogen for" → implies precedes
-  - "repels X from" → implies co-temporal with pest season
-  - "shades" → implies taller/established first
+- [ ] Categorize reason strings by temporal implication
 - [ ] Build extraction pipeline (Python, regex + pattern matching)
 - [ ] Generate candidate `precedes` edges from mined patterns
 - [ ] Human review: validate or reject each candidate
