@@ -15,6 +15,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        75
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 21
     }
   },
   {
@@ -33,6 +51,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        90
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -51,6 +87,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "brassicaceae",
+    "timing": {
+      "days_to_maturity": [
+        55,
+        80
+      ],
+      "days_to_germination": [
+        4,
+        7
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 40,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -69,6 +123,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "brassicaceae",
+    "timing": {
+      "days_to_maturity": [
+        80,
+        110
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "hard",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -87,6 +159,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "brassicaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        100
+      ],
+      "days_to_germination": [
+        4,
+        10
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 40,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -105,6 +195,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        55,
+        80
+      ],
+      "days_to_germination": [
+        10,
+        21
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 3,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": true,
+      "succession_interval_days": 21
     }
   },
   {
@@ -123,6 +231,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "brassicaceae",
+    "timing": {
+      "days_to_maturity": [
+        55,
+        80
+      ],
+      "days_to_germination": [
+        4,
+        10
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -141,6 +267,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        85,
+        120
+      ],
+      "days_to_germination": [
+        14,
+        21
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 10,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -159,6 +303,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "amaryllidaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        90
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "hard",
+      "min_soil_temp_f": 40,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -177,6 +339,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        45,
+        70
+      ],
+      "days_to_germination": [
+        7,
+        10
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -195,6 +375,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "poaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        100
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 3,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -213,6 +411,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "cucurbitaceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        70
+      ],
+      "days_to_germination": [
+        3,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 3,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -231,6 +447,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        40,
+        60
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -249,6 +483,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        90,
+        120
+      ],
+      "days_to_germination": [
+        14,
+        28
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 70,
+      "indoor_start_weeks_before_frost": 10,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -267,6 +519,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        65,
+        80
+      ],
+      "days_to_germination": [
+        10,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -285,6 +555,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "asteraceae",
+    "timing": {
+      "days_to_maturity": [
+        30,
+        60
+      ],
+      "days_to_germination": [
+        2,
+        8
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 35,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -303,6 +591,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "malvaceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        65
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -321,6 +627,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        80,
+        90
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -339,6 +663,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        70,
+        90
+      ],
+      "days_to_germination": [
+        14,
+        28
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -357,6 +699,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "fabaceae",
+    "timing": {
+      "days_to_maturity": [
+        55,
+        70
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 40,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -375,6 +735,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        70,
+        120
+      ],
+      "days_to_germination": [
+        10,
+        16
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 2,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -393,6 +771,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        65,
+        80
+      ],
+      "days_to_germination": [
+        10,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -411,6 +807,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        80,
+        120
+      ],
+      "days_to_germination": [
+        14,
+        21
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 55,
+      "indoor_start_weeks_before_frost": 10,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -429,6 +843,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        75,
+        90
+      ],
+      "days_to_germination": [
+        10,
+        21
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -447,6 +879,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        75,
+        85
+      ],
+      "days_to_germination": [
+        10,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -465,6 +915,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "amaranthaceae",
+    "timing": {
+      "days_to_maturity": [
+        35,
+        50
+      ],
+      "days_to_germination": [
+        5,
+        9
+      ],
+      "frost_tolerance": "hard",
+      "min_soil_temp_f": 35,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
@@ -483,6 +951,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "convolvulaceae",
+    "timing": {
+      "days_to_maturity": [
+        90,
+        120
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -501,6 +987,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "cucurbitaceae",
+    "timing": {
+      "days_to_maturity": [
+        45,
+        65
+      ],
+      "days_to_germination": [
+        4,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 3,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 21
     }
   },
   {
@@ -519,6 +1023,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        70,
+        90
+      ],
+      "days_to_germination": [
+        7,
+        21
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {
@@ -537,6 +1059,24 @@
       "pest_deters": [],
       "pest_attracts": [],
       "allelopathic_emits": []
+    },
+    "family": "solanaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        90
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": null
     }
   },
   {

@@ -7,9 +7,11 @@
 
 mod graph;
 mod model;
+mod timeline;
 
 pub use graph::CompanionGraph;
 pub use model::{Edge, Plant, RelationType};
+pub use timeline::{compute_window, PlantTiming, PlantingWindow};
 
 use wasm_bindgen::prelude::*;
 

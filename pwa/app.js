@@ -64,6 +64,7 @@ async function boot() {
   renderPlantGrid(getVisiblePlants());
   setupSearch();
   setupStubToggle();
+  await loadZones();
 }
 
 // --- Render ---
@@ -114,6 +115,7 @@ function updateUI() {
   updateSelectedPanel();
   updateHighlights();
   updateResults();
+  updateTimeline();
 }
 
 function updateSelectedPanel() {
@@ -244,6 +246,150 @@ function updateResults() {
 function nameFor(id) {
   const p = plants.find(x => x.id === id);
   return p ? p.name : id;
+}
+
+// --- Timeline ---
+
+let zones = {};
+
+async function loadZones() {
+  const resp = await fetch('data/zones.json');
+  zones = await resp.json();
+  populateZoneSelector();
+}
+
+function populateZoneSelector() {
+  const select = document.getElementById('zone-select');
+  if (!select) return;
+
+  const sorted = Object.keys(zones).sort((a, b) => {
+    const na = parseInt(a), nb = parseInt(b);
+    if (na !== nb) return na - nb;
+    return a.localeCompare(b);
+  });
+
+  for (const z of sorted) {
+    const opt = document.createElement('option');
+    opt.value = z;
+    opt.textContent = `Zone ${z}`;
+    select.appendChild(opt);
+  }
+
+  select.addEventListener('change', () => updateTimeline());
+}
+
+function mmddToDoy(mmdd) {
+  const [mm, dd] = mmdd.split('-').map(Number);
+  const d = new Date(2023, mm - 1, dd);
+  const jan1 = new Date(2023, 0, 1);
+  return Math.floor((d - jan1) / 86400000) + 1;
+}
+
+function doyToPercent(doy) {
+  return (doy / 365) * 100;
+}
+
+function updateTimeline() {
+  const select = document.getElementById('zone-select');
+  const emptyMsg = document.getElementById('timeline-empty');
+  const chart = document.getElementById('timeline-chart');
+  const frostInfo = document.getElementById('frost-info');
+  const rowsContainer = document.getElementById('timeline-rows');
+
+  const zoneId = select ? select.value : '';
+
+  if (!zoneId || selected.size === 0) {
+    if (emptyMsg) emptyMsg.hidden = false;
+    if (chart) chart.hidden = true;
+    if (frostInfo) frostInfo.textContent = '';
+    return;
+  }
+
+  const zone = zones[zoneId];
+  if (!zone) return;
+
+  const lastFrostDoy = mmddToDoy(zone.last_frost_avg);
+
+  if (frostInfo) {
+    frostInfo.textContent =
+      `Last frost: ${zone.last_frost_avg} · First frost: ${zone.first_frost_avg} · ${zone.growing_season_days} day season`;
+  }
+
+  const timingMap = {};
+  for (const id of selected) {
+    const plant = plants.find(p => p.id === id);
+    if (plant && plant.timing) {
+      timingMap[id] = plant.timing;
+    }
+  }
+
+  if (Object.keys(timingMap).length === 0) {
+    if (emptyMsg) {
+      emptyMsg.hidden = false;
+      emptyMsg.textContent = 'Selected plants have no timing data';
+    }
+    if (chart) chart.hidden = true;
+    return;
+  }
+
+  const windowsJson = garden.planting_windows(JSON.stringify(timingMap), lastFrostDoy);
+  const windows = JSON.parse(windowsJson);
+  windows.sort((a, b) => a.outdoor_earliest_doy - b.outdoor_earliest_doy);
+
+  if (emptyMsg) emptyMsg.hidden = true;
+  if (chart) chart.hidden = false;
+
+  rowsContainer.innerHTML = '';
+
+  for (const w of windows) {
+    const row = document.createElement('div');
+    row.className = 'timeline-row';
+
+    const label = document.createElement('div');
+    label.className = 'timeline-row-label';
+    label.textContent = nameFor(w.plant_id);
+    label.title = nameFor(w.plant_id);
+
+    const bars = document.createElement('div');
+    bars.className = 'timeline-row-bars';
+
+    // Last frost line
+    const frostLine = document.createElement('div');
+    frostLine.className = 'timeline-frost-line';
+    frostLine.style.left = doyToPercent(lastFrostDoy) + '%';
+    frostLine.title = 'Last frost';
+    bars.appendChild(frostLine);
+
+    // Indoor start bar
+    if (w.indoor_start_doy) {
+      const bar = document.createElement('div');
+      bar.className = 'timeline-bar timeline-bar--indoor';
+      bar.style.left = doyToPercent(w.indoor_start_doy) + '%';
+      bar.style.width = doyToPercent(w.outdoor_earliest_doy - w.indoor_start_doy) + '%';
+      bar.title = `Indoor: day ${w.indoor_start_doy} - ${w.outdoor_earliest_doy}`;
+      bars.appendChild(bar);
+    }
+
+    // Outdoor bar
+    const outdoorBar = document.createElement('div');
+    outdoorBar.className = 'timeline-bar timeline-bar--outdoor';
+    outdoorBar.style.left = doyToPercent(w.outdoor_earliest_doy) + '%';
+    outdoorBar.style.width = doyToPercent(w.harvest_start_doy - w.outdoor_earliest_doy) + '%';
+    outdoorBar.title = `Outdoor: day ${w.outdoor_earliest_doy} - ${w.harvest_start_doy}`;
+    bars.appendChild(outdoorBar);
+
+    // Harvest bar
+    const harvestBar = document.createElement('div');
+    harvestBar.className = 'timeline-bar timeline-bar--harvest';
+    harvestBar.style.left = doyToPercent(w.harvest_start_doy) + '%';
+    harvestBar.style.width = doyToPercent(w.harvest_end_doy - w.harvest_start_doy) + '%';
+    harvestBar.title = `Harvest: day ${w.harvest_start_doy} - ${w.harvest_end_doy}`;
+    bars.appendChild(harvestBar);
+
+    row.appendChild(label);
+    row.appendChild(bars);
+    rowsContainer.appendChild(row);
+  }
 }
 
 // --- Boot ---

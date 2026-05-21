@@ -55,6 +55,34 @@
         <ul id="companion-list" class="companion-list"></ul>
       </div>
     </section>
+
+    <section class="card timeline-panel" aria-label="Planting timeline">
+      <h2 class="section-title">Planting Timeline</h2>
+      <div class="zone-selector">
+        <label for="zone-select" class="field-label">USDA Hardiness Zone</label>
+        <select id="zone-select" class="field-input">
+          <option value="">Select your zone...</option>
+        </select>
+        <span id="frost-info" class="frost-info"></span>
+      </div>
+      <div id="timeline-empty" class="empty-state center-text">Select plants and a zone to see planting timeline</div>
+      <div id="timeline-chart" class="timeline-chart" hidden>
+        <div class="timeline-header">
+          <div class="timeline-label-col"></div>
+          <div class="timeline-months">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+            <span>May</span><span>Jun</span><span>Jul</span><span>Aug</span>
+            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
+        </div>
+        <div id="timeline-rows" class="timeline-rows"></div>
+        <div class="timeline-legend">
+          <span class="legend-item"><span class="legend-swatch legend-swatch--indoor"></span>Indoor start</span>
+          <span class="legend-item"><span class="legend-swatch legend-swatch--outdoor"></span>Outdoor</span>
+          <span class="legend-item"><span class="legend-swatch legend-swatch--harvest"></span>Harvest</span>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script type="module" src="app.js"></script>
