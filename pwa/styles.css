@@ -616,7 +616,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 5;
   overflow: hidden;
   opacity: 1;
   transition: opacity 1s ease;
@@ -634,7 +634,7 @@ body {
   font-size: 5rem;
   opacity: 0.22;
   pointer-events: none;
-  z-index: 0;
+  z-index: 5;
   filter: drop-shadow(0 0 18px rgba(255,210,80,0.4));
   animation: sun-pulse 8s infinite ease-in-out;
   transition: opacity 1.5s ease;
@@ -673,6 +673,7 @@ body {
   border-radius: 50%;
   animation: sun-rotate 60s linear infinite;
   transition: opacity 1.5s ease;
+  z-index: 5;
 }
 
 [data-theme="night"] .day-ray {
@@ -716,43 +717,51 @@ body {
 .day-butterfly {
   position: fixed;
   pointer-events: none;
-  z-index: 0;
-  width: 12px;
-  height: 12px;
+  z-index: 5;
+  width: 18px;
+  height: 14px;
   opacity: 0;
   transition: opacity 1.5s ease;
+  /* butterfly-travel uses `translate` property — separate from `transform`
+     so butterfly-wing (transform: scaleY) won't override the movement */
   animation:
-    firefly-float var(--fly-duration, 14s) var(--fly-delay, 0s) infinite ease-in-out,
-    butterfly-wing 0.4s infinite ease-in-out;
+    butterfly-travel var(--fly-duration, 14s) var(--fly-delay, 0s) infinite ease-in-out,
+    butterfly-wing 0.5s infinite ease-in-out;
 }
 
-.day-butterfly { opacity: 0.5; }
+.day-butterfly { opacity: 0.6; }
 [data-theme="night"] .day-butterfly { opacity: 0; }
 
 .day-butterfly::before, .day-butterfly::after {
   content: '';
   position: absolute;
   top: 0;
-  width: 6px;
-  height: 8px;
+  width: 8px;
+  height: 11px;
   border-radius: 50% 50% 50% 0;
   background: var(--bf-color, #e88fd0);
 }
 .day-butterfly::before { left: 0; transform-origin: bottom right; }
 .day-butterfly::after  { right: 0; transform-origin: bottom left; border-radius: 50% 50% 0 50%; }
 
-/* butterflies reuse firefly-float keyframe */
+@keyframes butterfly-travel {
+  0%   { translate: 0px 0px; }
+  25%  { translate: var(--dx1, 60px) var(--dy1, -40px); }
+  50%  { translate: var(--dx2, -30px) var(--dy2, -80px); }
+  75%  { translate: var(--dx3, 40px) var(--dy3, -20px); }
+  100% { translate: 0px 0px; }
+}
 
 @keyframes butterfly-wing {
   0%, 100% { transform: scaleY(1); }
-  50%      { transform: scaleY(0.3); }
+  50%      { transform: scaleY(0.25); }
 }
 
 /* Bees */
 .day-bee {
   position: fixed;
   pointer-events: none;
-  z-index: 0;
+  z-index: 5;
   width: 10px;
   height: 6px;
   background: #f0c830;
@@ -789,7 +798,7 @@ body {
 .day-seed {
   position: fixed;
   pointer-events: none;
-  z-index: 0;
+  z-index: 5;
   width: 3px;
   height: 3px;
   border-radius: 50%;
