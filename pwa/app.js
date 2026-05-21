@@ -360,6 +360,16 @@ function updateTimeline() {
     frostLine.title = 'Last frost';
     bars.appendChild(frostLine);
 
+    // Today marker
+    const now = new Date();
+    const jan1 = new Date(now.getFullYear(), 0, 1);
+    const todayDoy = Math.floor((now - jan1) / 86400000) + 1;
+    const todayLine = document.createElement("div");
+    todayLine.className = "timeline-today-line";
+    todayLine.style.left = doyToPercent(todayDoy) + "%";
+    todayLine.title = "Today (day " + todayDoy + ")";
+    bars.appendChild(todayLine);
+
     // Indoor start bar
     if (w.indoor_start_doy) {
       const bar = document.createElement('div');
