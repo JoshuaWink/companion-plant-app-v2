@@ -1,0 +1,342 @@
+/* Companion Garden — styles.css
+ * Uses cup design tokens (Pattern C: inline tokens for standalone PWA). */
+
+/* ── Tokens (from cup-ui/tokens.css) ── */
+:root {
+  --cup-color-surface:      #1a1a2e;
+  --cup-color-on-surface:   #e0e0e0;
+  --cup-color-surface-alt:  #16213e;
+  --cup-color-primary:      #4fc3f7;
+  --cup-color-on-primary:   #000000;
+  --cup-color-secondary:    #b0bec5;
+  --cup-color-error:        #ef5350;
+  --cup-color-on-error:     #ffffff;
+  --cup-color-success:      #66bb6a;
+  --cup-color-warning:      #ffa726;
+  --cup-color-info:         #29b6f6;
+  --cup-color-border:       #333333;
+  --cup-color-focus:        #4fc3f7;
+  --cup-color-disabled:     #555555;
+  --cup-color-on-disabled:  #999999;
+  --cup-color-placeholder:  #888888;
+  --cup-color-text-muted:   #999999;
+
+  --cup-space-2xs: 0.125rem;
+  --cup-space-xs:  0.25rem;
+  --cup-space-sm:  0.5rem;
+  --cup-space-md:  1rem;
+  --cup-space-lg:  1.5rem;
+  --cup-space-xl:  2rem;
+  --cup-space-2xl: 3rem;
+
+  --cup-font-family:       system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cup-font-family-mono:  ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --cup-font-size-xs:   0.75rem;
+  --cup-font-size-sm:   0.875rem;
+  --cup-font-size-base: 1rem;
+  --cup-font-size-lg:   1.25rem;
+  --cup-font-size-xl:   1.5rem;
+  --cup-font-size-2xl:  2rem;
+  --cup-font-weight-normal: 400;
+  --cup-font-weight-medium: 500;
+  --cup-font-weight-bold:   700;
+  --cup-line-height:        1.5;
+
+  --cup-radius-sm:   4px;
+  --cup-radius-md:   8px;
+  --cup-radius-lg:   12px;
+  --cup-radius-full: 9999px;
+
+  --cup-transition-fast:   150ms ease;
+  --cup-transition-normal: 250ms ease;
+  --cup-transition-slow:   400ms ease;
+
+  --cup-shadow-sm:  0  1px  2px rgba(0,0,0,0.3);
+  --cup-shadow-md:  0  4px  8px rgba(0,0,0,0.3);
+  --cup-shadow-lg:  0  8px 24px rgba(0,0,0,0.3);
+
+  --cup-touch-min: 44px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--cup-font-family);
+  font-size: var(--cup-font-size-base);
+  line-height: var(--cup-line-height);
+  color: var(--cup-color-on-surface);
+  background-color: var(--cup-color-surface);
+  min-height: 100dvh;
+  padding: var(--cup-space-md);
+}
+
+/* ── Skip Link ── */
+.cup-skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--cup-space-md);
+  background: var(--cup-color-primary);
+  color: var(--cup-color-on-primary);
+  padding: var(--cup-space-sm) var(--cup-space-md);
+  border-radius: var(--cup-radius-md);
+  font-weight: var(--cup-font-weight-bold);
+  z-index: 1000;
+  text-decoration: none;
+}
+.cup-skip-link:focus {
+  top: var(--cup-space-sm);
+}
+
+/* ── Header ── */
+.app-header {
+  text-align: center;
+  margin-bottom: var(--cup-space-xl);
+}
+.app-title {
+  font-size: var(--cup-font-size-2xl);
+  font-weight: var(--cup-font-weight-bold);
+  color: var(--cup-color-primary);
+}
+.app-subtitle {
+  color: var(--cup-color-text-muted);
+  font-size: var(--cup-font-size-sm);
+  margin-top: var(--cup-space-xs);
+}
+
+/* ── Search Bar ── */
+.search-bar {
+  margin-bottom: var(--cup-space-sm);
+}
+
+/* ── Grid Toolbar ── */
+.grid-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--cup-space-sm);
+}
+.chip-count {
+  font-size: var(--cup-font-size-xs);
+  color: var(--cup-color-secondary);
+  font-weight: var(--cup-font-weight-medium);
+}
+.chip-count--muted {
+  color: var(--cup-color-text-muted);
+  font-weight: var(--cup-font-weight-normal);
+}
+.stub-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--cup-space-xs);
+  font-size: var(--cup-font-size-xs);
+  color: var(--cup-color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.stub-toggle input[type="checkbox"] {
+  accent-color: var(--cup-color-primary);
+}
+.field-label {
+  display: block;
+  font-size: var(--cup-font-size-sm);
+  color: var(--cup-color-text-muted);
+  margin-bottom: var(--cup-space-xs);
+}
+.field-input {
+  width: 100%;
+  padding: var(--cup-space-sm) var(--cup-space-md);
+  background: var(--cup-color-surface-alt);
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  color: var(--cup-color-on-surface);
+  font-size: var(--cup-font-size-base);
+  transition: border-color var(--cup-transition-fast);
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--cup-color-focus);
+  box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.2);
+}
+.field-input::placeholder {
+  color: var(--cup-color-placeholder);
+}
+
+/* ── Plant Grid ── */
+.plant-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cup-space-sm);
+  max-height: 240px;
+  overflow-y: auto;
+  padding: var(--cup-space-sm);
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  background: var(--cup-color-surface-alt);
+}
+
+.plant-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--cup-space-xs) var(--cup-space-md);
+  min-height: var(--cup-touch-min);
+  border-radius: var(--cup-radius-full);
+  border: 1px solid var(--cup-color-border);
+  background: var(--cup-color-surface);
+  color: var(--cup-color-on-surface);
+  font-size: var(--cup-font-size-sm);
+  cursor: pointer;
+  transition: all var(--cup-transition-fast);
+  user-select: none;
+}
+.plant-chip:hover {
+  border-color: var(--cup-color-primary);
+  color: var(--cup-color-primary);
+}
+.plant-chip[aria-selected="true"] {
+  background: var(--cup-color-primary);
+  color: var(--cup-color-on-primary);
+  border-color: var(--cup-color-primary);
+  font-weight: var(--cup-font-weight-medium);
+}
+.plant-chip.companion-highlight {
+  border-color: var(--cup-color-success);
+  box-shadow: 0 0 0 2px rgba(102, 187, 106, 0.3);
+}
+.plant-chip.antagonist-highlight {
+  border-color: var(--cup-color-error);
+  box-shadow: 0 0 0 2px rgba(239, 83, 80, 0.3);
+}
+.plant-chip.stub {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ── Section Titles ── */
+.section-title {
+  font-size: var(--cup-font-size-lg);
+  font-weight: var(--cup-font-weight-bold);
+  margin: var(--cup-space-lg) 0 var(--cup-space-sm);
+  padding-bottom: var(--cup-space-xs);
+  border-bottom: 1px solid var(--cup-color-border);
+}
+.section-title--danger { color: var(--cup-color-error); }
+.section-title--success { color: var(--cup-color-success); }
+
+/* ── Selected Plants ── */
+.selected-plants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cup-space-sm);
+  min-height: var(--cup-touch-min);
+  padding: var(--cup-space-sm);
+}
+.empty-state {
+  color: var(--cup-color-text-muted);
+  font-style: italic;
+}
+
+/* ── Results Panel ── */
+.conflict-list,
+.companion-list {
+  list-style: none;
+  padding: 0;
+}
+.conflict-list li,
+.companion-list li {
+  padding: var(--cup-space-sm) var(--cup-space-md);
+  margin-bottom: var(--cup-space-xs);
+  border-radius: var(--cup-radius-md);
+  font-size: var(--cup-font-size-sm);
+}
+.conflict-list li {
+  background: rgba(239, 83, 80, 0.1);
+  border-left: 3px solid var(--cup-color-error);
+}
+.companion-list li {
+  background: rgba(102, 187, 106, 0.1);
+  border-left: 3px solid var(--cup-color-success);
+}
+.conflict-list .reason,
+.companion-list .reason {
+  display: block;
+  color: var(--cup-color-text-muted);
+  font-size: var(--cup-font-size-xs);
+  margin-top: var(--cup-space-2xs);
+}
+
+/* ── Responsive ── */
+@media (min-width: 768px) {
+  body { padding: var(--cup-space-xl); max-width: 900px; margin: 0 auto; }
+  .plant-grid { max-height: 320px; }
+}
+
+/* ── Card Elevation ── */
+.card {
+  background: var(--cup-color-surface-alt);
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-lg);
+  padding: var(--cup-space-lg);
+  margin-bottom: var(--cup-space-lg);
+  box-shadow: var(--cup-shadow-sm);
+}
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  padding: 0.1em 0.4em;
+  border-radius: var(--cup-radius-full);
+  font-size: var(--cup-font-size-xs);
+  font-weight: var(--cup-font-weight-bold);
+  line-height: 1;
+  vertical-align: middle;
+  background: var(--cup-color-border);
+  color: var(--cup-color-on-surface);
+}
+.badge--danger {
+  background: rgba(239, 83, 80, 0.2);
+  color: var(--cup-color-error);
+}
+.badge--success {
+  background: rgba(102, 187, 106, 0.2);
+  color: var(--cup-color-success);
+}
+
+/* ── All-Clear Message ── */
+.all-clear {
+  padding: var(--cup-space-md);
+  border-radius: var(--cup-radius-md);
+  background: rgba(102, 187, 106, 0.1);
+  color: var(--cup-color-success);
+  font-weight: var(--cup-font-weight-medium);
+  text-align: center;
+}
+
+/* ── Centering ── */
+.center-text { text-align: center; }
+
+/* ── Garden Bed Refinement ── */
+.selected-plants {
+  border: 2px dashed var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  min-height: 72px;
+  padding: var(--cup-space-md);
+  background: var(--cup-color-surface);
+}
+.empty-state {
+  font-size: var(--cup-font-size-sm);
+}
+
+/* ── Section Title Flex ── */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--cup-space-sm);
+}

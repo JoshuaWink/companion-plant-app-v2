@@ -1,0 +1,2378 @@
+[
+  {
+    "id": "basil",
+    "name": "Basil",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "bell-peppers",
+    "name": "Bell Peppers",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "broccoli",
+    "name": "Broccoli",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "brussels-sprouts",
+    "name": "Brussels Sprouts",
+    "lifecycle": "biennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cabbage",
+    "name": "Cabbage",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "carrots",
+    "name": "Carrots",
+    "lifecycle": "biennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cauliflower",
+    "name": "Cauliflower",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "celery",
+    "name": "Celery",
+    "lifecycle": "biennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "chives",
+    "name": "Chives",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cilantro",
+    "name": "Cilantro",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "corn",
+    "name": "Corn",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cucumbers",
+    "name": "Cucumbers",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "dill",
+    "name": "Dill",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "habanero-peppers",
+    "name": "Habanero Peppers",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "jalapeno-peppers",
+    "name": "Jalapeno Peppers",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "lettuce",
+    "name": "Lettuce",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "okra",
+    "name": "Okra",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "oregano",
+    "name": "Oregano",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "parsley",
+    "name": "Parsley",
+    "lifecycle": "biennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "peas",
+    "name": "Peas",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "potatoes",
+    "name": "Potatoes",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "poblano-peppers",
+    "name": "Poblano Peppers",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "rosemary",
+    "name": "Rosemary",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sage",
+    "name": "Sage",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "serrano-peppers",
+    "name": "Serrano Peppers",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "spinach",
+    "name": "Spinach",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sweet-potatoes",
+    "name": "Sweet Potatoes",
+    "lifecycle": "perennial",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "summer-squash",
+    "name": "Summer Squash",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "thyme",
+    "name": "Thyme",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "tomatoes",
+    "name": "Tomatoes",
+    "lifecycle": "annual",
+    "stub": false,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "alfalfa",
+    "name": "Alfalfa",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "alyssum",
+    "name": "Alyssum",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "amaranth",
+    "name": "Amaranth",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "angelica",
+    "name": "Angelica",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "apples",
+    "name": "Apples",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "appletree",
+    "name": "Appletree",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "asparagus",
+    "name": "Asparagus",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "aster",
+    "name": "Aster",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "beans",
+    "name": "Beans",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "beets",
+    "name": "Beets",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "blueberries",
+    "name": "Blueberries",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "borage",
+    "name": "Borage",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "brassica",
+    "name": "Brassica",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "brassicas",
+    "name": "Brassicas",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "buckwheat",
+    "name": "Buckwheat",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "bush-beans",
+    "name": "Bush Beans",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "calendula",
+    "name": "Calendula",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "caraway",
+    "name": "Caraway",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "chamomile",
+    "name": "Chamomile",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "chard",
+    "name": "Chard",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "chervil",
+    "name": "Chervil",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "clover",
+    "name": "Clover",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "collard-greens",
+    "name": "Collard Greens",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "collards",
+    "name": "Collards",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "coreopsis",
+    "name": "Coreopsis",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cosmos",
+    "name": "Cosmos",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "cucumber",
+    "name": "Cucumber",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "daisies",
+    "name": "Daisies",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "eggplant",
+    "name": "Eggplant",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "eggplants",
+    "name": "Eggplants",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "endive",
+    "name": "Endive",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "fennel",
+    "name": "Fennel",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "flax",
+    "name": "Flax",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "foxglove",
+    "name": "Foxglove",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "garlic",
+    "name": "Garlic",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "gladioli",
+    "name": "Gladioli",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "grapes",
+    "name": "Grapes",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "horseradish",
+    "name": "Horseradish",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "hot-peppers",
+    "name": "Hot Peppers",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "kale",
+    "name": "Kale",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "kohlrabi",
+    "name": "Kohlrabi",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "lavender",
+    "name": "Lavender",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "leek",
+    "name": "Leek",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "leeks",
+    "name": "Leeks",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "legumes",
+    "name": "Legumes",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "lima-beans",
+    "name": "Lima Beans",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "lovage",
+    "name": "Lovage",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "lupines",
+    "name": "Lupines",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "marigold",
+    "name": "Marigold",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "marigolds",
+    "name": "Marigolds",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "marjoram",
+    "name": "Marjoram",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "melon",
+    "name": "Melon",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "melons",
+    "name": "Melons",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "mint",
+    "name": "Mint",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "mustard-greens",
+    "name": "Mustard Greens",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "nasturtium",
+    "name": "Nasturtium",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "nasturtiums",
+    "name": "Nasturtiums",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "onion",
+    "name": "Onion",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "onions",
+    "name": "Onions",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "parsnip",
+    "name": "Parsnip",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "parsnips",
+    "name": "Parsnips",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "pear",
+    "name": "Pear",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "pepper",
+    "name": "Pepper",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "peppers",
+    "name": "Peppers",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "petunias",
+    "name": "Petunias",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "pole-beans",
+    "name": "Pole Beans",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "pumpkin",
+    "name": "Pumpkin",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "pumpkins",
+    "name": "Pumpkins",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "radish",
+    "name": "Radish",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "radishes",
+    "name": "Radishes",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "raspberries",
+    "name": "Raspberries",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "rose",
+    "name": "Rose",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "roses",
+    "name": "Roses",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "rue",
+    "name": "Rue",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "rutebega",
+    "name": "Rutebega",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "salad-burnet",
+    "name": "Salad Burnet",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "scallion",
+    "name": "Scallion",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "scallions",
+    "name": "Scallions",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "shallots",
+    "name": "Shallots",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "snap-beans",
+    "name": "Snap Beans",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "snapdragons",
+    "name": "Snapdragons",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sprouts",
+    "name": "Sprouts",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "squash",
+    "name": "Squash",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "strawberries",
+    "name": "Strawberries",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "summer-savory",
+    "name": "Summer Savory",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sunflower",
+    "name": "Sunflower",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sunflowers",
+    "name": "Sunflowers",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sweet-alyssum",
+    "name": "Sweet Alyssum",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sweet-or-hot-peppers",
+    "name": "Sweet Or Hot Peppers",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "sweet-peas",
+    "name": "Sweet Peas",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "swiss-chard",
+    "name": "Swiss Chard",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "tansy",
+    "name": "Tansy",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "tarragon",
+    "name": "Tarragon",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "tomato",
+    "name": "Tomato",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "turnip",
+    "name": "Turnip",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "turnips",
+    "name": "Turnips",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "walnuts",
+    "name": "Walnuts",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "wormwood",
+    "name": "Wormwood",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "yarrow",
+    "name": "Yarrow",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "zinnia",
+    "name": "Zinnia",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "zinnias",
+    "name": "Zinnias",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  },
+  {
+    "id": "zucchinis",
+    "name": "Zucchinis",
+    "lifecycle": null,
+    "stub": true,
+    "properties": {
+      "water_needs": null,
+      "sun_hours": null,
+      "soil_ph": null,
+      "root_depth": null,
+      "height_cm": null,
+      "nutrient_needs": null,
+      "nutrient_gives": null,
+      "pest_deters": [],
+      "pest_attracts": [],
+      "allelopathic_emits": []
+    }
+  }
+]

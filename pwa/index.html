@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Companion Garden</title>
+  <meta name="description" content="Explore plant companion relationships with an interactive graph">
+  <meta name="theme-color" content="#1a1a2e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+  <a href="#main" class="cup-skip-link">Skip to main content</a>
+
+  <header class="app-header">
+    <h1 class="app-title">🌱 Companion Garden</h1>
+    <p class="app-subtitle">Select plants → see companions & conflicts</p>
+  </header>
+
+  <main id="main">
+    <section class="card plant-picker" aria-label="Plant selection">
+      <div class="search-bar">
+        <label for="plant-search" class="field-label">Search plants</label>
+        <input type="search" id="plant-search" class="field-input" placeholder="Type to filter..." autocomplete="off">
+      </div>
+      <div class="grid-toolbar">
+        <span id="plant-count" class="chip-count">30 plants</span>
+        <label class="stub-toggle">
+          <input type="checkbox" id="show-stubs"> Show referenced plants
+          <span id="stub-count" class="chip-count chip-count--muted">(102)</span>
+        </label>
+      </div>
+      <div id="plant-grid" class="plant-grid" role="listbox" aria-label="Available plants">
+        <!-- plant chips render here -->
+      </div>
+    </section>
+
+    <section class="card garden-bed" aria-label="Your garden selection">
+      <h2 class="section-title">Your Garden <span id="selected-count" class="badge" hidden>0</span></h2>
+      <div id="selected-plants" class="selected-plants" aria-live="polite">
+        <p class="empty-state">Pick some plants above to get started</p>
+      </div>
+    </section>
+
+    <section class="card results-panel" aria-label="Companion results">
+      <div id="no-selection-msg" class="empty-state center-text">Select plants to see relationships</div>
+      <div id="all-clear-msg" class="all-clear" hidden>✓ No conflicts — these plants grow well together</div>
+      <div id="conflicts-panel" class="conflicts-panel" hidden>
+        <h2 class="section-title section-title--danger">Conflicts <span id="conflict-count" class="badge badge--danger"></span></h2>
+        <ul id="conflict-list" class="conflict-list"></ul>
+      </div>
+      <div id="companions-panel" class="companions-panel" hidden>
+        <h2 class="section-title section-title--success">Shared Companions <span id="companion-count" class="badge badge--success"></span></h2>
+        <ul id="companion-list" class="companion-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

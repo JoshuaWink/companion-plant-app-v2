@@ -1,0 +1,3506 @@
+[
+  {
+    "source": "basil",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Basil repels insects, specifically flies & hornworms; also improves yield"
+  },
+  {
+    "source": "basil",
+    "target": "thyme",
+    "type": "antagonist",
+    "reason": "Thyme has different growing conditions for soil nutrients and water needs."
+  },
+  {
+    "source": "basil",
+    "target": "sage",
+    "type": "antagonist",
+    "reason": "Sage thrives on dry soil while basil requires constant watering."
+  },
+  {
+    "source": "basil",
+    "target": "cucumbers",
+    "type": "antagonist",
+    "reason": "Cucumbers compete for resources, such as water and nutrients."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "squash",
+    "type": "companion",
+    "reason": "Squash and Cucumbers help shade shallow roots of peppers."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Squash and Cucumbers help shade shallow roots of peppers. Carrots help control weeds. Basil controls insects & deters spider mites and mosquitoes. Chives and Onions help repel aphids. Garlic helps repel Japanese beetles. Nasturtium is a trap crop for aphids"
+  },
+  {
+    "source": "bell-peppers",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots help control weeds."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives and Onions help repel aphids."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil controls insects & deters spider mites and mosquitoes."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Squash and Cucumbers help shade shallow roots of peppers. Carrots help control weeds. Basil controls insects & deters spider mites and mosquitoes. Chives and Onions help repel aphids. Garlic helps repel Japanese beetles. Nasturtium is a trap crop for aphids"
+  },
+  {
+    "source": "bell-peppers",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtium is a trap crop for aphids"
+  },
+  {
+    "source": "bell-peppers",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic helps repel Japanese beetles."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes and Peppers, as well as Strawberries, Potatoes and Raspberries, belong to the same family and are all susceptible to verticillium and fusarium wilt. Preventing plant diseases is the main reason why gardeners do not grow these crops together, but you may never encounter a problem if you live in a dry, mild climate. Eggplants, Tomatoes, and Peppers all share a common pest, hornworms, which can quickly decimate plants."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes and Peppers, as well as Strawberries, Potatoes and Raspberries, belong to the same family and are all susceptible to verticillium and fusarium wilt. Preventing plant diseases is the main reason why gardeners do not grow these crops together, but you may never encounter a problem if you live in a dry, mild climate. Eggplants, Tomatoes, and Peppers all share a common pest, hornworms, which can quickly decimate plants."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "eggplants",
+    "type": "antagonist",
+    "reason": "Tomatoes and Peppers, as well as Strawberries, Potatoes and Raspberries, belong to the same family and are all susceptible to verticillium and fusarium wilt. Preventing plant diseases is the main reason why gardeners do not grow these crops together, but you may never encounter a problem if you live in a dry, mild climate. Eggplants, Tomatoes, and Peppers all share a common pest, hornworms, which can quickly decimate plants."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "strawberries",
+    "type": "antagonist",
+    "reason": "Tomatoes and Peppers, as well as Strawberries, Potatoes and Raspberries, belong to the same family and are all susceptible to verticillium and fusarium wilt. Preventing plant diseases is the main reason why gardeners do not grow these crops together, but you may never encounter a problem if you live in a dry, mild climate. Eggplants, Tomatoes, and Peppers all share a common pest, hornworms, which can quickly decimate plants."
+  },
+  {
+    "source": "bell-peppers",
+    "target": "raspberries",
+    "type": "antagonist",
+    "reason": "Tomatoes and Peppers, as well as Strawberries, Potatoes and Raspberries, belong to the same family and are all susceptible to verticillium and fusarium wilt. Preventing plant diseases is the main reason why gardeners do not grow these crops together, but you may never encounter a problem if you live in a dry, mild climate. Eggplants, Tomatoes, and Peppers all share a common pest, hornworms, which can quickly decimate plants."
+  },
+  {
+    "source": "broccoli",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "cauliflower",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "cucumber",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "potatoes",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "swiss-chard",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano has insecticidal properties."
+  },
+  {
+    "source": "broccoli",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes take away nutrients from the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "eggplant",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli."
+  },
+  {
+    "source": "broccoli",
+    "target": "peppers",
+    "type": "antagonist",
+    "reason": "Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions."
+  },
+  {
+    "source": "broccoli",
+    "target": "mustard-greens",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli. Tomatoes take away nutrients from the soil. Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions. Melons feed on similar nutrients. Strawberries attract pests. Asparagus takes away too many nutrients from the soil. Pumpkins feed on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "broccoli",
+    "target": "pole-beans",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli. Tomatoes take away nutrients from the soil. Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions. Melons feed on similar nutrients. Strawberries attract pests. Asparagus takes away too many nutrients from the soil. Pumpkins feed on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "broccoli",
+    "target": "squash",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli. Tomatoes take away nutrients from the soil. Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions. Melons feed on similar nutrients. Strawberries attract pests. Asparagus takes away too many nutrients from the soil. Pumpkins feed on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "broccoli",
+    "target": "lima-beans",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli. Tomatoes take away nutrients from the soil. Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions. Melons feed on similar nutrients. Strawberries attract pests. Asparagus takes away too many nutrients from the soil. Pumpkins feed on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "broccoli",
+    "target": "snap-beans",
+    "type": "antagonist",
+    "reason": "Eggplant inhibit the growth of broccoli. Tomatoes take away nutrients from the soil. Peppers attract pests. Mustard emits harmful substances to the soil. Beans worsen soil conditions. Melons feed on similar nutrients. Strawberries attract pests. Asparagus takes away too many nutrients from the soil. Pumpkins feed on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "broccoli",
+    "target": "strawberries",
+    "type": "antagonist",
+    "reason": "Strawberries attract pests."
+  },
+  {
+    "source": "broccoli",
+    "target": "melons",
+    "type": "antagonist",
+    "reason": "Melons feed on similar nutrients."
+  },
+  {
+    "source": "broccoli",
+    "target": "asparagus",
+    "type": "antagonist",
+    "reason": "Asparagus takes away too many nutrients from the soil."
+  },
+  {
+    "source": "broccoli",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins feed on similar nutrients."
+  },
+  {
+    "source": "broccoli",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic repels aphids, maggots and whiteflies."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots can enhance the flavor."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "celery",
+    "type": "companion",
+    "reason": "Celery keeps away bugs."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "onion",
+    "type": "companion",
+    "reason": "Onions repel rust flies."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint repels aphids."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil repels flies, mites, mosquitoes & aphids."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Rosemary keeps away moths and rust flies."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Marigolds repel nematodes and whiteflies."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Dill attracts bees for pollination."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "sage",
+    "type": "companion",
+    "reason": "Sage keeps away moths and rust flies."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "peas",
+    "type": "companion",
+    "reason": "Peas loosen the soil."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "chamomile",
+    "type": "companion",
+    "reason": "Chamomile can improve the flavor of your brussels sprouts."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "eggplants",
+    "type": "antagonist",
+    "reason": "Eggplants take away nutrients from your brussels sprouts."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "peppers",
+    "type": "antagonist",
+    "reason": "Peppers take away sunlight from your sprouts."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Potatoes attract pests that can hurt your brussels sprouts."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes take away precious nutrients from your sprouts."
+  },
+  {
+    "source": "brussels-sprouts",
+    "target": "mustard-greens",
+    "type": "antagonist",
+    "reason": "Mustard Greens may attract pests that feed on brussels sprouts."
+  },
+  {
+    "source": "cabbage",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil."
+  },
+  {
+    "source": "cabbage",
+    "target": "borage",
+    "type": "companion",
+    "reason": "Borage keeps away harmful pests and insects."
+  },
+  {
+    "source": "cabbage",
+    "target": "celery",
+    "type": "companion",
+    "reason": "Celery keeps away bugs such as cabbage white butterfly."
+  },
+  {
+    "source": "cabbage",
+    "target": "brassica",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil. Borage keeps away harmful pests and insects. Celery keeps away bugs such as cabbage white butterfly. Dill attracts bees for pollination. Mint repels aphids. Sage deters cabbage moth and rust flies. Oregano has insecticidal properties. Garlic planted alongside cabbage repels insects with its odor. Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "marigold",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil. Borage keeps away harmful pests and insects. Celery keeps away bugs such as cabbage white butterfly. Dill attracts bees for pollination. Mint repels aphids. Sage deters cabbage moth and rust flies. Oregano has insecticidal properties. Garlic planted alongside cabbage repels insects with its odor. Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Dill attracts bees for pollination."
+  },
+  {
+    "source": "cabbage",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint repels aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil. Borage keeps away harmful pests and insects. Celery keeps away bugs such as cabbage white butterfly. Dill attracts bees for pollination. Mint repels aphids. Sage deters cabbage moth and rust flies. Oregano has insecticidal properties. Garlic planted alongside cabbage repels insects with its odor. Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "sage",
+    "type": "companion",
+    "reason": "Sage deters cabbage moth and rust flies."
+  },
+  {
+    "source": "cabbage",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano has insecticidal properties."
+  },
+  {
+    "source": "cabbage",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil. Borage keeps away harmful pests and insects. Celery keeps away bugs such as cabbage white butterfly. Dill attracts bees for pollination. Mint repels aphids. Sage deters cabbage moth and rust flies. Oregano has insecticidal properties. Garlic planted alongside cabbage repels insects with its odor. Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic planted alongside cabbage repels insects with its odor."
+  },
+  {
+    "source": "cabbage",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "cabbage",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes feed on similar nutrients."
+  },
+  {
+    "source": "cabbage",
+    "target": "rue",
+    "type": "antagonist",
+    "reason": "Rue emits harmful elements to the soil."
+  },
+  {
+    "source": "cabbage",
+    "target": "strawberries",
+    "type": "antagonist",
+    "reason": "Strawberries bad for the growth behavior of cabbage."
+  },
+  {
+    "source": "cabbage",
+    "target": "lettuce",
+    "type": "antagonist",
+    "reason": "Lettuce may inhibit the growth of cabbage."
+  },
+  {
+    "source": "cabbage",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel feeds on similar nutrients."
+  },
+  {
+    "source": "cabbage",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "cabbage",
+    "target": "grapes",
+    "type": "antagonist",
+    "reason": "Tomatoes feed on similar nutrients. Rue emits harmful elements to the soil. Strawberries bad for the growth behavior of cabbage. Lettuce may inhibit the growth of cabbage. Fennel feeds on similar nutrients. Corn takes away too much sunlight."
+  },
+  {
+    "source": "carrots",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Nasturtiums deter insect pests such as beetles and aphids."
+  },
+  {
+    "source": "carrots",
+    "target": "leeks",
+    "type": "companion",
+    "reason": "Leeks keep away carrot flies and other pests."
+  },
+  {
+    "source": "carrots",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives deters carrot flies."
+  },
+  {
+    "source": "carrots",
+    "target": "legumes",
+    "type": "companion",
+    "reason": "Nasturtiums deter insect pests such as beetles and aphids. Leeks keep away carrot flies and other pests. Chives deters carrot flies. Onions loosen the soil. Rosemary keeps away moths and rust flies. Marigolds repel nematodes and whiteflies. Garlic deters pests. Shallots deter pests. Basil keeps away pests and attracts pollinators. Sage keeps away pests. Amaranth loosens the soil and deters pests. Beans improve the efficiency of your growth project. Lettuce provides good ground cover. Spinach provides good ground cover. Mint improves the flavor of carrots."
+  },
+  {
+    "source": "carrots",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions loosen the soil."
+  },
+  {
+    "source": "carrots",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Nasturtiums deter insect pests such as beetles and aphids. Leeks keep away carrot flies and other pests. Chives deters carrot flies. Onions loosen the soil. Rosemary keeps away moths and rust flies. Marigolds repel nematodes and whiteflies. Garlic deters pests. Shallots deter pests. Basil keeps away pests and attracts pollinators. Sage keeps away pests. Amaranth loosens the soil and deters pests. Beans improve the efficiency of your growth project. Lettuce provides good ground cover. Spinach provides good ground cover. Mint improves the flavor of carrots."
+  },
+  {
+    "source": "carrots",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Rosemary keeps away moths and rust flies."
+  },
+  {
+    "source": "carrots",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Marigolds repel nematodes and whiteflies."
+  },
+  {
+    "source": "carrots",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic deters pests."
+  },
+  {
+    "source": "carrots",
+    "target": "shallots",
+    "type": "companion",
+    "reason": "Shallots deter pests."
+  },
+  {
+    "source": "carrots",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil keeps away pests and attracts pollinators."
+  },
+  {
+    "source": "carrots",
+    "target": "sage",
+    "type": "companion",
+    "reason": "Sage keeps away pests."
+  },
+  {
+    "source": "carrots",
+    "target": "amaranth",
+    "type": "companion",
+    "reason": "Amaranth loosens the soil and deters pests."
+  },
+  {
+    "source": "carrots",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans improve the efficiency of your growth project."
+  },
+  {
+    "source": "carrots",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Lettuce provides good ground cover."
+  },
+  {
+    "source": "carrots",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Spinach provides good ground cover."
+  },
+  {
+    "source": "carrots",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint improves the flavor of carrots."
+  },
+  {
+    "source": "carrots",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes inhibit the growth of carrots."
+  },
+  {
+    "source": "carrots",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "carrots",
+    "target": "squash",
+    "type": "antagonist",
+    "reason": "Squash takes away too many nutrients."
+  },
+  {
+    "source": "carrots",
+    "target": "parsnips",
+    "type": "antagonist",
+    "reason": "Parsnips attract pests and diseases."
+  },
+  {
+    "source": "carrots",
+    "target": "dill",
+    "type": "antagonist",
+    "reason": "Dill slows down the growth of carrots."
+  },
+  {
+    "source": "carrots",
+    "target": "melon",
+    "type": "antagonist",
+    "reason": "Melon takes away too many nutrients."
+  },
+  {
+    "source": "carrots",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel attracts pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Onions deter pests. Shallots keep away pests and loosen the soil. Garlic keeps away pests. Beans provide shade. Celery attracts beneficial insects. Broccoli provides good ground cover. Brussels Sprouts deter pests. Mustard Greens keeps away pests. Kale deters pests. Cabbage keeps away pests. Spinach good ground cover. Chard improves the efficiency of your growing project. Radishes loosen the soil. Cucumbers provide shade. Sage attracts pollinators. Thyme deters pests and attracts pollinators. Mint improves the flavor of Cauliflowers."
+  },
+  {
+    "source": "cauliflower",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions deter pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "shallots",
+    "type": "companion",
+    "reason": "Shallots keep away pests and loosen the soil."
+  },
+  {
+    "source": "cauliflower",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic keeps away pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans provide shade."
+  },
+  {
+    "source": "cauliflower",
+    "target": "celery",
+    "type": "companion",
+    "reason": "Celery attracts beneficial insects."
+  },
+  {
+    "source": "cauliflower",
+    "target": "broccoli",
+    "type": "companion",
+    "reason": "Broccoli provides good ground cover."
+  },
+  {
+    "source": "cauliflower",
+    "target": "brussels-sprouts",
+    "type": "companion",
+    "reason": "Brussels Sprouts deter pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "mustard-greens",
+    "type": "companion",
+    "reason": "Mustard Greens keeps away pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "kale",
+    "type": "companion",
+    "reason": "Kale deters pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Cabbage keeps away pests."
+  },
+  {
+    "source": "cauliflower",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Spinach good ground cover."
+  },
+  {
+    "source": "cauliflower",
+    "target": "chard",
+    "type": "companion",
+    "reason": "Chard improves the efficiency of your growing project."
+  },
+  {
+    "source": "cauliflower",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Radishes loosen the soil."
+  },
+  {
+    "source": "cauliflower",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Cucumbers provide shade."
+  },
+  {
+    "source": "cauliflower",
+    "target": "sage",
+    "type": "companion",
+    "reason": "Sage attracts pollinators."
+  },
+  {
+    "source": "cauliflower",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Thyme deters pests and attracts pollinators."
+  },
+  {
+    "source": "cauliflower",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint improves the flavor of Cauliflowers."
+  },
+  {
+    "source": "cauliflower",
+    "target": "strawberries",
+    "type": "antagonist",
+    "reason": "Strawberries attract pests and snails."
+  },
+  {
+    "source": "cauliflower",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes take away nutrients from your cauliflowers."
+  },
+  {
+    "source": "cauliflower",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "cauliflower",
+    "target": "peas",
+    "type": "antagonist",
+    "reason": "Peas inhibit the growth of your cauliflowers."
+  },
+  {
+    "source": "cauliflower",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins take away too much sunlight."
+  },
+  {
+    "source": "cauliflower",
+    "target": "melons",
+    "type": "antagonist",
+    "reason": "Melons take away too much sunlight."
+  },
+  {
+    "source": "celery",
+    "target": "bush-beans",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "cosmos",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "cucumber",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "daisies",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "leek",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "marigold",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "marjoram",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "snapdragons",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Flowers drive off many insects that could harm your crop, and attract helpful predators like parasitic wasps."
+  },
+  {
+    "source": "celery",
+    "target": "carrots",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist."
+  },
+  {
+    "source": "celery",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "celery",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist. Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "celery",
+    "target": "aster",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist. Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "celery",
+    "target": "parsley",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist. Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "celery",
+    "target": "parsnip",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist. Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "celery",
+    "target": "turnip",
+    "type": "antagonist",
+    "reason": "Celery and Carrots both need water and shade, so they seek out a taller leafed-out companion like beans to keep the soil moist. Corn somehow impedes the health or growth of Celery, Parsley, Parsnips, and Turnips all fight vigorously for the same nutrients and moisture."
+  },
+  {
+    "source": "chives",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor."
+  },
+  {
+    "source": "chives",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Chives deter insects and animals from Strawberries."
+  },
+  {
+    "source": "chives",
+    "target": "tomato",
+    "type": "companion",
+    "reason": "Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield."
+  },
+  {
+    "source": "chives",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals."
+  },
+  {
+    "source": "chives",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "leek",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "scallion",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "appletree",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives."
+  },
+  {
+    "source": "chives",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "cilantro",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "tarragon",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Chives repel aphids from Carrots and can help them grow bigger and better with a more tasty flavor. Chives deter insects and animals from Strawberries. Chives increase the Tomato's flavor and it also repels aphids, as well as improving the tomato yield. Chives deter pests from ruining Lettuce leaves. Alliums have the same growing requirements. Chives prevents apple scabs from feeding on your Apples, as well as deer and other animals. Chives also deter cucumber beetles for Cucumbers. Herbs are great and natural companion plants to chives. Grapes do better when planted near chives. Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "grapes",
+    "type": "companion",
+    "reason": "Grapes do better when planted near chives."
+  },
+  {
+    "source": "chives",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Chives increase the flavor of Cabbages and improves its growth as well."
+  },
+  {
+    "source": "chives",
+    "target": "pole-beans",
+    "type": "antagonist",
+    "reason": "Pole beans stunt the growth of your chives."
+  },
+  {
+    "source": "chives",
+    "target": "beets",
+    "type": "antagonist",
+    "reason": "Beets and chives both stunt each other's growth."
+  },
+  {
+    "source": "chives",
+    "target": "thyme",
+    "type": "antagonist",
+    "reason": "Pole beans stunt the growth of your chives. Beets and chives both stunt each other's growth."
+  },
+  {
+    "source": "chives",
+    "target": "rosemary",
+    "type": "antagonist",
+    "reason": "Pole beans stunt the growth of your chives. Beets and chives both stunt each other's growth."
+  },
+  {
+    "source": "chives",
+    "target": "oregano",
+    "type": "antagonist",
+    "reason": "Pole beans stunt the growth of your chives. Beets and chives both stunt each other's growth."
+  },
+  {
+    "source": "chives",
+    "target": "marjoram",
+    "type": "antagonist",
+    "reason": "Pole beans stunt the growth of your chives. Beets and chives both stunt each other's growth."
+  },
+  {
+    "source": "cilantro",
+    "target": "chervil",
+    "type": "companion",
+    "reason": "Chervil keeps pests away."
+  },
+  {
+    "source": "cilantro",
+    "target": "sweet-alyssum",
+    "type": "companion",
+    "reason": "Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids."
+  },
+  {
+    "source": "cilantro",
+    "target": "coreopsis",
+    "type": "companion",
+    "reason": "Coreopsis is also effective for attracting these useful insects."
+  },
+  {
+    "source": "cilantro",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies)."
+  },
+  {
+    "source": "cilantro",
+    "target": "peas",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "alfalfa",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "clover",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "lupines",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "cosmos",
+    "type": "companion",
+    "reason": "Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "zinnias",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "sunflowers",
+    "type": "companion",
+    "reason": "Chervil keeps pests away. Sweet alyssum attracts lady beetles and green lacewing larvae, both of which gobble up aphids. Coreopsis is also effective for attracting these useful insects. Nitrogen producing plants converts to nitrates that add nutrients to your cilantro, such as beans, peas, alfalfa, clover, and lupines(which produce colorful flowers loved by butterflies). Plants that provide shade are cosmos, zinnias, and sunflowers, which also attract pollinators."
+  },
+  {
+    "source": "cilantro",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Avoid fruit-bearing plants like Tomatoes and Peppers, as these don't do well alongside the nitrogen-bearing plants you may be planting by your Cilantro."
+  },
+  {
+    "source": "cilantro",
+    "target": "peppers",
+    "type": "antagonist",
+    "reason": "Avoid fruit-bearing plants like Tomatoes and Peppers, as these don't do well alongside the nitrogen-bearing plants you may be planting by your Cilantro. Cilantro does well with plenty of water, due to its shallow roots, so it should not be planted near herbs that like a well-drained, drier soil culture, such as Lavender, Thyme, Rosemary, or Fennel."
+  },
+  {
+    "source": "cilantro",
+    "target": "lavender",
+    "type": "antagonist",
+    "reason": "Cilantro does well with plenty of water, due to its shallow roots, so it should not be planted near herbs that like a well-drained, drier soil culture, such as Lavender, Thyme, Rosemary, or Fennel."
+  },
+  {
+    "source": "cilantro",
+    "target": "thyme",
+    "type": "antagonist",
+    "reason": "Avoid fruit-bearing plants like Tomatoes and Peppers, as these don't do well alongside the nitrogen-bearing plants you may be planting by your Cilantro. Cilantro does well with plenty of water, due to its shallow roots, so it should not be planted near herbs that like a well-drained, drier soil culture, such as Lavender, Thyme, Rosemary, or Fennel."
+  },
+  {
+    "source": "cilantro",
+    "target": "rosemary",
+    "type": "antagonist",
+    "reason": "Avoid fruit-bearing plants like Tomatoes and Peppers, as these don't do well alongside the nitrogen-bearing plants you may be planting by your Cilantro. Cilantro does well with plenty of water, due to its shallow roots, so it should not be planted near herbs that like a well-drained, drier soil culture, such as Lavender, Thyme, Rosemary, or Fennel."
+  },
+  {
+    "source": "cilantro",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Avoid fruit-bearing plants like Tomatoes and Peppers, as these don't do well alongside the nitrogen-bearing plants you may be planting by your Cilantro. Cilantro does well with plenty of water, due to its shallow roots, so it should not be planted near herbs that like a well-drained, drier soil culture, such as Lavender, Thyme, Rosemary, or Fennel."
+  },
+  {
+    "source": "corn",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "pole-beans",
+    "type": "companion",
+    "reason": "Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support."
+  },
+  {
+    "source": "corn",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn."
+  },
+  {
+    "source": "corn",
+    "target": "melons",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "peas",
+    "type": "companion",
+    "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "squash",
+    "type": "companion",
+    "reason": "Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+  },
+  {
+    "source": "corn",
+    "target": "sunflower",
+    "type": "companion",
+    "reason": "Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids."
+  },
+  {
+    "source": "corn",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Spinach grows well in the shade of corn, keeping corn roots cool."
+  },
+  {
+    "source": "corn",
+    "target": "broccoli",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "corn",
+    "target": "brussels-sprouts",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "corn",
+    "target": "cabbage",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "corn",
+    "target": "cauliflower",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "corn",
+    "target": "kale",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "corn",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Broccoli, Brussels Sprouts, Cabbage, Cauliflower, and Kale donât do well when planted with Corn because Corn casts too much shade for these crops to grow well. These crops are also what is called a heavy feeder, this means that they need a lot of nutrients and would take those away from the corn if they were growing next to each other. Corn and Tomato are not to be grown together, because they both share the same pests. Common pests that attack corn and tomato are the corn earworm or cotton bollworm and tomato fruit worm."
+  },
+  {
+    "source": "cucumbers",
+    "target": "radish",
+    "type": "companion",
+    "reason": "Radish loosens the soil."
+  },
+  {
+    "source": "cucumbers",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions keep away pests."
+  },
+  {
+    "source": "cucumbers",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic deters pests."
+  },
+  {
+    "source": "cucumbers",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans fix nitrogen in the soil."
+  },
+  {
+    "source": "cucumbers",
+    "target": "peas",
+    "type": "companion",
+    "reason": "Peas fix nitrogen in the soil."
+  },
+  {
+    "source": "cucumbers",
+    "target": "shallots",
+    "type": "companion",
+    "reason": "Shallots keep away pests. Brassicas improve soil conditinos."
+  },
+  {
+    "source": "cucumbers",
+    "target": "kale",
+    "type": "companion",
+    "reason": "Radish loosens the soil. Onions keep away pests. Garlic deters pests. Beans fix nitrogen in the soil. Peas fix nitrogen in the soil. Shallots keep away pests. Brassicas improve soil conditinos. Dill deters pests and attracts pollinators. Parsley deters pests. Basil deters pests and attracts pollinators. Mint deters pests and improves the flavor of cucumbers. Oregano keeps away harmful insects. Lettuce provides good ground cover. Spinach provides good ground cover. Celery makes your cucumber growth project more efficient. Tomatoes make your cucumber growth project more efficient. Kohlrabi makes your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Radish loosens the soil. Onions keep away pests. Garlic deters pests. Beans fix nitrogen in the soil. Peas fix nitrogen in the soil. Shallots keep away pests. Brassicas improve soil conditinos. Dill deters pests and attracts pollinators. Parsley deters pests. Basil deters pests and attracts pollinators. Mint deters pests and improves the flavor of cucumbers. Oregano keeps away harmful insects. Lettuce provides good ground cover. Spinach provides good ground cover. Celery makes your cucumber growth project more efficient. Tomatoes make your cucumber growth project more efficient. Kohlrabi makes your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "sprouts",
+    "type": "companion",
+    "reason": "Radish loosens the soil. Onions keep away pests. Garlic deters pests. Beans fix nitrogen in the soil. Peas fix nitrogen in the soil. Shallots keep away pests. Brassicas improve soil conditinos. Dill deters pests and attracts pollinators. Parsley deters pests. Basil deters pests and attracts pollinators. Mint deters pests and improves the flavor of cucumbers. Oregano keeps away harmful insects. Lettuce provides good ground cover. Spinach provides good ground cover. Celery makes your cucumber growth project more efficient. Tomatoes make your cucumber growth project more efficient. Kohlrabi makes your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Dill deters pests and attracts pollinators."
+  },
+  {
+    "source": "cucumbers",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Parsley deters pests."
+  },
+  {
+    "source": "cucumbers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil deters pests and attracts pollinators."
+  },
+  {
+    "source": "cucumbers",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint deters pests and improves the flavor of cucumbers."
+  },
+  {
+    "source": "cucumbers",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano keeps away harmful insects."
+  },
+  {
+    "source": "cucumbers",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Lettuce provides good ground cover."
+  },
+  {
+    "source": "cucumbers",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Spinach provides good ground cover."
+  },
+  {
+    "source": "cucumbers",
+    "target": "celery",
+    "type": "companion",
+    "reason": "Celery makes your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes make your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "kohlrabi",
+    "type": "companion",
+    "reason": "Kohlrabi makes your cucumber growth project more efficient."
+  },
+  {
+    "source": "cucumbers",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sun."
+  },
+  {
+    "source": "cucumbers",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Potatoes take away too many nutrients from cucumbers."
+  },
+  {
+    "source": "cucumbers",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers take too much sun."
+  },
+  {
+    "source": "cucumbers",
+    "target": "sage",
+    "type": "antagonist",
+    "reason": "Sage slows down growth of cucumbers."
+  },
+  {
+    "source": "cucumbers",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel slows down growth of cucumbers."
+  },
+  {
+    "source": "cucumbers",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins are heavy feeders that take away too many nutrients from the soil."
+  },
+  {
+    "source": "cucumbers",
+    "target": "melons",
+    "type": "antagonist",
+    "reason": "Melons are also heavy feeders that take away too many nutrients from the soil."
+  },
+  {
+    "source": "dill",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests."
+  },
+  {
+    "source": "dill",
+    "target": "borage",
+    "type": "companion",
+    "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests.  Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas. Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus. Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies. Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests.  Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas. Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus. Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies. Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "marjoram",
+    "type": "companion",
+    "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests.  Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas. Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus. Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies. Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "cucumber",
+    "type": "companion",
+    "reason": "Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "chervil",
+    "type": "companion",
+    "reason": "Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies."
+  },
+  {
+    "source": "dill",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus."
+  },
+  {
+    "source": "dill",
+    "target": "brassicas",
+    "type": "companion",
+    "reason": "Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas."
+  },
+  {
+    "source": "dill",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests.  Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas. Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus. Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies. Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "angelica",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid."
+  },
+  {
+    "source": "dill",
+    "target": "caraway",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid. Dill will also attract carrot flies that prey on Carrots. Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants. While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "carrots",
+    "type": "antagonist",
+    "reason": "Dill will also attract carrot flies that prey on Carrots."
+  },
+  {
+    "source": "dill",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid. Dill will also attract carrot flies that prey on Carrots. Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants. While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "hot-peppers",
+    "type": "antagonist",
+    "reason": "Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants."
+  },
+  {
+    "source": "dill",
+    "target": "bell-peppers",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid. Dill will also attract carrot flies that prey on Carrots. Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants. While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid. Dill will also attract carrot flies that prey on Carrots. Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants. While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "dill",
+    "target": "eggplant",
+    "type": "antagonist",
+    "reason": "Dill should not be planted near other members of the Umbelliferae family, like Angelica, Caraway, Carrots, and Fennel. Dill can cross-pollinate with some of these plants, resulting in a poor-tasting hybrid. Dill will also attract carrot flies that prey on Carrots. Hot Peppers and Bell Peppers should be kept away from Dill, as should other nightshades like Eggplant and Potatoes. Dill can adversely affect the health of nightshade plants. While young Dill can be beneficial for Tomatoes, mature Dill plants that have gone to seed can hinder tomato growth."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too!"
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "kohlrabi",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "habanero-peppers",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too!"
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "kohlrabi",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "jalapeno-peppers",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "lettuce",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Cucumbers provide shade to your lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions deter pests."
+  },
+  {
+    "source": "lettuce",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans provide shade."
+  },
+  {
+    "source": "lettuce",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Strawberries enhance the flavor of your lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots loosen the soil."
+  },
+  {
+    "source": "lettuce",
+    "target": "corn",
+    "type": "companion",
+    "reason": "Corn provides shade."
+  },
+  {
+    "source": "lettuce",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Beets loosen the soil."
+  },
+  {
+    "source": "lettuce",
+    "target": "radish",
+    "type": "companion",
+    "reason": "Radish loosens the soil."
+  },
+  {
+    "source": "lettuce",
+    "target": "eggplants",
+    "type": "companion",
+    "reason": "Eggplants improve soil conditions."
+  },
+  {
+    "source": "lettuce",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "Asparagus provides a source of shade and loosens the soil."
+  },
+  {
+    "source": "lettuce",
+    "target": "calendula",
+    "type": "companion",
+    "reason": "Calendula attract slugs away from lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Nasturtiums keep away aphids from your lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "chervil",
+    "type": "companion",
+    "reason": "Chervil keeps away slugs."
+  },
+  {
+    "source": "lettuce",
+    "target": "cilantro",
+    "type": "companion",
+    "reason": "Cilantro keeps away pests."
+  },
+  {
+    "source": "lettuce",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives deters aphids."
+  },
+  {
+    "source": "lettuce",
+    "target": "potatoes",
+    "type": "companion",
+    "reason": "Potatoes loosen the soil and more efficient space use."
+  },
+  {
+    "source": "lettuce",
+    "target": "turnips",
+    "type": "companion",
+    "reason": "Turnips repel aphids."
+  },
+  {
+    "source": "lettuce",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes provide shade."
+  },
+  {
+    "source": "lettuce",
+    "target": "scallions",
+    "type": "companion",
+    "reason": "Cucumbers provide shade to your lettuce. Onions deter pests. Beans provide shade. Strawberries enhance the flavor of your lettuce. Carrots loosen the soil. Corn provides shade. Beets loosen the soil. Radish loosens the soil. Eggplants improve soil conditions. Asparagus provides a source of shade and loosens the soil. Calendula attract slugs away from lettuce. Nasturtiums keep away aphids from your lettuce. Chervil keeps away slugs. Cilantro keeps away pests. Chives deters aphids. Potatoes loosen the soil and more efficient space use. Turnips repel aphids. Tomatoes provide shade."
+  },
+  {
+    "source": "lettuce",
+    "target": "zinnia",
+    "type": "companion",
+    "reason": "Cucumbers provide shade to your lettuce. Onions deter pests. Beans provide shade. Strawberries enhance the flavor of your lettuce. Carrots loosen the soil. Corn provides shade. Beets loosen the soil. Radish loosens the soil. Eggplants improve soil conditions. Asparagus provides a source of shade and loosens the soil. Calendula attract slugs away from lettuce. Nasturtiums keep away aphids from your lettuce. Chervil keeps away slugs. Cilantro keeps away pests. Chives deters aphids. Potatoes loosen the soil and more efficient space use. Turnips repel aphids. Tomatoes provide shade."
+  },
+  {
+    "source": "lettuce",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers can prevent seed germination of lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "cabbage",
+    "type": "antagonist",
+    "reason": "Cabbage prevent seed germination."
+  },
+  {
+    "source": "lettuce",
+    "target": "kale",
+    "type": "antagonist",
+    "reason": "Kale feed on similar nutrients."
+  },
+  {
+    "source": "lettuce",
+    "target": "cauliflower",
+    "type": "antagonist",
+    "reason": "Cauliflower feed on similar nutrients."
+  },
+  {
+    "source": "lettuce",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel can inhibit the growth of your lettuce."
+  },
+  {
+    "source": "lettuce",
+    "target": "broccoli",
+    "type": "antagonist",
+    "reason": "Broccoli prevents seed germination."
+  },
+  {
+    "source": "lettuce",
+    "target": "kohlrabi",
+    "type": "antagonist",
+    "reason": "Kohlrabi prevents seed germination."
+  },
+  {
+    "source": "lettuce",
+    "target": "brussels-sprouts",
+    "type": "antagonist",
+    "reason": "Brussels Sprouts prevent seed germination."
+  },
+  {
+    "source": "lettuce",
+    "target": "foxglove",
+    "type": "antagonist",
+    "reason": "Sunflowers can prevent seed germination of lettuce. Cabbage prevent seed germination. Kale feed on similar nutrients. Cauliflower feed on similar nutrients. Fennel can inhibit the growth of your lettuce. Broccoli prevents seed germination. Kohlrabi prevents seed germination. Brussels Sprouts prevent seed germination."
+  },
+  {
+    "source": "okra",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water."
+  },
+  {
+    "source": "okra",
+    "target": "melons",
+    "type": "companion",
+    "reason": "Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run."
+  },
+  {
+    "source": "okra",
+    "target": "eggplant",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "sweet-or-hot-peppers",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers."
+  },
+  {
+    "source": "okra",
+    "target": "cosmos",
+    "type": "companion",
+    "reason": "Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "zinnias",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "calendula",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "sunflowers",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Cucumbers love water and rich soil, as does okra. Don't plant them too close, as cucumber vines spread and also need a large amount of sun to ripen. Pepper plants will repel cabbage worms, which can be a destructive nuisance to okra plants. Melons and cucumbers both need ample sun and water. Plant on the east side of the okra so the melons benefit from the morning sun, or on the west side for afternoon sun leaving plenty of room for the vines to run. Basil is also beneficial. The strong fragrance repels a number of pests that like okra, including flea beetles, stinkbugs, spider mites, aphids, and whiteflies. Okra's tall plants, which can grow up to six feet, can also provide some shade for this somewhat tender herb if summer days get hot. Flowering annuals are good okra companions to help attract pollinators that will visit the okra flowers. Late summer bloomers like cosmos, zinnias, and calendula are good choices."
+  },
+  {
+    "source": "okra",
+    "target": "sweet-potatoes",
+    "type": "antagonist",
+    "reason": "Nematode presence can be increased in soil used to grow certain vine crops, like Sweet Potatoes or Squash. Skip at least a year before planting Okra in soil where vine crops (except for cucumbers or melons, which do well alongside okra) have been grown. Other than this consideration, Okra doesn't really have any \"bad companions.\""
+  },
+  {
+    "source": "okra",
+    "target": "squash",
+    "type": "antagonist",
+    "reason": "Most gardeners think of nematodes as beneficial for the garden. But they're detrimental to Okra because these tiny creatures like to feed on the young roots of Okra plants. Nematode presence can be increased in soil used to grow certain vine crops, like Sweet Potatoes or Squash. Skip at least a year before planting Okra in soil where vine crops (except for cucumbers or melons, which do well alongside okra) have been grown. Other than this consideration, Okra doesn't really have any \"bad companions.\""
+  },
+  {
+    "source": "oregano",
+    "target": "lavender",
+    "type": "companion",
+    "reason": "Lavender is a good companion plant for oregano because they both have the same soil needs and in addition to that, oregano helps lavender thrive."
+  },
+  {
+    "source": "oregano",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes benefit from oregano as a companion plant once the oregano plant flowers. While tomatoes do like lots of water and oregano plants do not, tomatoes can grow their roots deeper into the soil for moisture. Because of this ability, their water needs donât have to harm the oregano. Tomato plants will benefit from oreganoâs ability to ward off certain pests that may pose threats to it. Allowing oregano to grow below tomato plants may also increase humidity and help to keep soil from drying out as quickly, which benefits the tomato plants."
+  },
+  {
+    "source": "oregano",
+    "target": "sage",
+    "type": "companion",
+    "reason": "In addition to being a relative of oregano, sage does well in a similar growing environment. If you want your oregano to thrive, you plant it in the same kind of dry and sandy soil that you use for sage. With both plants, you will water lightly when the soil is dry. Another oregano relative, rosemary is highly drought-tolerant, like its other family members sage and thyme. That is the main factor that makes it such a great companion plant. It has the same water needs as oregano, so you can plant both plants in the same part of your garden or the same container."
+  },
+  {
+    "source": "oregano",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Like other members of the Lamiaceae family, thyme grows best with limited water. The love of dry conditions is why you should plant it along with oregano. The plants donât do anything to benefit each other, but they benefit from light watering, so you wonât accidentally over-water one because it is close to the other."
+  },
+  {
+    "source": "oregano",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Lavender is a good companion plant for oregano because they both have the same soil needs and in addition to that, oregano helps lavender thrive. Tomatoes benefit from oregano as a companion plant once the oregano plant flowers. While tomatoes do like lots of water and oregano plants do not, tomatoes can grow their roots deeper into the soil for moisture. Because of this ability, their water needs donât have to harm the oregano. Tomato plants will benefit from oreganoâs ability to ward off certain pests that may pose threats to it. Allowing oregano to grow below tomato plants may also increase humidity and help to keep soil from drying out as quickly, which benefits the tomato plants. In addition to being a relative of oregano, sage does well in a similar growing environment. If you want your oregano to thrive, you plant it in the same kind of dry and sandy soil that you use for sage. With both plants, you will water lightly when the soil is dry. Like other members of the Lamiaceae family, thyme grows best with limited water. The love of dry conditions is why you should plant it along with oregano. The plants donât do anything to benefit each other, but they benefit from light watering, so you wonât accidentally over-water one because it is close to the other. Another oregano relative, rosemary is highly drought-tolerant, like its other family members sage and thyme. That is the main factor that makes it such a great companion plant. It has the same water needs as oregano, so you can plant both plants in the same part of your garden or the same container. While basil is a member of the Lamiaceae family and is sometimes recommended as an oregano companion plant but note that its watering needs can vary. The best-known basil varieties like moist soil, while oregano does not. Overly wet soil can cause oreganoâs roots to rot, which means that how well oregano and basil do together may depend on the basil variety. Look for one that can handle dry conditions."
+  },
+  {
+    "source": "oregano",
+    "target": "basil",
+    "type": "companion",
+    "reason": "While basil is a member of the Lamiaceae family and is sometimes recommended as an oregano companion plant but note that its watering needs can vary. The best-known basil varieties like moist soil, while oregano does not. Overly wet soil can cause oreganoâs roots to rot, which means that how well oregano and basil do together may depend on the basil variety. Look for one that can handle dry conditions."
+  },
+  {
+    "source": "oregano",
+    "target": "cabbage",
+    "type": "antagonist",
+    "reason": "You donât want to plant Oregano too close to Cabbage, Broccoli, or Collards."
+  },
+  {
+    "source": "oregano",
+    "target": "broccoli",
+    "type": "antagonist",
+    "reason": "While Oregano does seem to pair well with numerous vegetables and herbs, you should avoid growing it around plants that have heavy water requirements. This includes crops that grow best during colder weather, like cruciferous vegetables. You donât want to plant Oregano too close to Cabbage, Broccoli, or Collards. Keep oregano away from Lettuce as well. You also want to avoid those varieties of herbs that like moist soil, such as Celery and some varieties of Basil."
+  },
+  {
+    "source": "oregano",
+    "target": "collards",
+    "type": "antagonist",
+    "reason": "While Oregano does seem to pair well with numerous vegetables and herbs, you should avoid growing it around plants that have heavy water requirements. This includes crops that grow best during colder weather, like cruciferous vegetables. You donât want to plant Oregano too close to Cabbage, Broccoli, or Collards. Keep oregano away from Lettuce as well. You also want to avoid those varieties of herbs that like moist soil, such as Celery and some varieties of Basil."
+  },
+  {
+    "source": "oregano",
+    "target": "lettuce",
+    "type": "antagonist",
+    "reason": "Keep oregano away from Lettuce as well."
+  },
+  {
+    "source": "oregano",
+    "target": "celery",
+    "type": "antagonist",
+    "reason": "You also want to avoid those varieties of herbs that like moist soil, such as Celery and some varieties of Basil."
+  },
+  {
+    "source": "parsley",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "A symbiotic relationship occurs between Parsley and asparagus when planted on the same soil. They help each other grow and parsley keeps asparagus beetles away from Asparagus. Asparagus doesnât bloom well and produce a harvest throughout the year so you should plant parsley between its plants."
+  },
+  {
+    "source": "parsley",
+    "target": "corn",
+    "type": "companion",
+    "reason": "Corns can be destroyed by pests when itâs stored in the barn. How much more when it is still in the garden. Corn is a plant that benefits other plants but can get destroyed if itâs not maintained properly. Armyworms, corn earworms are major pests of corn. To prevent these insects from destroying your corn harvest, plant it with parsley. Donât forget that parsley is a pest repellent and will also attract insects to prey on these pests."
+  },
+  {
+    "source": "parsley",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes consist of different species thus you must carry out research to know which variety will do well with Parsley. All tomato plants get attacked by aphids and Parsley can be grown with tomatoes to invite hoverflies, a pest that feeds on aphids."
+  },
+  {
+    "source": "parsley",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans are susceptible to attack from weevils, aphids, and cutworms. Parsely is known for attracting beneficial insects. These insects are beneficial to other plants because they help in consuming disturbing pests. Cutworms are food for tachinid flies that get attracted to Parsley. Plant beans with Parsley to keep cutworms far away."
+  },
+  {
+    "source": "parsley",
+    "target": "apples",
+    "type": "companion",
+    "reason": "Codling and gypsy moths are the major pests that destroy apple leaves. This isnât a problem as Parsley attracts braconid wasp which is a predator for these pests. Codling moths are found on pear trees and their job is to destroy its leaves just like it does to apples."
+  },
+  {
+    "source": "parsley",
+    "target": "pear",
+    "type": "companion",
+    "reason": "However, braconid wasps get attracted to the flowers of Parsley so planting parsley close to your pear tree will control these moths. As beautiful as this flower is, it can be disfigured by sawflies. Pests are insects that can damage the beauty of a crop and reduce its yield. To get rid of sawflies, plant some parsley herb near it."
+  },
+  {
+    "source": "parsley",
+    "target": "rose",
+    "type": "companion",
+    "reason": "Tachinid flies and hoverflies get attracted to Parsley and feed on sawflies that attack rose flowers."
+  },
+  {
+    "source": "parsley",
+    "target": "pepper",
+    "type": "companion",
+    "reason": "The scent of pepper repels pests but its scent fails it when aphids and beetles come around. Parsely will prevent these pests from coming close to your capsicum."
+  },
+  {
+    "source": "parsley",
+    "target": "kale",
+    "type": "companion",
+    "reason": "Brassicas include kale, broccoli, cabbage and are delicious vegetables. The insect attracting attribute of parsley helps it to contribute to the destruction of these pests."
+  },
+  {
+    "source": "parsley",
+    "target": "broccoli",
+    "type": "companion",
+    "reason": "A symbiotic relationship occurs between Parsley and asparagus when planted on the same soil. They help each other grow and parsley keeps asparagus beetles away from Asparagus. Asparagus doesnât bloom well and produce a harvest throughout the year so you should plant parsley between its plants. Corns can be destroyed by pests when itâs stored in the barn. How much more when it is still in the garden. Corn is a plant that benefits other plants but can get destroyed if itâs not maintained properly. Armyworms, corn earworms are major pests of corn. To prevent these insects from destroying your corn harvest, plant it with parsley. Donât forget that parsley is a pest repellent and will also attract insects to prey on these pests. Tomatoes consist of different species thus you must carry out research to know which variety will do well with Parsley. All tomato plants get attacked by aphids and Parsley can be grown with tomatoes to invite hoverflies, a pest that feeds on aphids. Beans are susceptible to attack from weevils, aphids, and cutworms. Parsely is known for attracting beneficial insects. These insects are beneficial to other plants because they help in consuming disturbing pests. Cutworms are food for tachinid flies that get attracted to Parsley. Plant beans with Parsley to keep cutworms far away. Codling and gypsy moths are the major pests that destroy apple leaves. This isnât a problem as Parsley attracts braconid wasp which is a predator for these pests. Codling moths are found on pear trees and their job is to destroy its leaves just like it does to apples. However, braconid wasps get attracted to the flowers of Parsley so planting parsley close to your pear tree will control these moths. As beautiful as this flower is, it can be disfigured by sawflies. Pests are insects that can damage the beauty of a crop and reduce its yield. To get rid of sawflies, plant some parsley herb near it. Tachinid flies and hoverflies get attracted to Parsley and feed on sawflies that attack rose flowers. The scent of pepper repels pests but its scent fails it when aphids and beetles come around. Parsely will prevent these pests from coming close to your capsicum. It will also attract predators to feed on aphids If you are a gardener, you should be conversant with cabbage worms. They are the major pests that attack your brassicas. Brassicas include kale, broccoli, cabbage and are delicious vegetables. The insect attracting attribute of parsley helps it to contribute to the destruction of these pests. Chives belong to the family of alliums and arenât a good companion for some plants. Although other plants like onions and garlic that belong to this family should not be planted with Parsley. Chives are an exception to this and planting them in your garden will benefit parsley more than it receives from it. Parsely reaches its full potential when it flowers because it attracts pollinators and beneficial insects that prey on pests."
+  },
+  {
+    "source": "parsley",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "It will also attract predators to feed on aphids If you are a gardener, you should be conversant with cabbage worms. They are the major pests that attack your brassicas."
+  },
+  {
+    "source": "parsley",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives belong to the family of alliums and arenât a good companion for some plants. Although other plants like onions and garlic that belong to this family should not be planted with Parsley. Chives are an exception to this and planting them in your garden will benefit parsley more than it receives from it. Parsely reaches its full potential when it flowers because it attracts pollinators and beneficial insects that prey on pests."
+  },
+  {
+    "source": "parsley",
+    "target": "lettuce",
+    "type": "antagonist",
+    "reason": "Planting Lettuce and Parsley with each other will cause the seed of lettuce to fertilize earlier than its germination period. Parsley will also cause the lettuce harm by attracting pests that can hamper its growth. Planting crops that belong to the same family can be dangerous because they are liable to get attacked by the same pests and compete for nutrients."
+  },
+  {
+    "source": "parsley",
+    "target": "carrots",
+    "type": "antagonist",
+    "reason": "Parsley can be destroyed by a common enemy of Carrot, carrot flies. They require the same growing conditions which can cause a competition of nutrients. Cross-pollination can occur between these two plants which will result in the difficulty to save seeds for subsequent cultivation."
+  },
+  {
+    "source": "parsley",
+    "target": "onions",
+    "type": "antagonist",
+    "reason": "Alliums like Onions, Garlic will do parsley no good. These plants can prevent it from growing thus should be kept at bay."
+  },
+  {
+    "source": "parsley",
+    "target": "garlic",
+    "type": "antagonist",
+    "reason": "Planting Lettuce and Parsley with each other will cause the seed of lettuce to fertilize earlier than its germination period. Parsley will also cause the lettuce harm by attracting pests that can hamper its growth. Planting crops that belong to the same family can be dangerous because they are liable to get attacked by the same pests and compete for nutrients. Parsley can be destroyed by a common enemy of Carrot, carrot flies. They require the same growing conditions which can cause a competition of nutrients. Cross-pollination can occur between these two plants which will result in the difficulty to save seeds for subsequent cultivation. Alliums like Onions, Garlic will do parsley no good. These plants can prevent it from growing thus should be kept at bay. Mint is invasive. This implies that it has rhizome roots that spread and can hinder other plants from growing properly. Mint should never be found close to Parsley and other herbs."
+  },
+  {
+    "source": "parsley",
+    "target": "mint",
+    "type": "antagonist",
+    "reason": "Mint is invasive. This implies that it has rhizome roots that spread and can hinder other plants from growing properly. Mint should never be found close to Parsley and other herbs."
+  },
+  {
+    "source": "peas",
+    "target": "alyssum",
+    "type": "companion",
+    "reason": "Corn provides shade. Cucumbers loosen the soil. Beans add nutrients to the soil. Celery keeps away pests. Carrots loosen the soil. Eggplants keep away pests. Radish loosens the soil. Peppers repel aphids and spider mites. Tomatoes attract pollinators. Turnips loosen the soil. Mint deters pests. Cilantro enhances the flavor of your peas. Spinach provides ground cover to keep the soil moist. Lettuce provides ground cover to keep the soil moist. Potatoes loosen the soil. Parsnips loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "corn",
+    "type": "companion",
+    "reason": "Corn provides shade."
+  },
+  {
+    "source": "peas",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Cucumbers loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans add nutrients to the soil."
+  },
+  {
+    "source": "peas",
+    "target": "celery",
+    "type": "companion",
+    "reason": "Celery keeps away pests."
+  },
+  {
+    "source": "peas",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "eggplants",
+    "type": "companion",
+    "reason": "Eggplants keep away pests."
+  },
+  {
+    "source": "peas",
+    "target": "radish",
+    "type": "companion",
+    "reason": "Radish loosens the soil."
+  },
+  {
+    "source": "peas",
+    "target": "peppers",
+    "type": "companion",
+    "reason": "Peppers repel aphids and spider mites."
+  },
+  {
+    "source": "peas",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes attract pollinators."
+  },
+  {
+    "source": "peas",
+    "target": "turnips",
+    "type": "companion",
+    "reason": "Turnips loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint deters pests."
+  },
+  {
+    "source": "peas",
+    "target": "cilantro",
+    "type": "companion",
+    "reason": "Cilantro enhances the flavor of your peas."
+  },
+  {
+    "source": "peas",
+    "target": "spinach",
+    "type": "companion",
+    "reason": "Spinach provides ground cover to keep the soil moist."
+  },
+  {
+    "source": "peas",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Lettuce provides ground cover to keep the soil moist."
+  },
+  {
+    "source": "peas",
+    "target": "potatoes",
+    "type": "companion",
+    "reason": "Potatoes loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Parsnips loosen the soil."
+  },
+  {
+    "source": "peas",
+    "target": "garlic",
+    "type": "antagonist",
+    "reason": "Garlic feeds on similar nutrients as peas."
+  },
+  {
+    "source": "peas",
+    "target": "onions",
+    "type": "antagonist",
+    "reason": "Onions take away nutrients from the soil."
+  },
+  {
+    "source": "peas",
+    "target": "shallots",
+    "type": "antagonist",
+    "reason": "Shallots feed on similar nutrients as peas."
+  },
+  {
+    "source": "peas",
+    "target": "leeks",
+    "type": "antagonist",
+    "reason": "Leeks attract pests."
+  },
+  {
+    "source": "peas",
+    "target": "chives",
+    "type": "antagonist",
+    "reason": "Chives adversely affects growth behavior of peas."
+  },
+  {
+    "source": "peas",
+    "target": "gladioli",
+    "type": "antagonist",
+    "reason": "Gladioli emits harmful elements to the soil."
+  },
+  {
+    "source": "peas",
+    "target": "scallions",
+    "type": "antagonist",
+    "reason": "Scallions emit harmful elements to the soil."
+  },
+  {
+    "source": "potatoes",
+    "target": "cilantro",
+    "type": "companion",
+    "reason": "Cilantro deters pests and attracts beneficial insects."
+  },
+  {
+    "source": "potatoes",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives keep away pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic deters pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions keep away pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint improves the flavor of potatoes and deters pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Thyme improves the growth behavior of potatoes."
+  },
+  {
+    "source": "potatoes",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Rosemary improves the flavor of potatoes and deters pests. Brassicas improve soil conditions."
+  },
+  {
+    "source": "potatoes",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Cilantro deters pests and attracts beneficial insects. Chives keep away pests. Garlic deters pests. Onions keep away pests. Mint improves the flavor of potatoes and deters pests. Thyme improves the growth behavior of potatoes. Rosemary improves the flavor of potatoes and deters pests. Brassicas improve soil conditions. Leeks keep away pests. Flax keeps away pests. Radish loosens the soil. Alyssum deters pests and attracts pollinators. Tansy deters pests. Nasturtiums deter pests and attracts pollinators. Marigolds attract pollinators. Petunias deter pests and attract pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "kale",
+    "type": "companion",
+    "reason": "Cilantro deters pests and attracts beneficial insects. Chives keep away pests. Garlic deters pests. Onions keep away pests. Mint improves the flavor of potatoes and deters pests. Thyme improves the growth behavior of potatoes. Rosemary improves the flavor of potatoes and deters pests. Brassicas improve soil conditions. Leeks keep away pests. Flax keeps away pests. Radish loosens the soil. Alyssum deters pests and attracts pollinators. Tansy deters pests. Nasturtiums deter pests and attracts pollinators. Marigolds attract pollinators. Petunias deter pests and attract pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "leeks",
+    "type": "companion",
+    "reason": "Leeks keep away pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "flax",
+    "type": "companion",
+    "reason": "Flax keeps away pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "radish",
+    "type": "companion",
+    "reason": "Radish loosens the soil."
+  },
+  {
+    "source": "potatoes",
+    "target": "alyssum",
+    "type": "companion",
+    "reason": "Alyssum deters pests and attracts pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "tansy",
+    "type": "companion",
+    "reason": "Tansy deters pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Nasturtiums deter pests and attracts pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Marigolds attract pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "petunias",
+    "type": "companion",
+    "reason": "Petunias deter pests and attract pollinators."
+  },
+  {
+    "source": "potatoes",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "potatoes",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins take away too many nutrients."
+  },
+  {
+    "source": "potatoes",
+    "target": "melons",
+    "type": "antagonist",
+    "reason": "Melons take away too many nutrients."
+  },
+  {
+    "source": "potatoes",
+    "target": "beans",
+    "type": "antagonist",
+    "reason": "Beans inhibit the growth of potatoes."
+  },
+  {
+    "source": "potatoes",
+    "target": "peas",
+    "type": "antagonist",
+    "reason": "Peas inhibit the growth of potatoes."
+  },
+  {
+    "source": "potatoes",
+    "target": "peppers",
+    "type": "antagonist",
+    "reason": "Peppers feed on similar nutrients."
+  },
+  {
+    "source": "potatoes",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes feed on similar nutrients."
+  },
+  {
+    "source": "potatoes",
+    "target": "eggplant",
+    "type": "antagonist",
+    "reason": "Eggplant slows down the growth of potatoes. Berries attract pests."
+  },
+  {
+    "source": "potatoes",
+    "target": "cucumbers",
+    "type": "antagonist",
+    "reason": "Cucumbers feed on similar nutrients."
+  },
+  {
+    "source": "potatoes",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel slows down the growth of potatoes."
+  },
+  {
+    "source": "potatoes",
+    "target": "asparagus",
+    "type": "antagonist",
+    "reason": "Asparagus is a heavy feeder that takes away nutrients from the soil. Fruit trees attract pests and bugs."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "cucumbers",
+    "type": "companion",
+    "reason": "Cucumbers provide some shade."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "okra",
+    "type": "companion",
+    "reason": "Carrots loosen the soil. Beets loosen the soil and make growth project more efficient. Cucumbers provide some shade. Squash provide some shade. Asparagus improves soil conditions. Basil keeps away pests and attracts beneficial insects. Mint deters pests and improves the flavor of peppers. Oregano keeps away pests. Marjoram keeps away pests. Parsley deters pests and attracts beneficial insects. Rosemary deters pests. Thyme deters pests and attracts pollinators. Eggplants improve soil conditions. Tomatoes attract pollinators. Chard improves soil conditions. Endive improves soil conditions."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "squash",
+    "type": "companion",
+    "reason": "Squash provide some shade."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots loosen the soil."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Beets loosen the soil and make growth project more efficient."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "Asparagus improves soil conditions."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil keeps away pests and attracts beneficial insects."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint deters pests and improves the flavor of peppers."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano keeps away pests."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "marjoram",
+    "type": "companion",
+    "reason": "Marjoram keeps away pests."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Parsley deters pests and attracts beneficial insects."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Rosemary deters pests."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Thyme deters pests and attracts pollinators."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "eggplants",
+    "type": "companion",
+    "reason": "Eggplants improve soil conditions."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes attract pollinators."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "chard",
+    "type": "companion",
+    "reason": "Chard improves soil conditions."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "endive",
+    "type": "companion",
+    "reason": "Endive improves soil conditions."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel slows down the growth of Peppers."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers take away too much sun."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "peas",
+    "type": "antagonist",
+    "reason": "Peas feed on similar nutrients. Brassicas inhibit the growth of Peppers."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "kale",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight. Fennel slows down the growth of Peppers. Sunflowers take away too much sun. Peas feed on similar nutrients. Brassicas inhibit the growth of Peppers. Beans feed on similar nutrients."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "cabbage",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight. Fennel slows down the growth of Peppers. Sunflowers take away too much sun. Peas feed on similar nutrients. Brassicas inhibit the growth of Peppers. Beans feed on similar nutrients."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "broccoli",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight. Fennel slows down the growth of Peppers. Sunflowers take away too much sun. Peas feed on similar nutrients. Brassicas inhibit the growth of Peppers. Beans feed on similar nutrients."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "cauliflower",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight. Fennel slows down the growth of Peppers. Sunflowers take away too much sun. Peas feed on similar nutrients. Brassicas inhibit the growth of Peppers. Beans feed on similar nutrients."
+  },
+  {
+    "source": "poblano-peppers",
+    "target": "beans",
+    "type": "antagonist",
+    "reason": "Beans feed on similar nutrients."
+  },
+  {
+    "source": "rosemary",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Thyme and rosemary enjoy matching sun and water conditions making them a perfect companion pair. Thyme saves its neighboring plants from the cabbage worm. It also augments the pleasant-smelling qualities of other shrubs planted nearby and captivating pollinators like honeybees. Thyme is also a threat to worms."
+  },
+  {
+    "source": "rosemary",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives resist aphids, tiny white garden pests that ruin everything in the scope. Further, They lure pollinators for nectar and enhance the yield too."
+  },
+  {
+    "source": "rosemary",
+    "target": "lavender",
+    "type": "companion",
+    "reason": "Lavender and Rosemary need the same amount of water and sun making them good companion plants. Both shrubs planted together will also benefit the rest of the garden. They prevent rabbits and deers if jointly cultivated."
+  },
+  {
+    "source": "rosemary",
+    "target": "marjoram",
+    "type": "companion",
+    "reason": "Marjoram grows well with all plants and vegetables and increases their flavor and vigor."
+  },
+  {
+    "source": "rosemary",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans fixes the nitrogen in the soil and requires less fertilization and also obstructs weeds with their bushy growth above and below the ground. On the other way, Rosemary prevents Beans from beetles that gobble up the bean leaves."
+  },
+  {
+    "source": "rosemary",
+    "target": "sage",
+    "type": "companion",
+    "reason": "Sage and Rosemary both grow well together also because of the common required conditions like soil, light, and water."
+  },
+  {
+    "source": "rosemary",
+    "target": "broccoli",
+    "type": "companion",
+    "reason": "Rosemary deters cabbage moths from Broccoli."
+  },
+  {
+    "source": "rosemary",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano has similar growing conditions."
+  },
+  {
+    "source": "rosemary",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Rosemary gets rid of carrot flies for Parsnips, and both plants benefit each other."
+  },
+  {
+    "source": "rosemary",
+    "target": "marigold",
+    "type": "companion",
+    "reason": "Marigolds have the same growing conditions."
+  },
+  {
+    "source": "rosemary",
+    "target": "cauliflower",
+    "type": "companion",
+    "reason": "Cauliflower and Rosemary both benefit each other."
+  },
+  {
+    "source": "rosemary",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions and Rosemary exchange mutual flavors. Rosemary fights off insects while onions keep bugs away."
+  },
+  {
+    "source": "rosemary",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Thyme and rosemary enjoy matching sun and water conditions making them a perfect companion pair. Thyme saves its neighboring plants from the cabbage worm. It also augments the pleasant-smelling qualities of other shrubs planted nearby and captivating pollinators like honeybees. Thyme is also a threat to worms. Chives resist aphids, tiny white garden pests that ruin everything in the scope. Further, They lure pollinators for nectar and enhance the yield too. Lavender and Rosemary need the same amount of water and sun making them good companion plants. Both shrubs planted together will also benefit the rest of the garden. They prevent rabbits and deers if jointly cultivated. Marjoram grows well with all plants and vegetables and increases their flavor and vigor. Beans fixes the nitrogen in the soil and requires less fertilization and also obstructs weeds with their bushy growth above and below the ground. On the other way, Rosemary prevents Beans from beetles that gobble up the bean leaves. Sage and Rosemary both grow well together also because of the common required conditions like soil, light, and water. Rosemary deters cabbage moths from Broccoli. Oregano has similar growing conditions. Rosemary gets rid of carrot flies for Parsnips, and both plants benefit each other. Marigolds have the same growing conditions. Cauliflower and Rosemary both benefit each other. Onions and Rosemary exchange mutual flavors. Rosemary fights off insects while onions keep bugs away. Though there are a lot of disagreements about planting carrots with rosemary, some sources say they are not that poor companions. Carrots benefit more than rosemary if they are planted together. As rosemary helps in getting rid of the carrot flies. Rosemary and hot peppers are good companions. Rosemary enhances the flavor of pepper."
+  },
+  {
+    "source": "rosemary",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Though there are a lot of disagreements about planting carrots with rosemary, some sources say they are not that poor companions. Carrots benefit more than rosemary if they are planted together. As rosemary helps in getting rid of the carrot flies."
+  },
+  {
+    "source": "rosemary",
+    "target": "hot-peppers",
+    "type": "companion",
+    "reason": "Rosemary and hot peppers are good companions. Rosemary enhances the flavor of pepper."
+  },
+  {
+    "source": "rosemary",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes requires more water to grow well, as Rosemary prefers to grow in dry conditions. Rosemary also strips Tomatoes easily of its nurtrients."
+  },
+  {
+    "source": "rosemary",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Potatoes have sensitive roots, so avoid planting near Rosemary."
+  },
+  {
+    "source": "rosemary",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins are known to cross-pollinate while Rosemary tends to attract pollinators."
+  },
+  {
+    "source": "rosemary",
+    "target": "mint",
+    "type": "antagonist",
+    "reason": "Mint is invasive and also thrives in damp soil."
+  },
+  {
+    "source": "rosemary",
+    "target": "basil",
+    "type": "antagonist",
+    "reason": "Rosemary requires better drainage in the soil compared to Basil."
+  },
+  {
+    "source": "rosemary",
+    "target": "cucumber",
+    "type": "antagonist",
+    "reason": "Tomatoes requires more water to grow well, as Rosemary prefers to grow in dry conditions. Rosemary also strips Tomatoes easily of its nurtrients. Potatoes have sensitive roots, so avoid planting near Rosemary. Pumpkins are known to cross-pollinate while Rosemary tends to attract pollinators. Mint is invasive and also thrives in damp soil. Rosemary requires better drainage in the soil compared to Basil."
+  },
+  {
+    "source": "sage",
+    "target": "broccoli",
+    "type": "companion",
+    "reason": "Brassicas do great near sage. Sage helps repel pests that impact brassicas with their scents. Sage can help repel some pests when planted around your kohlrabi, like beetles. Rosemary does not play well with many other plants, but when you plant sage nearby they both seem to do well. Cabbage benefts because Sage deters cabbage moths and black flea beetle populations. Carrots benefit because Sage controls carrot flies. Sage is a good companion for tomatoes, as it can help keep flea beetles away, and attract beneficial insects to your tomato plants. Strawberries and Sage grow well together, and Sage also repels slugs, which love Strawberry plants."
+  },
+  {
+    "source": "sage",
+    "target": "cauliflower",
+    "type": "companion",
+    "reason": "Brassicas do great near sage. Sage helps repel pests that impact brassicas with their scents. Sage can help repel some pests when planted around your kohlrabi, like beetles. Rosemary does not play well with many other plants, but when you plant sage nearby they both seem to do well. Cabbage benefts because Sage deters cabbage moths and black flea beetle populations. Carrots benefit because Sage controls carrot flies. Sage is a good companion for tomatoes, as it can help keep flea beetles away, and attract beneficial insects to your tomato plants. Strawberries and Sage grow well together, and Sage also repels slugs, which love Strawberry plants."
+  },
+  {
+    "source": "sage",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Cabbage benefts because Sage deters cabbage moths and black flea beetle populations."
+  },
+  {
+    "source": "sage",
+    "target": "brussels-sprouts",
+    "type": "companion",
+    "reason": "Brassicas do great near sage. Sage helps repel pests that impact brassicas with their scents. Sage can help repel some pests when planted around your kohlrabi, like beetles. Rosemary does not play well with many other plants, but when you plant sage nearby they both seem to do well. Cabbage benefts because Sage deters cabbage moths and black flea beetle populations. Carrots benefit because Sage controls carrot flies. Sage is a good companion for tomatoes, as it can help keep flea beetles away, and attract beneficial insects to your tomato plants. Strawberries and Sage grow well together, and Sage also repels slugs, which love Strawberry plants."
+  },
+  {
+    "source": "sage",
+    "target": "kohlrabi",
+    "type": "companion",
+    "reason": "Sage can help repel some pests when planted around your kohlrabi, like beetles."
+  },
+  {
+    "source": "sage",
+    "target": "collard-greens",
+    "type": "companion",
+    "reason": "Brassicas do great near sage. Sage helps repel pests that impact brassicas with their scents. Sage can help repel some pests when planted around your kohlrabi, like beetles. Rosemary does not play well with many other plants, but when you plant sage nearby they both seem to do well. Cabbage benefts because Sage deters cabbage moths and black flea beetle populations. Carrots benefit because Sage controls carrot flies. Sage is a good companion for tomatoes, as it can help keep flea beetles away, and attract beneficial insects to your tomato plants. Strawberries and Sage grow well together, and Sage also repels slugs, which love Strawberry plants."
+  },
+  {
+    "source": "sage",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Rosemary does not play well with many other plants, but when you plant sage nearby they both seem to do well."
+  },
+  {
+    "source": "sage",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Carrots benefit because Sage controls carrot flies."
+  },
+  {
+    "source": "sage",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Sage is a good companion for tomatoes, as it can help keep flea beetles away, and attract beneficial insects to your tomato plants."
+  },
+  {
+    "source": "sage",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Strawberries and Sage grow well together, and Sage also repels slugs, which love Strawberry plants."
+  },
+  {
+    "source": "sage",
+    "target": "basil",
+    "type": "antagonist",
+    "reason": "Basil does not pair well with other herbs. Sage and other aromatic herbs (like basil and thyme) are said to stunt the growth of cucumbers. Basil also stunts the growth of Sage, and vice versa."
+  },
+  {
+    "source": "sage",
+    "target": "rue",
+    "type": "antagonist",
+    "reason": "Rue also does not pair well with quite a few herbs."
+  },
+  {
+    "source": "sage",
+    "target": "cucumbers",
+    "type": "antagonist",
+    "reason": "Cucumbers don't do well next to Sage."
+  },
+  {
+    "source": "sage",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Basil does not pair well with other herbs. Rue also does not pair well with quite a few herbs. Cucumbers don't do well next to Sage. Sage and other aromatic herbs (like basil and thyme) are said to stunt the growth of cucumbers. Basil also stunts the growth of Sage, and vice versa."
+  },
+  {
+    "source": "sage",
+    "target": "wormwood",
+    "type": "antagonist",
+    "reason": "Basil does not pair well with other herbs. Rue also does not pair well with quite a few herbs. Cucumbers don't do well next to Sage. Sage and other aromatic herbs (like basil and thyme) are said to stunt the growth of cucumbers. Basil also stunts the growth of Sage, and vice versa."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "carrots",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too!"
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Marigolds can help repel beetles, nematodes, aphids, potato bugs and squash bugs on not only peppers but other veggies, too! We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden. Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "We love planting marigolds among our pepper plants and tomato plants. Marigolds also release a substance from their roots that wards off nematodes and eel worms, which target peppers and other veggies in the garden."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtium flowers are also great companions for pepper plants."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "kohlrabi",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "serrano-peppers",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Peppers cause Kohlrabi and Fennel to grow slowly."
+  },
+  {
+    "source": "spinach",
+    "target": "eggplants",
+    "type": "companion",
+    "reason": "Eggplants keep away pests."
+  },
+  {
+    "source": "spinach",
+    "target": "lettuce",
+    "type": "companion",
+    "reason": "Lettuce provides good ground cover."
+  },
+  {
+    "source": "spinach",
+    "target": "leeks",
+    "type": "companion",
+    "reason": "Leeks keep away pests."
+  },
+  {
+    "source": "spinach",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Cabbage feeds on different nutrients."
+  },
+  {
+    "source": "spinach",
+    "target": "kale",
+    "type": "companion",
+    "reason": "Kale feeds on different nutrients."
+  },
+  {
+    "source": "spinach",
+    "target": "cauliflower",
+    "type": "companion",
+    "reason": "Cauliflowers don't take away nutrients from spinach."
+  },
+  {
+    "source": "spinach",
+    "target": "broccoli",
+    "type": "companion",
+    "reason": "Broccoli doesn't take away nutrients from spinach."
+  },
+  {
+    "source": "spinach",
+    "target": "brussels-sprouts",
+    "type": "companion",
+    "reason": "Brussels Sprouts feed on different nutrients."
+  },
+  {
+    "source": "spinach",
+    "target": "collard-greens",
+    "type": "companion",
+    "reason": "Collard Greens don't take away nutrients from spinach."
+  },
+  {
+    "source": "spinach",
+    "target": "kohlrabi",
+    "type": "companion",
+    "reason": "Kohlrabi feeds on different nutrients."
+  },
+  {
+    "source": "spinach",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Strawberries deter pests and attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "peas",
+    "type": "companion",
+    "reason": "Peas are good for more efficient space use."
+  },
+  {
+    "source": "spinach",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Radishes loosen the soil and deter pests."
+  },
+  {
+    "source": "spinach",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans provide shade and fix nitrogen in the soil."
+  },
+  {
+    "source": "spinach",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "Asparagus loosens the soil."
+  },
+  {
+    "source": "spinach",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Nasturtiums keep away pests."
+  },
+  {
+    "source": "spinach",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Marigolds attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "petunias",
+    "type": "companion",
+    "reason": "Petunias attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "cilantro",
+    "type": "companion",
+    "reason": "Eggplants keep away pests. Lettuce provides good ground cover. Leeks keep away pests. Cabbage feeds on different nutrients. Kale feeds on different nutrients. Cauliflowers don't take away nutrients from spinach. Broccoli doesn't take away nutrients from spinach. Brussels Sprouts feed on different nutrients. Collard Greens don't take away nutrients from spinach. Kohlrabi feeds on different nutrients. Strawberries deter pests and attract pollinators. Peas are good for more efficient space use. Radishes loosen the soil and deter pests. Beans provide shade and fix nitrogen in the soil. Asparagus loosens the soil. Nasturtiums keep away pests. Marigolds attract pollinators. Petunias attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Eggplants keep away pests. Lettuce provides good ground cover. Leeks keep away pests. Cabbage feeds on different nutrients. Kale feeds on different nutrients. Cauliflowers don't take away nutrients from spinach. Broccoli doesn't take away nutrients from spinach. Brussels Sprouts feed on different nutrients. Collard Greens don't take away nutrients from spinach. Kohlrabi feeds on different nutrients. Strawberries deter pests and attract pollinators. Peas are good for more efficient space use. Radishes loosen the soil and deter pests. Beans provide shade and fix nitrogen in the soil. Asparagus loosens the soil. Nasturtiums keep away pests. Marigolds attract pollinators. Petunias attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "rosemary",
+    "type": "companion",
+    "reason": "Eggplants keep away pests. Lettuce provides good ground cover. Leeks keep away pests. Cabbage feeds on different nutrients. Kale feeds on different nutrients. Cauliflowers don't take away nutrients from spinach. Broccoli doesn't take away nutrients from spinach. Brussels Sprouts feed on different nutrients. Collard Greens don't take away nutrients from spinach. Kohlrabi feeds on different nutrients. Strawberries deter pests and attract pollinators. Peas are good for more efficient space use. Radishes loosen the soil and deter pests. Beans provide shade and fix nitrogen in the soil. Asparagus loosens the soil. Nasturtiums keep away pests. Marigolds attract pollinators. Petunias attract pollinators."
+  },
+  {
+    "source": "spinach",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sunlight."
+  },
+  {
+    "source": "spinach",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Potatoes take away nutrients from the soil."
+  },
+  {
+    "source": "spinach",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Fennel emits harmful elements to the soil."
+  },
+  {
+    "source": "spinach",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers take away too much sunlight."
+  },
+  {
+    "source": "spinach",
+    "target": "pumpkins",
+    "type": "antagonist",
+    "reason": "Pumpkins take away too much sunlight."
+  },
+  {
+    "source": "spinach",
+    "target": "melons",
+    "type": "antagonist",
+    "reason": "Melons take away too much sunlight."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "beans",
+    "type": "companion",
+    "reason": "Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "radish",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "horseradish",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "beets",
+    "type": "companion",
+    "reason": "Nasturtium repel Colorado potato beetles when grown close to the vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "turnips",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "parsnips",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "dill",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "summer-savory",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "borage",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "sweet-peas",
+    "type": "companion",
+    "reason": "Sweet peas can also enrich the soil with nitrogen."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "alyssum",
+    "type": "companion",
+    "reason": "Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "marigold",
+    "type": "companion",
+    "reason": "Marigolds repel bad insects from vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Garlic keeps a lot of pests away, and has around the same harvest time. Beans are natural nitrogen fixers. Root vegetables keep vines pest-free. These plants also take less space and can even fit in small spaces. Basil repels hornworms and flies, as well as attracts pollinators. Herbs keep away the potato weevil pest. Thyme however attracts hoverflies that feast on aphids. Sweet peas can also enrich the soil with nitrogen. Alyssum grows as a ground cover, taking only a little space and invites wasps that feed on pest caterpillars. Marigolds repel bad insects from vines. Nasturtium repel Colorado potato beetles when grown close to the vines. Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "yarrow",
+    "type": "companion",
+    "reason": "Yarrow attracts beneficial insects to the garden that keep pests away from your vines."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "tomatoes",
+    "type": "antagonist",
+    "reason": "Tomatoes can transfer deadly diseases to Sweet Potatoes and affect their growth."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "squash",
+    "type": "antagonist",
+    "reason": "Squash compete with Sweet Potatoes for food and space."
+  },
+  {
+    "source": "sweet-potatoes",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers invite pollinators and birds and also repair the soil, but Sweet Potatoes may get potato blight because of sunflowers."
+  },
+  {
+    "source": "summer-squash",
+    "target": "buckwheat",
+    "type": "companion",
+    "reason": "Buckwheat brings in pest predators which reduce insect pests."
+  },
+  {
+    "source": "summer-squash",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "To attract pollinators, plant oregano and zinnias."
+  },
+  {
+    "source": "summer-squash",
+    "target": "nasturtium",
+    "type": "companion",
+    "reason": "Nasturtium protects against aphids and whiteflies."
+  },
+  {
+    "source": "summer-squash",
+    "target": "zinnia",
+    "type": "companion",
+    "reason": "Buckwheat brings in pest predators which reduce insect pests. To attract pollinators, plant oregano and zinnias. Nasturtium protects against aphids and whiteflies. The Three Sisters ( maize, beans, and squash) is what Indigenous farmers in North America called a classic form of mixed cropping, and archaeological evidence has shown that these three American domesticates have been grown together for perhaps 5,000 years."
+  },
+  {
+    "source": "summer-squash",
+    "target": "corn",
+    "type": "companion",
+    "reason": "Buckwheat brings in pest predators which reduce insect pests. To attract pollinators, plant oregano and zinnias. Nasturtium protects against aphids and whiteflies. The Three Sisters ( maize, beans, and squash) is what Indigenous farmers in North America called a classic form of mixed cropping, and archaeological evidence has shown that these three American domesticates have been grown together for perhaps 5,000 years."
+  },
+  {
+    "source": "summer-squash",
+    "target": "beans",
+    "type": "companion",
+    "reason": "The Three Sisters ( maize, beans, and squash) is what Indigenous farmers in North America called a classic form of mixed cropping, and archaeological evidence has shown that these three American domesticates have been grown together for perhaps 5,000 years."
+  },
+  {
+    "source": "summer-squash",
+    "target": "squash",
+    "type": "companion",
+    "reason": "Buckwheat brings in pest predators which reduce insect pests. To attract pollinators, plant oregano and zinnias. Nasturtium protects against aphids and whiteflies. The Three Sisters ( maize, beans, and squash) is what Indigenous farmers in North America called a classic form of mixed cropping, and archaeological evidence has shown that these three American domesticates have been grown together for perhaps 5,000 years."
+  },
+  {
+    "source": "summer-squash",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Buckwheat brings in pest predators which reduce insect pests. To attract pollinators, plant oregano and zinnias. Nasturtium protects against aphids and whiteflies. The Three Sisters ( maize, beans, and squash) is what Indigenous farmers in North America called a classic form of mixed cropping, and archaeological evidence has shown that these three American domesticates have been grown together for perhaps 5,000 years."
+  },
+  {
+    "source": "summer-squash",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Potatoes attract pests and compete for nutrients."
+  },
+  {
+    "source": "summer-squash",
+    "target": "pumpkin",
+    "type": "antagonist",
+    "reason": "Pumpkins are closely related and will fight for space and nutrient requirements."
+  },
+  {
+    "source": "summer-squash",
+    "target": "cucumber",
+    "type": "antagonist",
+    "reason": "Cucumbers are also closely related, and will compete for nutrients and space, along with literally stealing water from your main crops, making them thirsty and even dry."
+  },
+  {
+    "source": "thyme",
+    "target": "potatoes",
+    "type": "companion",
+    "reason": "Potatoes can also be planted nest to chamomile and basil. This herb can help improve your potatoesâ flavor and growth."
+  },
+  {
+    "source": "thyme",
+    "target": "shallots",
+    "type": "companion",
+    "reason": "Thyme enhances the flavor of shallots and also works as a deterrent to worms. The hornworm is the tomatoâs most detrimental garden pest and thyme can help deter this pest."
+  },
+  {
+    "source": "thyme",
+    "target": "tomatoes",
+    "type": "companion",
+    "reason": "Tomatoes are also another crop that its flavor gets enhanced when planted in close proximity with thyme. To also get rid of white lilies and boost the defenses of tomatoes against them, thyme is the perfect companion plant."
+  },
+  {
+    "source": "thyme",
+    "target": "strawberries",
+    "type": "companion",
+    "reason": "Planting thyme between strawberries can also help smother weeds and provide ground cover which ensures your soil stays moist, while discouraging pests/animals from feeding on the berries."
+  },
+  {
+    "source": "thyme",
+    "target": "eggplants",
+    "type": "companion",
+    "reason": "Thyme is a great companion plant to Eggplants by serving as organic deterrents for garden moths."
+  },
+  {
+    "source": "thyme",
+    "target": "roses",
+    "type": "companion",
+    "reason": "Thyme protects Roses from aphids and blackflies."
+  },
+  {
+    "source": "thyme",
+    "target": "salad-burnet",
+    "type": "companion",
+    "reason": "Salad burnet is an attractive perennial plant that is grown for its medicinal uses and edible leaves and planting it near thyme can help it thrive."
+  },
+  {
+    "source": "thyme",
+    "target": "blueberries",
+    "type": "companion",
+    "reason": "Thyme helps attract honey bees to Blueberries for pollination."
+  },
+  {
+    "source": "thyme",
+    "target": "cabbage",
+    "type": "companion",
+    "reason": "Cabbage family crops such as kohlrabi, brussels sprouts, kale, cauliflower, and broccoli easily attract pests such as cabbage worms, aphids, cabbage moths, cabbage loopers, and flea beetles, which Thyme effectively repels."
+  },
+  {
+    "source": "thyme",
+    "target": "lavender",
+    "type": "companion",
+    "reason": "Thyme does very well when in close proximity to Lavender."
+  },
+  {
+    "source": "thyme",
+    "target": "lovage",
+    "type": "companion",
+    "reason": "Thyme can help attract parasitic wasps that will prey and deter potato beetles. Potatoes can also be planted nest to chamomile and basil. This herb can help improve your potatoesâ flavor and growth. Thyme enhances the flavor of shallots and also works as a deterrent to worms. The hornworm is the tomatoâs most detrimental garden pest and thyme can help deter this pest. Tomatoes are also another crop that its flavor gets enhanced when planted in close proximity with thyme. To also get rid of white lilies and boost the defenses of tomatoes against them, thyme is the perfect companion plant. Planting thyme between strawberries can also help smother weeds and provide ground cover which ensures your soil stays moist, while discouraging pests/animals from feeding on the berries. Thyme is a great companion plant to Eggplants by serving as organic deterrents for garden moths. Thyme protects Roses from aphids and blackflies. Salad burnet is an attractive perennial plant that is grown for its medicinal uses and edible leaves and planting it near thyme can help it thrive. Thyme helps attract honey bees to Blueberries for pollination. Cabbage family crops such as kohlrabi, brussels sprouts, kale, cauliflower, and broccoli easily attract pests such as cabbage worms, aphids, cabbage moths, cabbage loopers, and flea beetles, which Thyme effectively repels. Thyme does very well when in close proximity to Lavender."
+  },
+  {
+    "source": "thyme",
+    "target": "chives",
+    "type": "antagonist",
+    "reason": "Chives enjoy soil that is moist and isn't too dry or sandy, while Thyme likes it sandier and drier."
+  },
+  {
+    "source": "thyme",
+    "target": "basil",
+    "type": "antagonist",
+    "reason": "Basil prefers the company of vegetables over other herbs."
+  },
+  {
+    "source": "thyme",
+    "target": "cilantro",
+    "type": "antagonist",
+    "reason": "Cilantro prefers moist soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "chives",
+    "type": "companion",
+    "reason": "Chives keep away pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "onions",
+    "type": "companion",
+    "reason": "Onions deter pests and loosen the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "garlic",
+    "type": "companion",
+    "reason": "Garlic keep away pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "shallots",
+    "type": "companion",
+    "reason": "Shallots deter pests and loosen the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "mint",
+    "type": "companion",
+    "reason": "Mint deter pests and improve flavor of tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "oregano",
+    "type": "companion",
+    "reason": "Oregano keeps away pests and attracts beneficial insects."
+  },
+  {
+    "source": "tomatoes",
+    "target": "marjoram",
+    "type": "companion",
+    "reason": "Marjoram keeps away pests and attracts beneficial insects."
+  },
+  {
+    "source": "tomatoes",
+    "target": "parsley",
+    "type": "companion",
+    "reason": "Parsley deters pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "basil",
+    "type": "companion",
+    "reason": "Basil keeps away pests and attracts beneficial insects."
+  },
+  {
+    "source": "tomatoes",
+    "target": "borage",
+    "type": "companion",
+    "reason": "Borage keeps away pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "asparagus",
+    "type": "companion",
+    "reason": "Asparagus loosens the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "marigolds",
+    "type": "companion",
+    "reason": "Marigolds attract pollinators."
+  },
+  {
+    "source": "tomatoes",
+    "target": "petunias",
+    "type": "companion",
+    "reason": "Petunias attract pollinators."
+  },
+  {
+    "source": "tomatoes",
+    "target": "nasturtiums",
+    "type": "companion",
+    "reason": "Nasturtiums attract pollinators."
+  },
+  {
+    "source": "tomatoes",
+    "target": "radishes",
+    "type": "companion",
+    "reason": "Radishes loosen the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "calendula",
+    "type": "companion",
+    "reason": "Chives keep away pests. Onions deter pests and loosen the soil. Garlic keep away pests. Shallots deter pests and loosen the soil. Mint deter pests and improve flavor of tomatoes. Oregano keeps away pests and attracts beneficial insects. Marjoram keeps away pests and attracts beneficial insects. Parsley deters pests. Basil keeps away pests and attracts beneficial insects. Borage keeps away pests. Asparagus loosens the soil. Marigolds attract pollinators. Petunias attract pollinators. Nasturtiums attract pollinators. Radishes loosen the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "thyme",
+    "type": "companion",
+    "reason": "Chives keep away pests. Onions deter pests and loosen the soil. Garlic keep away pests. Shallots deter pests and loosen the soil. Mint deter pests and improve flavor of tomatoes. Oregano keeps away pests and attracts beneficial insects. Marjoram keeps away pests and attracts beneficial insects. Parsley deters pests. Basil keeps away pests and attracts beneficial insects. Borage keeps away pests. Asparagus loosens the soil. Marigolds attract pollinators. Petunias attract pollinators. Nasturtiums attract pollinators. Radishes loosen the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "broccoli",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "collards",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "kohlrabi",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "rutebega",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "turnip",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "dill",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "eggplant",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "peppers",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "potatoes",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "fennel",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "walnuts",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "cabbage",
+    "type": "antagonist",
+    "reason": "Cabbage attracts harmful insects."
+  },
+  {
+    "source": "tomatoes",
+    "target": "kale",
+    "type": "antagonist",
+    "reason": "Kale attracts pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "brussels-sprouts",
+    "type": "antagonist",
+    "reason": "Brussels Sprouts attract pests."
+  },
+  {
+    "source": "tomatoes",
+    "target": "cauliflower",
+    "type": "antagonist",
+    "reason": "Cauliflower attracts harmful insects and bugs."
+  },
+  {
+    "source": "tomatoes",
+    "target": "mustard-greens",
+    "type": "antagonist",
+    "reason": "Mustard Greens attract harmful insects and bugs."
+  },
+  {
+    "source": "tomatoes",
+    "target": "corn",
+    "type": "antagonist",
+    "reason": "Corn takes away too much sun from tomatoes."
+  },
+  {
+    "source": "tomatoes",
+    "target": "squash",
+    "type": "antagonist",
+    "reason": "Squash takes away too many nutrients."
+  },
+  {
+    "source": "tomatoes",
+    "target": "melon",
+    "type": "antagonist",
+    "reason": "Melons take away too many nutrients."
+  },
+  {
+    "source": "tomatoes",
+    "target": "zucchinis",
+    "type": "antagonist",
+    "reason": "Zucchinis take away nutrients from the soil."
+  },
+  {
+    "source": "tomatoes",
+    "target": "sunflowers",
+    "type": "antagonist",
+    "reason": "Sunflowers take away too much sun from tomatoes."
+  }
+]

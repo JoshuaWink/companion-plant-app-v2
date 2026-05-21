@@ -1,0 +1,192 @@
+[
+  {
+    "plants": [
+      "cucumbers",
+      "basil"
+    ],
+    "detail": "basil says cucumbers is antagonist, but cucumbers says basil is companion",
+    "edge_a": {
+      "source": "basil",
+      "target": "cucumbers",
+      "type": "antagonist",
+      "reason": "Cucumbers compete for resources, such as water and nutrients."
+    },
+    "edge_b": {
+      "source": "cucumbers",
+      "target": "basil",
+      "type": "companion",
+      "reason": "Basil deters pests and attracts pollinators."
+    }
+  },
+  {
+    "plants": [
+      "lettuce",
+      "broccoli"
+    ],
+    "detail": "broccoli says lettuce is companion, but lettuce says broccoli is antagonist",
+    "edge_a": {
+      "source": "broccoli",
+      "target": "lettuce",
+      "type": "companion",
+      "reason": "Herbs help prevent mass insect attacks. Oregano has insecticidal properties. Other brassicas (cabbage family) have similar nutrient needs, but may not be ideal as they share insects. You can plant brassicas together so that they can all be covered with nets to protect from pests such as cabbageworm. They also all like lime added to the soil."
+    },
+    "edge_b": {
+      "source": "lettuce",
+      "target": "broccoli",
+      "type": "antagonist",
+      "reason": "Broccoli prevents seed germination."
+    }
+  },
+  {
+    "plants": [
+      "oregano",
+      "broccoli"
+    ],
+    "detail": "broccoli says oregano is companion, but oregano says broccoli is antagonist",
+    "edge_a": {
+      "source": "broccoli",
+      "target": "oregano",
+      "type": "companion",
+      "reason": "Oregano has insecticidal properties."
+    },
+    "edge_b": {
+      "source": "oregano",
+      "target": "broccoli",
+      "type": "antagonist",
+      "reason": "While Oregano does seem to pair well with numerous vegetables and herbs, you should avoid growing it around plants that have heavy water requirements. This includes crops that grow best during colder weather, like cruciferous vegetables. You donât want to plant Oregano too close to Cabbage, Broccoli, or Collards. Keep oregano away from Lettuce as well. You also want to avoid those varieties of herbs that like moist soil, such as Celery and some varieties of Basil."
+    }
+  },
+  {
+    "plants": [
+      "oregano",
+      "cabbage"
+    ],
+    "detail": "cabbage says oregano is companion, but oregano says cabbage is antagonist",
+    "edge_a": {
+      "source": "cabbage",
+      "target": "oregano",
+      "type": "companion",
+      "reason": "Oregano has insecticidal properties."
+    },
+    "edge_b": {
+      "source": "oregano",
+      "target": "cabbage",
+      "type": "antagonist",
+      "reason": "You donât want to plant Oregano too close to Cabbage, Broccoli, or Collards."
+    }
+  },
+  {
+    "plants": [
+      "chives",
+      "rosemary"
+    ],
+    "detail": "chives says rosemary is antagonist, but rosemary says chives is companion",
+    "edge_a": {
+      "source": "chives",
+      "target": "rosemary",
+      "type": "antagonist",
+      "reason": "Pole beans stunt the growth of your chives. Beets and chives both stunt each other's growth."
+    },
+    "edge_b": {
+      "source": "rosemary",
+      "target": "chives",
+      "type": "companion",
+      "reason": "Chives resist aphids, tiny white garden pests that ruin everything in the scope. Further, They lure pollinators for nectar and enhance the yield too."
+    }
+  },
+  {
+    "plants": [
+      "corn",
+      "cucumbers"
+    ],
+    "detail": "corn says cucumbers is companion, but cucumbers says corn is antagonist",
+    "edge_a": {
+      "source": "corn",
+      "target": "cucumbers",
+      "type": "companion",
+      "reason": "Dill is thought to protect against aphids and mites. Beans can provide more nitrogen to the corn. Sunflowers can act as a structure and a windbreak for the corn, and dwarf sunflowers bring in ladybugs to control aphids. Pole beans are sometimes interplanted with corn, adding nitrogen and providing structural support. Spinach grows well in the shade of corn, keeping corn roots cool. Corn is one of the Three Sisters; its growing style pairs perfectly with beans and squash."
+    },
+    "edge_b": {
+      "source": "cucumbers",
+      "target": "corn",
+      "type": "antagonist",
+      "reason": "Corn takes away too much sun."
+    }
+  },
+  {
+    "plants": [
+      "corn",
+      "spinach"
+    ],
+    "detail": "corn says spinach is companion, but spinach says corn is antagonist",
+    "edge_a": {
+      "source": "corn",
+      "target": "spinach",
+      "type": "companion",
+      "reason": "Spinach grows well in the shade of corn, keeping corn roots cool."
+    },
+    "edge_b": {
+      "source": "spinach",
+      "target": "corn",
+      "type": "antagonist",
+      "reason": "Corn takes away too much sunlight."
+    }
+  },
+  {
+    "plants": [
+      "dill",
+      "tomatoes"
+    ],
+    "detail": "dill says tomatoes is companion, but tomatoes says dill is antagonist",
+    "edge_a": {
+      "source": "dill",
+      "target": "tomatoes",
+      "type": "companion",
+      "reason": "Some plants like Nasturtiums, Borage, Marigolds, and Marjoram make good universal companion plants and pair well with dill, as they deter many common pests.  Dill can improve the health of brassicas like broccoli, kohlrabi, cauliflower, Brussels sprouts, kale, and Swiss chard. Dill repels pests like the cabbage worm, cabbage moth, and cabbage looper that prey on brassicas. Plant dill seeds near asparagus plants to attract lacewings and ladybugs, which prey on aphids that damage asparagus. Chervil and dill provide many of the same benefits to other companion cropsâfor instance, both attract parasitic wasps that prey on pests. Planting them together can amplify these effects and provide further protection to your vulnerable veggies. Dill attracts beneficial insects that eat cucumber pests like cucumber beetles. Dill can improve the health of tomato plants and attract predators of the tomato hornworm. Dill should be planted near tomato plants until the dill matures, at which point it can actually diminish tomato growth."
+    },
+    "edge_b": {
+      "source": "tomatoes",
+      "target": "dill",
+      "type": "antagonist",
+      "reason": "Cabbage attracts harmful insects. Kale attracts pests. Brussels Sprouts attract pests. Cauliflower attracts harmful insects and bugs. Mustard Greens attract harmful insects and bugs. Corn takes away too much sun from tomatoes. Squash takes away too many nutrients. Melons take away too many nutrients. Zucchinis take away nutrients from the soil. Sunflowers take away too much sun from tomatoes."
+    }
+  },
+  {
+    "plants": [
+      "peas",
+      "potatoes"
+    ],
+    "detail": "peas says potatoes is companion, but potatoes says peas is antagonist",
+    "edge_a": {
+      "source": "peas",
+      "target": "potatoes",
+      "type": "companion",
+      "reason": "Potatoes loosen the soil."
+    },
+    "edge_b": {
+      "source": "potatoes",
+      "target": "peas",
+      "type": "antagonist",
+      "reason": "Peas inhibit the growth of potatoes."
+    }
+  },
+  {
+    "plants": [
+      "rosemary",
+      "potatoes"
+    ],
+    "detail": "potatoes says rosemary is companion, but rosemary says potatoes is antagonist",
+    "edge_a": {
+      "source": "potatoes",
+      "target": "rosemary",
+      "type": "companion",
+      "reason": "Rosemary improves the flavor of potatoes and deters pests. Brassicas improve soil conditions."
+    },
+    "edge_b": {
+      "source": "rosemary",
+      "target": "potatoes",
+      "type": "antagonist",
+      "reason": "Potatoes have sensitive roots, so avoid planting near Rosemary."
+    }
+  }
+]

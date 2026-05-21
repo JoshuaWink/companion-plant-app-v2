@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Rust
+engine/target/
+
+# WASM build output (rebuilt from engine/)
+pwa/pkg/
+
+# OS
+.DS_Store

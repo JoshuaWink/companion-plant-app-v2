@@ -1,0 +1,9 @@
+[project]
+name = "companion-garden"
+version = "0.1.0"
+description = "Companion planting graph engine — PWA with WASM-powered plant relationship queries"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
