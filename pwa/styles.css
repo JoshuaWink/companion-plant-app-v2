@@ -688,20 +688,12 @@ body {
   position: fixed;
   pointer-events: none;
   z-index: 0;
-  opacity: 0;
+  opacity: 0.22;
   transition: opacity 1.5s ease;
-  font-size: 2rem;
-  filter: blur(0.5px) drop-shadow(0 2px 4px rgba(0,0,0,0.04));
-  animation: cloud-drift var(--cloud-dur, 80s) var(--cloud-delay, 0s) linear infinite;
+  filter: blur(0.3px) drop-shadow(0 2px 4px rgba(0,0,0,0.04));
 }
 
-.day-cloud { opacity: 0.2; }
 [data-theme="night"] .day-cloud { opacity: 0; }
-
-@keyframes cloud-drift {
-  0%   { transform: translateX(-120px); }
-  100% { transform: translateX(calc(100vw + 120px)); }
-}
 
 /* Butterflies */
 .day-butterfly {
@@ -713,7 +705,7 @@ body {
   opacity: 0;
   transition: opacity 1.5s ease;
   animation:
-    butterfly-buzz var(--bf-dur, 18s) var(--bf-delay, 0s) infinite ease-in-out,
+    firefly-float var(--fly-duration, 14s) var(--fly-delay, 0s) infinite ease-in-out,
     butterfly-wing 0.4s infinite ease-in-out;
 }
 
@@ -732,14 +724,7 @@ body {
 .day-butterfly::before { left: 0; transform-origin: bottom right; }
 .day-butterfly::after  { right: 0; transform-origin: bottom left; border-radius: 50% 50% 0 50%; }
 
-@keyframes butterfly-buzz {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  20%  { transform: translate(var(--bf-dx1, 60px), var(--bf-dy1, -30px)) rotate(8deg); }
-  40%  { transform: translate(var(--bf-dx2, -20px), var(--bf-dy2, -60px)) rotate(-5deg); }
-  60%  { transform: translate(var(--bf-dx3, 40px), var(--bf-dy3, -10px)) rotate(6deg); }
-  80%  { transform: translate(var(--bf-dx4, -30px), var(--bf-dy4, -40px)) rotate(-4deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
+/* butterflies reuse firefly-float keyframe */
 
 @keyframes butterfly-wing {
   0%, 100% { transform: scaleY(1); }
@@ -758,7 +743,7 @@ body {
   opacity: 0;
   transition: opacity 1.5s ease;
   box-shadow: inset -3px 0 0 rgba(40,30,10,0.4);
-  animation: bee-buzz var(--bee-dur, 12s) var(--bee-delay, 0s) infinite ease-in-out;
+  animation: firefly-float var(--fly-duration, 12s) var(--fly-delay, 0s) infinite ease-in-out;
 }
 
 .day-bee { opacity: 0.45; }
@@ -776,14 +761,7 @@ body {
   animation: bee-wing 0.12s infinite alternate;
 }
 
-@keyframes bee-buzz {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  20%  { transform: translate(var(--bee-dx1, 30px), var(--bee-dy1, -15px)) rotate(5deg); }
-  40%  { transform: translate(var(--bee-dx2, -10px), var(--bee-dy2, -30px)) rotate(-3deg); }
-  60%  { transform: translate(var(--bee-dx3, 20px), var(--bee-dy3, -5px)) rotate(4deg); }
-  80%  { transform: translate(var(--bee-dx4, -15px), var(--bee-dy4, -20px)) rotate(-2deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
+/* bees reuse firefly-float keyframe */
 
 @keyframes bee-wing {
   from { transform: scaleY(1); }

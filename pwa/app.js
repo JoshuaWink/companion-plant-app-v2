@@ -950,56 +950,50 @@ function spawnDayDecorations() {
   ray.className = 'day-ray';
   canvas.appendChild(ray);
 
-  // Clouds — 4 drifting cloud emojis at different speeds/heights
-  const cloudEmojis = ['☁️', '⛅', '☁️', '⛅'];
-  for (let i = 0; i < 4; i++) {
+  // Clouds — 5 fixed in the header area (like stars in night mode)
+  for (let i = 0; i < 5; i++) {
     const cloud = document.createElement('div');
     cloud.className = 'day-cloud';
-    cloud.textContent = cloudEmojis[i];
-    cloud.style.top = (8 + i * 7 + Math.random() * 5) + '%';
-    cloud.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
-    cloud.style.setProperty('--cloud-dur', (60 + Math.random() * 60) + 's');
-    cloud.style.setProperty('--cloud-delay', (-Math.random() * 80) + 's');
+    cloud.textContent = '\u2601\uFE0F';
+    cloud.style.left = (5 + Math.random() * 85) + '%';
+    cloud.style.top = (3 + Math.random() * 12) + '%';
+    cloud.style.fontSize = (1.6 + Math.random() * 1.2) + 'rem';
     canvas.appendChild(cloud);
   }
 
-  // Butterflies — 5 flitting colorful shapes
+  // Butterflies — 8 scattered everywhere, firefly-style movement
   const bfColors = ['#e88fd0', '#8fd0e8', '#e8d08f', '#8fe8a0', '#d08fe8'];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 8; i++) {
     const bf = document.createElement('div');
     bf.className = 'day-butterfly';
-    bf.style.left = (15 + Math.random() * 70) + '%';
-    bf.style.top = (30 + Math.random() * 50) + '%';
+    bf.style.left = Math.random() * 95 + '%';
+    bf.style.top = (20 + Math.random() * 70) + '%';
     bf.style.setProperty('--bf-color', bfColors[i % bfColors.length]);
-    bf.style.setProperty('--bf-dur', (14 + Math.random() * 12) + 's');
-    bf.style.setProperty('--bf-delay', (Math.random() * -15) + 's');
-    bf.style.setProperty('--bf-dx1', (-60 + Math.random() * 120) + 'px');
-    bf.style.setProperty('--bf-dy1', (-40 + Math.random() * 80) + 'px');
-    bf.style.setProperty('--bf-dx2', (-60 + Math.random() * 120) + 'px');
-    bf.style.setProperty('--bf-dy2', (-40 + Math.random() * 80) + 'px');
-    bf.style.setProperty('--bf-dx3', (-60 + Math.random() * 120) + 'px');
-    bf.style.setProperty('--bf-dy3', (-40 + Math.random() * 80) + 'px');
-    bf.style.setProperty('--bf-dx4', (-60 + Math.random() * 120) + 'px');
-    bf.style.setProperty('--bf-dy4', (-40 + Math.random() * 80) + 'px');
+    bf.style.setProperty('--fly-duration', (10 + Math.random() * 14) + 's');
+    bf.style.setProperty('--fly-delay', (Math.random() * -15) + 's');
+    bf.style.setProperty('--dx1', (-80 + Math.random() * 160) + 'px');
+    bf.style.setProperty('--dy1', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--dx2', (-80 + Math.random() * 160) + 'px');
+    bf.style.setProperty('--dy2', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--dx3', (-80 + Math.random() * 160) + 'px');
+    bf.style.setProperty('--dy3', (-60 + Math.random() * 120) + 'px');
     canvas.appendChild(bf);
   }
 
-  // Bees — 4 buzzing yellow dots
-  for (let i = 0; i < 4; i++) {
+  // Bees — 6 scattered everywhere, firefly-style movement
+  for (let i = 0; i < 6; i++) {
     const bee = document.createElement('div');
     bee.className = 'day-bee';
-    bee.style.left = (20 + Math.random() * 60) + '%';
-    bee.style.top = (40 + Math.random() * 40) + '%';
-    bee.style.setProperty('--bee-dur', (10 + Math.random() * 10) + 's');
-    bee.style.setProperty('--bee-delay', (Math.random() * -10) + 's');
-    bee.style.setProperty('--bee-dx1', (-25 + Math.random() * 50) + 'px');
-    bee.style.setProperty('--bee-dy1', (-20 + Math.random() * 40) + 'px');
-    bee.style.setProperty('--bee-dx2', (-25 + Math.random() * 50) + 'px');
-    bee.style.setProperty('--bee-dy2', (-20 + Math.random() * 40) + 'px');
-    bee.style.setProperty('--bee-dx3', (-25 + Math.random() * 50) + 'px');
-    bee.style.setProperty('--bee-dy3', (-20 + Math.random() * 40) + 'px');
-    bee.style.setProperty('--bee-dx4', (-25 + Math.random() * 50) + 'px');
-    bee.style.setProperty('--bee-dy4', (-20 + Math.random() * 40) + 'px');
+    bee.style.left = Math.random() * 95 + '%';
+    bee.style.top = (20 + Math.random() * 70) + '%';
+    bee.style.setProperty('--fly-duration', (10 + Math.random() * 14) + 's');
+    bee.style.setProperty('--fly-delay', (Math.random() * -15) + 's');
+    bee.style.setProperty('--dx1', (-80 + Math.random() * 160) + 'px');
+    bee.style.setProperty('--dy1', (-60 + Math.random() * 120) + 'px');
+    bee.style.setProperty('--dx2', (-80 + Math.random() * 160) + 'px');
+    bee.style.setProperty('--dy2', (-60 + Math.random() * 120) + 'px');
+    bee.style.setProperty('--dx3', (-80 + Math.random() * 160) + 'px');
+    bee.style.setProperty('--dy3', (-60 + Math.random() * 120) + 'px');
     canvas.appendChild(bee);
   }
 
