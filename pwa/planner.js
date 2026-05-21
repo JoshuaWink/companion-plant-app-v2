@@ -1144,6 +1144,18 @@ function handlePaletteClick(e) {
   updatePlacingLabel();
 }
 
+export function setPlannerPlacingPlant(plantId) {
+  if (!plantId) return false;
+
+  const exists = plannerPlants.some(p => p.id === plantId && !p.stub);
+  if (!exists) return false;
+
+  placingPlant = plantId;
+  renderPlantPalette();
+  updatePlacingLabel();
+  return true;
+}
+
 function handlePaletteDragStart(e) {
   const btn = e.target.closest('.palette-plant');
   if (!btn || !btn.dataset.plant) { e.preventDefault(); return; }

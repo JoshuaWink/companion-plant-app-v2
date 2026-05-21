@@ -5,8 +5,8 @@
  * queries the graph for companions/conflicts/succession dependencies.
  */
 import init, { Garden } from './pkg/companion_graph.js';
-import { initPlanner } from './planner.js';
-import { initGrowthSim } from './growth-sim.js';
+import { initPlanner, setPlannerPlacingPlant } from './planner.js';
+import { initGrowthSim, setGrowthPlant } from './growth-sim.js';
 
 let garden = null;
 let plants = [];
@@ -104,6 +104,8 @@ async function boot() {
   renderPlantGrid(getVisiblePlants());
   setupSearch();
   setupStubToggle();
+  setupCompanionActions();
+  setupLinkedSelectionActions();
   await loadZones();
 
   // Init bed planner with plant data and WASM engine
@@ -145,6 +147,51 @@ function setupSearch() {
   });
 }
 
+function setupCompanionActions() {
+  const list = document.getElementById('companion-list');
+  if (!list) return;
+
+  list.addEventListener('click', (event) => {
+    const btn = event.target.closest('.companion-add-btn');
+    if (!btn) return;
+
+    const id = btn.dataset.addId;
+    if (!id || selected.has(id)) return;
+
+    selected.add(id);
+    updateUI();
+  });
+}
+
+function setupLinkedSelectionActions() {
+  const handler = (event) => {
+    const btn = event.target.closest('.linked-chip');
+    if (!btn || btn.disabled) return;
+
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (!id || !action) return;
+
+    if (action === 'planner') {
+      const ok = setPlannerPlacingPlant(id);
+      if (ok) {
+        document.getElementById('planner-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
+    if (action === 'growth') {
+      const ok = setGrowthPlant(id, true);
+      if (ok) {
+        document.getElementById('growth-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  document.getElementById('planner-selected-list')?.addEventListener('click', handler);
+  document.getElementById('growth-selected-list')?.addEventListener('click', handler);
+}
+
 // --- Selection ---
 
 function togglePlant(id) {
@@ -158,6 +205,7 @@ function togglePlant(id) {
 
 function updateUI() {
   updateSelectedPanel();
+  updateLinkedSectionSelections();
   updateHighlights();
   updateResults();
   updateSuccession();
@@ -190,6 +238,49 @@ function updateSelectedPanel() {
     chip.addEventListener('click', () => togglePlant(id));
     container.appendChild(chip);
   }
+}
+
+function updateLinkedSectionSelections() {
+  const plannerWrap = document.getElementById('planner-selected-ref');
+  const plannerList = document.getElementById('planner-selected-list');
+  const growthWrap = document.getElementById('growth-selected-ref');
+  const growthList = document.getElementById('growth-selected-list');
+
+  if (!plannerWrap || !plannerList || !growthWrap || !growthList) return;
+
+  if (selected.size === 0) {
+    plannerWrap.hidden = true;
+    growthWrap.hidden = true;
+    plannerList.innerHTML = '';
+    growthList.innerHTML = '';
+    return;
+  }
+
+  const selectedItems = [...selected]
+    .map(id => ({ id, name: nameFor(id) }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const growthSelect = document.getElementById('growth-plant-select');
+  const growthOptions = new Set(
+    growthSelect ? [...growthSelect.options].map(o => o.value) : []
+  );
+
+  plannerWrap.hidden = false;
+  growthWrap.hidden = false;
+
+  plannerList.innerHTML = selectedItems.map(item =>
+    `<button type="button" class="linked-chip" data-action="planner" data-id="${item.id}" title="Set ${item.name} as current planner plant">${emojiFor(item.id)} ${item.name}</button>`
+  ).join('');
+
+  growthList.innerHTML = selectedItems.map(item => {
+    const available = growthOptions.has(item.id);
+    const extraClass = available ? '' : ' linked-chip--disabled';
+    const disabledAttr = available ? '' : ' disabled';
+    const title = available
+      ? `Run growth simulation for ${item.name}`
+      : `${item.name} has no growth model data yet`;
+    return `<button type="button" class="linked-chip${extraClass}" data-action="growth" data-id="${item.id}" title="${title}"${disabledAttr}>${emojiFor(item.id)} ${item.name}</button>`;
+  }).join('');
 }
 
 function updateHighlights() {
@@ -269,7 +360,8 @@ function updateResults() {
         return rel && rel.reason ? `${nameFor(sel)}: ${rel.reason}` : null;
       }).filter(Boolean);
 
-      return `<li>${emojiFor(id)} <strong>${nameFor(id)}</strong>` +
+      return `<li><span class="companion-main">${emojiFor(id)} <strong>${nameFor(id)}</strong></span>` +
+        `<button type="button" class="companion-add-btn" data-add-id="${id}" aria-label="Add ${nameFor(id)} to your garden">+ Add</button>` +
         (reasons.length > 0 ? `<span class="reason">${reasons.join(' | ')}</span>` : '') +
         `</li>`;
     }).join('');

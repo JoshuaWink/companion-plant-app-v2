@@ -353,6 +353,20 @@ export function initGrowthSim(plantList) {
   updateWaterEquiv();
 }
 
+export function setGrowthPlant(plantId, runAfterSelect = false) {
+  if (!plantId) return false;
+
+  const select = document.getElementById('growth-plant-select');
+  if (!select) return false;
+
+  const exists = [...select.options].some(opt => opt.value === plantId);
+  if (!exists) return false;
+
+  select.value = plantId;
+  if (runAfterSelect) runSimulation();
+  return true;
+}
+
 // ── Run simulation ──
 function runSimulation() {
   const plantId = document.getElementById('growth-plant-select').value;

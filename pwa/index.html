@@ -189,6 +189,10 @@
 
     <section class="card planner-panel" id="planner-panel" aria-label="Garden Bed Planner">
       <h2 class="section-title">🗺️ Garden Bed Planner</h2>
+      <div id="planner-selected-ref" class="linked-selection" hidden>
+        <span class="linked-selection-label">From Your Garden:</span>
+        <div id="planner-selected-list" class="linked-selection-list"></div>
+      </div>
 
       <div class="planner-layout">
         <div class="planner-toolbar">
@@ -257,6 +261,10 @@
       <p class="growth-intro">Model how a plant grows day-by-day based on your local climate, soil, and watering.
         The engine uses a <strong>sigmoid growth curve</strong> shaped by temperature, sunlight hours,
         water availability, and soil type — the same factors that drive real-world plant development.</p>
+      <div id="growth-selected-ref" class="linked-selection" hidden>
+        <span class="linked-selection-label">Selected Crops:</span>
+        <div id="growth-selected-list" class="linked-selection-list"></div>
+      </div>
       <div class="growth-controls">
         <div class="growth-control-row">
           <div class="growth-field">
