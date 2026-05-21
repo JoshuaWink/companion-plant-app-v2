@@ -548,7 +548,240 @@ function renderSideView(bed) {
   sideCtx.fillStyle = soilGrad;
   sideCtx.fillRect(0, groundY + GROUND_H, size.w, SOIL_H);
 
-  // ── Height ruler (left side) ──
+  // ── Ground-level Detail: grass tufts ──
+  const tufts = Math.floor(size.w / 14);
+  for (let i = 0; i < tufts; i++) {
+    const tx = 8 + (i / tufts) * (size.w - 16) + (Math.sin(i * 7.3) * 4);
+    const bladeCount = 2 + Math.floor(Math.abs(Math.sin(i * 3.7)) * 3);
+    for (let b = 0; b < bladeCount; b++) {
+      const angle = -0.6 + (b / bladeCount) * 1.2;
+      const h = 3 + Math.abs(Math.sin(i * 2.1 + b * 1.3)) * 5;
+      sideCtx.strokeStyle = isNight
+        ? 'rgba(60,120,60,' + (0.2 + Math.abs(Math.sin(i * 1.7)) * 0.15) + ')'
+        : 'rgba(76,145,65,' + (0.35 + Math.abs(Math.sin(i * 1.7)) * 0.2) + ')';
+      sideCtx.lineWidth = 0.8;
+      sideCtx.beginPath();
+      sideCtx.moveTo(tx, groundY);
+      sideCtx.quadraticCurveTo(tx + angle * 4, groundY - h * 0.6, tx + angle * 6, groundY - h);
+      sideCtx.stroke();
+    }
+  }
+
+    // ── Sky Decorations ──
+  // Seeded PRNG for deterministic positions (so they don't flicker on re-render)
+  const _seed = (bed.name || 'a').charCodeAt(0) * 137 + bed.cols * 31 + bed.rows * 17;
+  function _rng(i) { let s = (_seed + i * 2654435761) >>> 0; s ^= s >> 16; s = Math.imul(s, 0x45d9f3b); s ^= s >> 16; return (s >>> 0) / 4294967296; }
+
+  if (isNight) {
+    // ── Night: stars, moon, fireflies ──
+
+    // Moon
+    const moonX = size.w - 50, moonY = 28, moonR = 14;
+    const moonGlow = sideCtx.createRadialGradient(moonX, moonY, moonR * 0.5, moonX, moonY, moonR * 3);
+    moonGlow.addColorStop(0, 'rgba(255,255,220,0.12)');
+    moonGlow.addColorStop(1, 'rgba(255,255,220,0)');
+    sideCtx.fillStyle = moonGlow;
+    sideCtx.fillRect(moonX - moonR * 3, moonY - moonR * 3, moonR * 6, moonR * 6);
+    sideCtx.fillStyle = '#f0ecd0';
+    sideCtx.beginPath();
+    sideCtx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+    sideCtx.fill();
+    // Moon shadow (crescent effect)
+    sideCtx.fillStyle = '#1a2a1a';
+    sideCtx.beginPath();
+    sideCtx.arc(moonX + 5, moonY - 3, moonR * 0.85, 0, Math.PI * 2);
+    sideCtx.fill();
+
+    // Stars
+    const starCount = Math.floor(size.w / 12);
+    for (let i = 0; i < starCount; i++) {
+      const sx = _rng(i * 3) * size.w;
+      const sy = _rng(i * 3 + 1) * (groundY - 20) + 5;
+      const sr = 0.5 + _rng(i * 3 + 2) * 1.2;
+      const alpha = 0.3 + _rng(i * 7) * 0.5;
+      sideCtx.fillStyle = 'rgba(255,255,240,' + alpha + ')';
+      sideCtx.beginPath();
+      sideCtx.arc(sx, sy, sr, 0, Math.PI * 2);
+      sideCtx.fill();
+    }
+
+    // Fireflies (above ground, near plants)
+    const ffCount = Math.min(6, Math.floor(colEntries.length * 0.6));
+    for (let i = 0; i < ffCount; i++) {
+      const fx = _rng(200 + i * 4) * (size.w - 80) + 40;
+      const fy = groundY - 20 - _rng(201 + i * 4) * 60;
+      const glow = sideCtx.createRadialGradient(fx, fy, 0, fx, fy, 6);
+      glow.addColorStop(0, 'rgba(200,255,100,0.4)');
+      glow.addColorStop(0.5, 'rgba(200,255,100,0.1)');
+      glow.addColorStop(1, 'rgba(200,255,100,0)');
+      sideCtx.fillStyle = glow;
+      sideCtx.fillRect(fx - 6, fy - 6, 12, 12);
+      sideCtx.fillStyle = 'rgba(220,255,120,0.8)';
+      sideCtx.beginPath();
+      sideCtx.arc(fx, fy, 1.5, 0, Math.PI * 2);
+      sideCtx.fill();
+    }
+
+  } else {
+    // ── Day: sun, clouds, butterflies, bees ──
+
+    // Sun with rays and glow
+    const sunX = size.w - 45, sunY = 25, sunR = 16;
+    const sunGlow = sideCtx.createRadialGradient(sunX, sunY, sunR * 0.3, sunX, sunY, sunR * 3.5);
+    sunGlow.addColorStop(0, 'rgba(255,236,130,0.25)');
+    sunGlow.addColorStop(0.5, 'rgba(255,200,50,0.08)');
+    sunGlow.addColorStop(1, 'rgba(255,200,50,0)');
+    sideCtx.fillStyle = sunGlow;
+    sideCtx.fillRect(sunX - sunR * 4, sunY - sunR * 4, sunR * 8, sunR * 8);
+    // Sun rays
+    sideCtx.strokeStyle = 'rgba(255,210,80,0.18)';
+    sideCtx.lineWidth = 1.5;
+    for (let a = 0; a < 8; a++) {
+      const angle = (a / 8) * Math.PI * 2;
+      sideCtx.beginPath();
+      sideCtx.moveTo(sunX + Math.cos(angle) * (sunR + 3), sunY + Math.sin(angle) * (sunR + 3));
+      sideCtx.lineTo(sunX + Math.cos(angle) * (sunR + 14), sunY + Math.sin(angle) * (sunR + 14));
+      sideCtx.stroke();
+    }
+    // Sun disc
+    const sunDisc = sideCtx.createRadialGradient(sunX - 3, sunY - 3, 0, sunX, sunY, sunR);
+    sunDisc.addColorStop(0, '#fff8b8');
+    sunDisc.addColorStop(0.6, '#ffe066');
+    sunDisc.addColorStop(1, '#f5c542');
+    sideCtx.fillStyle = sunDisc;
+    sideCtx.beginPath();
+    sideCtx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+    sideCtx.fill();
+
+    // Clouds (puffy, layered ellipses)
+    function drawCloud(cx, cy, scale) {
+      sideCtx.fillStyle = 'rgba(255,255,255,0.55)';
+      const puffs = [
+        [0, 0, 18 * scale, 10 * scale],
+        [-12 * scale, 2, 12 * scale, 8 * scale],
+        [10 * scale, 3, 14 * scale, 8 * scale],
+        [-4 * scale, -5, 14 * scale, 8 * scale],
+        [6 * scale, -3, 10 * scale, 7 * scale],
+      ];
+      puffs.forEach(([dx, dy, rx, ry]) => {
+        sideCtx.beginPath();
+        sideCtx.ellipse(cx + dx, cy + dy, rx, ry, 0, 0, Math.PI * 2);
+        sideCtx.fill();
+      });
+    }
+    // 2-3 clouds at deterministic positions
+    const cloudCount = 2 + Math.floor(_rng(300) * 2);
+    for (let i = 0; i < cloudCount; i++) {
+      const cx = _rng(310 + i * 5) * (size.w - 100) + 50;
+      const cy = 20 + _rng(311 + i * 5) * 35;
+      const sc = 0.6 + _rng(312 + i * 5) * 0.5;
+      drawCloud(cx, cy, sc);
+    }
+
+    // Butterflies (small, near canopy level)
+    const bfCount = Math.min(4, Math.floor(colEntries.length * 0.4));
+    for (let i = 0; i < bfCount; i++) {
+      const bx = _rng(400 + i * 6) * (size.w - 60) + 30;
+      const by = groundY - 30 - _rng(401 + i * 6) * 50;
+      const wingSpan = 4 + _rng(402 + i * 6) * 3;
+      const hue = Math.floor(_rng(403 + i * 6) * 360);
+      const wingAlpha = 0.5 + _rng(404 + i * 6) * 0.3;
+      // Left wing
+      sideCtx.fillStyle = 'hsla(' + hue + ',70%,60%,' + wingAlpha + ')';
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx - wingSpan * 0.6, by, wingSpan, wingSpan * 0.6, -0.3, 0, Math.PI * 2);
+      sideCtx.fill();
+      // Right wing
+      sideCtx.fillStyle = 'hsla(' + hue + ',70%,65%,' + wingAlpha + ')';
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx + wingSpan * 0.6, by, wingSpan, wingSpan * 0.6, 0.3, 0, Math.PI * 2);
+      sideCtx.fill();
+      // Body
+      sideCtx.fillStyle = 'rgba(60,40,20,0.7)';
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx, by, 1, wingSpan * 0.4, 0, 0, Math.PI * 2);
+      sideCtx.fill();
+    }
+
+    // Bees (small, buzzing near flowers)
+    const beeCount = Math.min(3, Math.floor(colEntries.length * 0.3));
+    for (let i = 0; i < beeCount; i++) {
+      const bx = _rng(500 + i * 5) * (size.w - 80) + 40;
+      const by = groundY - 20 - _rng(501 + i * 5) * 40;
+      // Body (yellow-black stripes via two ellipses)
+      sideCtx.fillStyle = 'rgba(240,200,40,0.8)';
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx, by, 4, 2.5, 0.2, 0, Math.PI * 2);
+      sideCtx.fill();
+      // Stripe
+      sideCtx.fillStyle = 'rgba(40,30,10,0.6)';
+      sideCtx.fillRect(bx - 1, by - 2.5, 2, 5);
+      // Wings
+      sideCtx.fillStyle = 'rgba(220,240,255,0.4)';
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx - 1, by - 3, 3, 1.5, -0.4, 0, Math.PI * 2);
+      sideCtx.fill();
+      sideCtx.beginPath();
+      sideCtx.ellipse(bx + 1, by - 3, 3, 1.5, 0.4, 0, Math.PI * 2);
+      sideCtx.fill();
+    }
+  }
+
+    // ── Soil Texture: pebbles, worms (day) / mycorrhiza (night) ──
+  const pebbleCount = Math.floor(size.w / 20);
+  for (let i = 0; i < pebbleCount; i++) {
+    const px = _rng(600 + i * 3) * (size.w - 20) + 10;
+    const py = groundY + GROUND_H + 8 + _rng(601 + i * 3) * (SOIL_H - 16);
+    const pr = 1 + _rng(602 + i * 3) * 2;
+    if (isNight) {
+      // Mycorrhiza: faint glowing fungal network dots
+      sideCtx.fillStyle = 'rgba(180,200,255,' + (0.06 + _rng(603 + i * 3) * 0.06) + ')';
+      sideCtx.beginPath();
+      sideCtx.arc(px, py, pr * 0.8, 0, Math.PI * 2);
+      sideCtx.fill();
+      // Occasional thin connection lines between nearby nodes
+      if (i > 0 && _rng(604 + i * 3) > 0.6) {
+        const px2 = _rng(600 + (i - 1) * 3) * (size.w - 20) + 10;
+        const py2 = groundY + GROUND_H + 8 + _rng(601 + (i - 1) * 3) * (SOIL_H - 16);
+        sideCtx.strokeStyle = 'rgba(160,180,240,0.04)';
+        sideCtx.lineWidth = 0.5;
+        sideCtx.beginPath();
+        sideCtx.moveTo(px, py);
+        sideCtx.quadraticCurveTo((px + px2) / 2, (py + py2) / 2 + (_rng(605 + i) - 0.5) * 20, px2, py2);
+        sideCtx.stroke();
+      }
+    } else {
+      // Pebbles: small rounded stones
+      sideCtx.fillStyle = 'rgba(120,105,85,' + (0.12 + _rng(603 + i * 3) * 0.1) + ')';
+      sideCtx.beginPath();
+      sideCtx.ellipse(px, py, pr, pr * 0.7, _rng(604 + i * 3) * Math.PI, 0, Math.PI * 2);
+      sideCtx.fill();
+    }
+  }
+
+  // Earthworms (day only, a few wiggly lines)
+  if (!isNight) {
+    const wormCount = 2 + Math.floor(_rng(700) * 2);
+    for (let i = 0; i < wormCount; i++) {
+      const wx = _rng(710 + i * 4) * (size.w - 60) + 30;
+      const wy = groundY + GROUND_H + 15 + _rng(711 + i * 4) * (SOIL_H - 30);
+      const wLen = 10 + _rng(712 + i * 4) * 12;
+      sideCtx.strokeStyle = 'rgba(180,120,100,0.2)';
+      sideCtx.lineWidth = 1.5;
+      sideCtx.lineCap = 'round';
+      sideCtx.beginPath();
+      sideCtx.moveTo(wx, wy);
+      sideCtx.bezierCurveTo(
+        wx + wLen * 0.3, wy - 4 + _rng(713 + i * 4) * 8,
+        wx + wLen * 0.6, wy + 3 - _rng(714 + i * 4) * 6,
+        wx + wLen, wy + (_rng(715 + i * 4) - 0.5) * 6
+      );
+      sideCtx.stroke();
+      sideCtx.lineCap = 'butt';
+    }
+  }
+
+    // ── Height ruler (left side) ──
   sideCtx.strokeStyle = isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)';
   sideCtx.fillStyle   = isNight ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)';
   sideCtx.font = '8px Nunito, sans-serif';
