@@ -71,6 +71,48 @@
       </div>
     </section>
 
+
+    <section class="card stats-panel" id="stats-panel" aria-label="Garden statistics" hidden>
+      <h2 class="section-title">📊 Garden Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-gauge" data-stat="nitrogen">
+          <div class="stat-label">🧪 Nitrogen Balance</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-nitrogen"></div></div>
+          <div class="stat-value" id="stat-nitrogen-val"></div>
+        </div>
+        <div class="stat-gauge" data-stat="roots">
+          <div class="stat-label">🌱 Root Diversity</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-roots"></div></div>
+          <div class="stat-value" id="stat-roots-val"></div>
+        </div>
+        <div class="stat-gauge" data-stat="vertical">
+          <div class="stat-label">🌿 Vertical Coverage</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-vertical"></div></div>
+          <div class="stat-value" id="stat-vertical-val"></div>
+        </div>
+        <div class="stat-gauge" data-stat="water">
+          <div class="stat-label">💧 Water Demand</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-water"></div></div>
+          <div class="stat-value" id="stat-water-val"></div>
+        </div>
+        <div class="stat-gauge" data-stat="pollinator">
+          <div class="stat-label">🐝 Pollinator Score</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-pollinator"></div></div>
+          <div class="stat-value" id="stat-pollinator-val"></div>
+        </div>
+        <div class="stat-gauge" data-stat="family">
+          <div class="stat-label">🧬 Family Diversity</div>
+          <div class="stat-bar"><div class="stat-fill" id="stat-family"></div></div>
+          <div class="stat-value" id="stat-family-val"></div>
+        </div>
+        <div class="stat-gauge stat-gauge--wide" data-stat="pest">
+          <div class="stat-label">🛡️ Pest Coverage</div>
+          <div class="stat-pests" id="stat-pest-list"></div>
+        </div>
+      </div>
+      <div class="stat-suggestions" id="stat-suggestions"></div>
+    </section>
+
     <section class="card timeline-panel" aria-label="Planting timeline">
       <h2 class="section-title">📅 Planting Timeline</h2>
       <div class="zone-selector">

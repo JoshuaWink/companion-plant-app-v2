@@ -153,6 +153,7 @@ function updateUI() {
   updateHighlights();
   updateResults();
   updateSuccession();
+  updateStats();
   updateTimeline();
 }
 
@@ -317,6 +318,143 @@ function nameFor(id) {
   const p = plants.find(x => x.id === id);
   return p ? p.name : id;
 }
+// --- Garden Stats ---
+
+function updateStats() {
+  const panel = document.getElementById('stats-panel');
+  if (!panel) return;
+
+  if (selected.size < 2) {
+    panel.hidden = true;
+    return;
+  }
+  panel.hidden = false;
+
+  const sel = [...selected].map(id => plants.find(p => p.id === id)).filter(Boolean);
+  const props = sel.map(p => p.properties).filter(Boolean);
+
+  if (props.length === 0) {
+    panel.hidden = true;
+    return;
+  }
+
+  // --- Nitrogen Balance ---
+  const nitrogenScores = { 'fixer': 2, 'light-feeder': 0, 'neutral': 0, 'heavy-feeder': -1 };
+  const nitrogenRaw = props.reduce((sum, p) => sum + (nitrogenScores[p.nitrogen_role] || 0), 0);
+  const fixerCount = props.filter(p => p.nitrogen_role === 'fixer').length;
+  const feederCount = props.filter(p => p.nitrogen_role === 'heavy-feeder').length;
+  const nitrogenMax = props.length * 2;
+  const nitrogenPct = Math.min(100, Math.max(0, ((nitrogenRaw + nitrogenMax) / (nitrogenMax * 2)) * 100));
+  let nitrogenLevel, nitrogenLabel;
+  if (nitrogenRaw >= 1) { nitrogenLevel = 'great'; nitrogenLabel = 'Positive (+' + nitrogenRaw + ') — ' + fixerCount + ' fixer(s) feeding ' + feederCount + ' feeder(s)'; }
+  else if (nitrogenRaw === 0) { nitrogenLevel = 'good'; nitrogenLabel = 'Balanced — inputs match demand'; }
+  else if (nitrogenRaw >= -2) { nitrogenLevel = 'okay'; nitrogenLabel = 'Slightly negative (' + nitrogenRaw + ') — consider adding a legume'; }
+  else { nitrogenLevel = 'low'; nitrogenLabel = 'Deficit (' + nitrogenRaw + ') — add peas or beans for nitrogen'; }
+  setGauge('nitrogen', nitrogenPct, nitrogenLevel, nitrogenLabel);
+
+  // --- Root Diversity ---
+  const depthSet = new Set(props.map(p => p.root_depth).filter(Boolean));
+  const rootPct = (depthSet.size / 3) * 100;
+  const rootLevel = depthSet.size >= 3 ? 'great' : depthSet.size >= 2 ? 'good' : 'okay';
+  const missing = ['shallow', 'medium', 'deep'].filter(d => !depthSet.has(d));
+  const rootLabel = depthSet.size >= 3
+    ? 'Full coverage — shallow + medium + deep'
+    : depthSet.size + '/3 layers — missing ' + missing.join(', ');
+  setGauge('roots', rootPct, rootLevel, rootLabel);
+
+  // --- Vertical Coverage ---
+  const habitSet = new Set(props.map(p => p.growth_habit).filter(Boolean));
+  const allHabits = ['ground-cover', 'low', 'medium', 'tall', 'climbing'];
+  const vertPct = (habitSet.size / allHabits.length) * 100;
+  const vertLevel = habitSet.size >= 4 ? 'great' : habitSet.size >= 3 ? 'good' : habitSet.size >= 2 ? 'okay' : 'low';
+  const vertMissing = allHabits.filter(h => !habitSet.has(h));
+  const vertLabel = habitSet.size >= 4
+    ? 'Excellent — ' + habitSet.size + ' growth layers'
+    : habitSet.size + '/' + allHabits.length + ' layers — missing ' + vertMissing.join(', ');
+  setGauge('vertical', vertPct, vertLevel, vertLabel);
+
+  // --- Water Demand ---
+  const waterScores = { 'low': 1, 'medium': 2, 'high': 3 };
+  const waterAvg = props.reduce((s, p) => s + (waterScores[p.water_need] || 2), 0) / props.length;
+  const waterPct = (waterAvg / 3) * 100;
+  const waterLevel = waterAvg <= 1.5 ? 'water-low' : waterAvg <= 2.2 ? 'water-med' : 'water-high';
+  const waterLabel = waterAvg <= 1.5
+    ? 'Low demand — drought-friendly selection'
+    : waterAvg <= 2.2
+    ? 'Moderate demand — regular watering needed'
+    : 'High demand — consider drought-tolerant additions';
+  setGauge('water', waterPct, waterLevel, waterLabel);
+
+  // --- Pollinator Score ---
+  const pollinatorTotal = props.reduce((s, p) => s + (p.pollinator_score || 0), 0);
+  const pollinatorMax = props.length * 3;
+  const pollinatorPct = (pollinatorTotal / pollinatorMax) * 100;
+  const pollinatorLevel = pollinatorPct >= 60 ? 'great' : pollinatorPct >= 35 ? 'good' : pollinatorPct >= 15 ? 'okay' : 'low';
+  const pollinatorLabel = pollinatorPct >= 60
+    ? 'Strong (' + pollinatorTotal + '/' + pollinatorMax + ') — great beneficial insect habitat'
+    : pollinatorPct >= 35
+    ? 'Moderate (' + pollinatorTotal + '/' + pollinatorMax + ') — add herbs for more pollinators'
+    : 'Weak (' + pollinatorTotal + '/' + pollinatorMax + ') — add basil, dill, or chives';
+  setGauge('pollinator', pollinatorPct, pollinatorLevel, pollinatorLabel);
+
+  // --- Family Diversity ---
+  const familySet = new Set(sel.map(p => p.family).filter(Boolean));
+  const familyPct = Math.min(100, (familySet.size / sel.length) * 100);
+  const familyLevel = familySet.size >= sel.length * 0.7 ? 'great' : familySet.size >= sel.length * 0.5 ? 'good' : 'okay';
+  const familyLabel = familySet.size + ' families across ' + sel.length + ' plants — ' + (
+    familySet.size >= sel.length * 0.7 ? 'excellent diversity' : 'some overlap, watch for disease pressure'
+  );
+  setGauge('family', familyPct, familyLevel, familyLabel);
+
+  // --- Pest Coverage ---
+  const pestList = document.getElementById('stat-pest-list');
+  const allPests = new Set();
+  props.forEach(p => (p.pest_deters || []).forEach(pest => allPests.add(pest)));
+  if (allPests.size > 0) {
+    pestList.innerHTML = [...allPests].sort().map(pest =>
+      '<span class="pest-chip pest-chip--covered">' + pest.replace(/-/g, ' ') + '</span>'
+    ).join('');
+  } else {
+    pestList.innerHTML = '<span class="stat-value">No pest deterrence — add herbs like basil, dill, or rosemary</span>';
+  }
+
+  // --- Suggestions ---
+  const suggestions = [];
+  if (fixerCount === 0 && feederCount > 0) {
+    suggestions.push('Add a nitrogen fixer (peas) to feed your ' + feederCount + ' heavy feeder(s)');
+  }
+  if (!habitSet.has('ground-cover') && sel.length >= 3) {
+    suggestions.push('No ground cover — spinach, squash, or thyme would shade the soil');
+  }
+  if (!habitSet.has('tall') && !habitSet.has('climbing') && sel.length >= 3) {
+    suggestions.push('No vertical structure — corn, tomatoes, or peas would use upper space');
+  }
+  if (pollinatorTotal === 0) {
+    suggestions.push('No pollinator attractors — flowering herbs draw beneficial insects');
+  }
+  if (allPests.size === 0 && sel.length >= 2) {
+    suggestions.push('No pest deterrence — aromatic herbs provide natural protection');
+  }
+  if (waterAvg > 2.5) {
+    suggestions.push('High water demand — rosemary, thyme, or sage need less water');
+  }
+
+  const sugEl = document.getElementById('stat-suggestions');
+  sugEl.innerHTML = suggestions.map(s =>
+    '<div class="suggestion">' + s + '</div>'
+  ).join('');
+}
+
+function setGauge(id, pct, level, label) {
+  const fill = document.getElementById('stat-' + id);
+  const val = document.getElementById('stat-' + id + '-val');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.dataset.level = level;
+  }
+  if (val) val.textContent = label;
+}
+
 
 // --- Timeline ---
 

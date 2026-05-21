@@ -5,16 +5,19 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids",
+        "mosquitoes",
+        "thrips",
+        "flies"
+      ]
     },
     "family": "lamiaceae",
     "timing": {
@@ -41,16 +44,14 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "solanaceae",
     "timing": {
@@ -77,16 +78,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "medium",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "brassicaceae",
     "timing": {
@@ -113,16 +112,14 @@
     "lifecycle": "biennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "medium",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "brassicaceae",
     "timing": {
@@ -149,16 +146,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "brassicaceae",
     "timing": {
@@ -185,16 +180,16 @@
     "lifecycle": "biennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "deep",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 2,
+      "yield_density": "high",
+      "pest_deters": [
+        "carrot-fly"
+      ]
     },
     "family": "apiaceae",
     "timing": {
@@ -221,16 +216,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "medium",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "brassicaceae",
     "timing": {
@@ -257,16 +250,16 @@
     "lifecycle": "biennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "medium",
+      "water_need": "high",
+      "sun_need": "partial",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": [
+        "cabbage-moth"
+      ]
     },
     "family": "apiaceae",
     "timing": {
@@ -293,16 +286,17 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "high",
+      "pest_deters": [
+        "aphids",
+        "japanese-beetles"
+      ]
     },
     "family": "amaryllidaceae",
     "timing": {
@@ -329,16 +323,17 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "partial",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids",
+        "spider-mites"
+      ]
     },
     "family": "apiaceae",
     "timing": {
@@ -365,16 +360,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "tall",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "low",
+      "pest_deters": []
     },
     "family": "poaceae",
     "timing": {
@@ -401,16 +394,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "climbing",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 2,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "cucurbitaceae",
     "timing": {
@@ -437,16 +428,18 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids",
+        "spider-mites",
+        "squash-bugs"
+      ]
     },
     "family": "apiaceae",
     "timing": {
@@ -473,16 +466,16 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids"
+      ]
     },
     "family": "solanaceae",
     "timing": {
@@ -509,16 +502,16 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids"
+      ]
     },
     "family": "solanaceae",
     "timing": {
@@ -545,16 +538,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "high",
+      "sun_need": "partial",
+      "pollinator_score": 0,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "asteraceae",
     "timing": {
@@ -581,16 +572,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "deep",
+      "growth_habit": "tall",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 2,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "malvaceae",
     "timing": {
@@ -617,16 +606,17 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids",
+        "cabbage-moth"
+      ]
     },
     "family": "lamiaceae",
     "timing": {
@@ -653,16 +643,16 @@
     "lifecycle": "biennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "partial",
+      "pollinator_score": 2,
+      "yield_density": "medium",
+      "pest_deters": [
+        "asparagus-beetle"
+      ]
     },
     "family": "apiaceae",
     "timing": {
@@ -689,16 +679,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "fixer",
+      "root_depth": "shallow",
+      "growth_habit": "climbing",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "fabaceae",
     "timing": {
@@ -725,16 +713,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "solanaceae",
     "timing": {
@@ -761,16 +747,14 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": []
     },
     "family": "solanaceae",
     "timing": {
@@ -797,16 +781,18 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "cabbage-moth",
+        "carrot-fly",
+        "bean-beetles"
+      ]
     },
     "family": "lamiaceae",
     "timing": {
@@ -833,16 +819,18 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "low",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "cabbage-moth",
+        "carrot-fly",
+        "flea-beetles"
+      ]
     },
     "family": "lamiaceae",
     "timing": {
@@ -869,16 +857,16 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "medium",
+      "pest_deters": [
+        "aphids"
+      ]
     },
     "family": "solanaceae",
     "timing": {
@@ -905,16 +893,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "ground-cover",
+      "water_need": "medium",
+      "sun_need": "partial",
+      "pollinator_score": 0,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "amaranthaceae",
     "timing": {
@@ -941,16 +927,14 @@
     "lifecycle": "perennial",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "deep",
+      "growth_habit": "ground-cover",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "convolvulaceae",
     "timing": {
@@ -977,16 +961,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "ground-cover",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 2,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "cucurbitaceae",
     "timing": {
@@ -1013,16 +995,18 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "ground-cover",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 3,
+      "yield_density": "medium",
+      "pest_deters": [
+        "cabbage-worm",
+        "corn-earworm",
+        "whiteflies"
+      ]
     },
     "family": "lamiaceae",
     "timing": {
@@ -1049,16 +1033,14 @@
     "lifecycle": "annual",
     "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "deep",
+      "growth_habit": "tall",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "high",
+      "pest_deters": []
     },
     "family": "solanaceae",
     "timing": {

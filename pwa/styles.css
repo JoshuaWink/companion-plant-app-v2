@@ -785,3 +785,120 @@ body, .card, .field-input, .plant-chip, .plant-grid, .selected-plants,
 .badge, .section-title, .timeline-row-bars {
   transition: background-color 0.6s ease, color 0.4s ease, border-color 0.4s ease;
 }
+
+/* ── Stats Panel ── */
+
+.stats-panel {
+  transition: opacity 0.4s ease;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cup-spacing-md);
+}
+
+.stat-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cup-spacing-xs);
+}
+
+.stat-gauge--wide {
+  grid-column: 1 / -1;
+}
+
+.stat-label {
+  font-size: var(--cup-font-size-sm);
+  font-weight: 600;
+  color: var(--cup-color-on-surface);
+}
+
+.stat-bar {
+  height: 12px;
+  background: var(--cup-color-accent-light);
+  border-radius: var(--cup-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: var(--cup-radius-full);
+  transition: width 0.6s ease, background-color 0.4s ease;
+  width: 0%;
+}
+
+/* Color coding: green = good, yellow = okay, red = needs attention */
+.stat-fill[data-level="great"] {
+  background: var(--cup-color-success);
+}
+.stat-fill[data-level="good"] {
+  background: var(--cup-color-primary);
+}
+.stat-fill[data-level="okay"] {
+  background: var(--cup-color-warning);
+}
+.stat-fill[data-level="low"] {
+  background: var(--cup-color-error);
+}
+/* For water: inverse scale — high demand = warning */
+.stat-fill[data-level="water-low"] {
+  background: var(--cup-color-success);
+}
+.stat-fill[data-level="water-med"] {
+  background: var(--cup-color-warning);
+}
+.stat-fill[data-level="water-high"] {
+  background: var(--cup-color-error);
+}
+
+.stat-value {
+  font-size: 0.75rem;
+  color: var(--cup-color-text-muted);
+  min-height: 1.2em;
+}
+
+.stat-pests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cup-spacing-xs);
+  min-height: 1.6em;
+}
+
+.pest-chip {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-accent-light);
+  color: var(--cup-color-on-surface);
+  font-weight: 500;
+}
+
+.pest-chip--covered {
+  background: var(--cup-color-success);
+  color: var(--cup-color-on-primary);
+}
+
+.stat-suggestions {
+  margin-top: var(--cup-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cup-spacing-xs);
+}
+
+.suggestion {
+  font-size: var(--cup-font-size-sm);
+  padding: var(--cup-spacing-xs) var(--cup-spacing-sm);
+  border-radius: var(--cup-radius-md);
+  background: var(--cup-color-accent-light);
+  color: var(--cup-color-on-surface);
+  border-left: 3px solid var(--cup-color-accent);
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
