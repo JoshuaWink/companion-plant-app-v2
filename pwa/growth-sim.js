@@ -28,6 +28,14 @@ const STAGE_COLORS = {
   senescence:   '#ff8a65',
 };
 
+const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function doyToDate(doy) {
+  const d = new Date(new Date().getFullYear(), 0);
+  d.setDate(doy);
+  return `${MONTH_ABBR[d.getMonth()]} ${d.getDate()}`;
+}
+
 // ── Zone → latitude mapping (approximate center of each zone band) ──
 const ZONE_LAT = {
   '1a': 65, '1b': 63, '2a': 60, '2b': 58,
@@ -218,6 +226,16 @@ export function initGrowthSim(plantList) {
   // Day slider
   document.getElementById('growth-day-slider')
     .addEventListener('input', onDaySlider);
+
+  // Planting DOY -> show calendar date
+  const doyInput = document.getElementById('growth-planting-doy');
+  const doyCalSpan = document.getElementById('growth-doy-cal');
+  function updateDoyCal() {
+    const v = parseInt(doyInput.value) || 120;
+    if (doyCalSpan) doyCalSpan.textContent = '= ' + doyToDate(v);
+  }
+  doyInput.addEventListener('input', updateDoyCal);
+  updateDoyCal();
 }
 
 // ── Run simulation ──
@@ -289,7 +307,9 @@ function onDaySlider() {
   const snap = seasonData[day];
   if (!snap) return;
 
-  document.getElementById('growth-day-label').textContent = day;
+  const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
+  const calDate = doyToDate(plantDoy + day);
+  document.getElementById('growth-day-label').textContent = `${day} \u2014 ${calDate}`;
 
   // Stage badge
   const badge = document.getElementById('growth-stage-badge');
@@ -394,9 +414,10 @@ function drawHeightChart(plant) {
   ctx.textAlign = 'center';
   ctx.fillStyle = '#8899aa';
   const step = Math.max(1, Math.floor(seasonData.length / 6));
+  const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
   for (let d = 0; d < seasonData.length; d += step) {
     const x = pad.left + (d / (seasonData.length - 1)) * cw;
-    ctx.fillText(`d${d}`, x, h - 6);
+    ctx.fillText(doyToDate(plantDoy + d), x, h - 6);
   }
 
   // Draw curves
@@ -451,8 +472,8 @@ function drawHeightCursor(day) {
   const { pad, cw, ch } = params;
   const x = pad.left + (day / (seasonData.length - 1)) * cw;
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1.5;
   ctx.setLineDash([4, 4]);
   ctx.beginPath();
   ctx.moveTo(x, pad.top);
