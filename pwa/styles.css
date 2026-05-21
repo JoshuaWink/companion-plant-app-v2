@@ -616,7 +616,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   overflow: hidden;
   opacity: 1;
   transition: opacity 1s ease;
@@ -634,7 +634,7 @@ body {
   font-size: 5rem;
   opacity: 0.22;
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   filter: drop-shadow(0 0 18px rgba(255,210,80,0.4));
   animation: sun-pulse 8s infinite ease-in-out;
   transition: opacity 1.5s ease;
@@ -673,7 +673,7 @@ body {
   border-radius: 50%;
   animation: sun-rotate 60s linear infinite;
   transition: opacity 1.5s ease;
-  z-index: 5;
+  z-index: 0;
 }
 
 [data-theme="night"] .day-ray {
@@ -717,7 +717,7 @@ body {
 .day-butterfly {
   position: fixed;
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   width: 18px;
   height: 14px;
   opacity: 0;
@@ -761,7 +761,7 @@ body {
 .day-bee {
   position: fixed;
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   width: 10px;
   height: 6px;
   background: #f0c830;
@@ -798,7 +798,7 @@ body {
 .day-seed {
   position: fixed;
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   width: 3px;
   height: 3px;
   border-radius: 50%;
