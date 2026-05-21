@@ -25,6 +25,25 @@ const GRID_PAD = 24;
 const EMOJI_SIZE = 24;
 const DEFAULT_CELL_CM = 15; // each cell = 15cm × 15cm (≈6in)
 
+// ── Soil Composition Model ──
+// Each soil type has modifiers based on USDA soil texture triangle
+const SOIL_TYPES = {
+  'sandy':      { label: 'Sandy',      sand: 85, silt: 10, clay:  5, waterFactor: 1.5,  rootFactor: 1.3,  n2Factor: 1.4, fieldCapacity: 0.10 },
+  'sandy-loam': { label: 'Sandy Loam', sand: 65, silt: 25, clay: 10, waterFactor: 1.25, rootFactor: 1.15, n2Factor: 1.2, fieldCapacity: 0.18 },
+  'loam':       { label: 'Loam',       sand: 40, silt: 40, clay: 20, waterFactor: 1.0,  rootFactor: 1.0,  n2Factor: 1.0, fieldCapacity: 0.27 },
+  'silt-loam':  { label: 'Silt Loam',  sand: 20, silt: 65, clay: 15, waterFactor: 0.9,  rootFactor: 0.9,  n2Factor: 0.85, fieldCapacity: 0.32 },
+  'clay-loam':  { label: 'Clay Loam',  sand: 30, silt: 35, clay: 35, waterFactor: 0.75, rootFactor: 0.7,  n2Factor: 0.6, fieldCapacity: 0.36 },
+  'clay':       { label: 'Clay',       sand: 20, silt: 20, clay: 60, waterFactor: 0.6,  rootFactor: 0.5,  n2Factor: 0.4, fieldCapacity: 0.42 },
+};
+// waterFactor: multiplier on water need (sandy drains fast → more watering)
+// rootFactor:  multiplier on effective root spread (clay restricts penetration)
+// n2Factor:    multiplier on nitrogen diffusion radius (sandy = faster diffusion)
+// fieldCapacity: cm³ water per cm³ soil at field capacity
+
+function getSoilType(bed) {
+  return SOIL_TYPES[bed.soilType || 'loam'] || SOIL_TYPES.loam;
+}
+
 // ── Undo/Redo ──
 let undoStack = [];
 let redoStack = [];
@@ -612,6 +631,27 @@ function renderSideView(bed) {
     sideCtx.arc(cx, rootBotY, 2.5, 0, Math.PI * 2);
     sideCtx.fill();
 
+    // Root lateral spread ellipse
+    const rootSpreadCm = m.root_spread_cm || m.root_depth_cm || 20;
+    const soil = getSoilType(bed);
+    const effectiveSpread = rootSpreadCm * soil.rootFactor;
+    const spreadPx = effectiveSpread * pxPerCmAbove * 0.5;
+    if (spreadPx > 4) {
+      const rootMidY = groundY + GROUND_H + (rootBotY - groundY - GROUND_H) * 0.5;
+      const rootHalfH = (rootBotY - groundY - GROUND_H) * 0.45;
+      sideCtx.fillStyle = isNight
+        ? 'rgba(143,188,143,0.08)' : 'rgba(139,115,85,0.08)';
+      sideCtx.strokeStyle = isNight
+        ? 'rgba(143,188,143,0.2)' : 'rgba(139,115,85,0.2)';
+      sideCtx.lineWidth = 0.75;
+      sideCtx.setLineDash([2, 4]);
+      sideCtx.beginPath();
+      sideCtx.ellipse(cx, rootMidY, spreadPx, Math.max(rootHalfH, 3), 0, 0, Math.PI * 2);
+      sideCtx.fill();
+      sideCtx.stroke();
+      sideCtx.setLineDash([]);
+    }
+
     // Stem line
     const stemW = m.mature_height_cm ? Math.max(1.5, Math.min(4, m.mature_height_cm / 80)) : 2;
     sideCtx.strokeStyle = isNight ? '#5a8a5a' : '#588157';
@@ -1052,7 +1092,8 @@ function renderBedStats(bed) {
     yieldKgM2 += (m.yield_kg_per_m2 || 0);
   }
 
-  const waterLWeek = (waterMlDay * 7) / 1000;
+  const soil = getSoilType(bed);
+  const waterLWeek = (waterMlDay * soil.waterFactor * 7) / 1000;
 
   // ── Nitrogen: proximity-aware (fixers only benefit nearby cells) ──
   // Build list of fixer cells and feeder cells
@@ -1067,8 +1108,10 @@ function renderBedStats(bed) {
       if (!m || m.nitrogen_g_per_m2 === undefined) continue;
       const nVal = m.nitrogen_g_per_m2;
       if (nVal > 0) {
-        // Fixer: nitrogen influence radius = root_depth_cm (lateral diffusion ~ root depth)
-        const radiusCm = m.root_depth_cm || m.spacing_cm || 30;
+        // Fixer: nitrogen influence radius = root_spread_cm × soil factors
+        const baseRadius = m.root_spread_cm || m.root_depth_cm || m.spacing_cm || 30;
+        const soil = getSoilType(bed);
+        const radiusCm = baseRadius * soil.rootFactor * soil.n2Factor;
         fixerCells.push({ r, c, nGm2: nVal, radiusCm });
       } else if (nVal < 0) {
         feederCells.push({ r, c, nGm2: nVal, pid });
@@ -1126,6 +1169,12 @@ function renderBedStats(bed) {
     html += '<div class="bed-stat"><span class="bed-stat-label">Bed Area</span><span class="bed-stat-value">' + displayArea(areaCm2) + '</span></div>';
     html += '<div class="bed-stat"><span class="bed-stat-label">Soil Volume</span><span class="bed-stat-value">' + displayVolume(soilVolL) + '</span></div>';
     html += '<div class="bed-stat"><span class="bed-stat-label">💧 Water</span><span class="bed-stat-value">' + displayVolume(waterLWeek) + '/week</span></div>';
+    // Soil composition info
+    html += '<div class="bed-stat"><span class="bed-stat-label">🌍 Soil</span><span class="bed-stat-value">' + soil.label + ' (' + soil.sand + '/' + soil.silt + '/' + soil.clay + ')</span></div>';
+    if (soil.waterFactor !== 1.0) {
+      const wAdj = soil.waterFactor > 1 ? '+' + Math.round((soil.waterFactor - 1) * 100) + '% (drains fast)' : Math.round((soil.waterFactor - 1) * 100) + '% (retains well)';
+      html += '<div class="bed-stat"><span class="bed-stat-label">🌊 Moisture</span><span class="bed-stat-value">' + wAdj + '</span></div>';
+    }
 
     if (totalFeeders > 0) {
       const nIcon = nCoverage >= 75 ? '✓' : (nCoverage >= 40 ? '~' : '⚠');
@@ -1142,6 +1191,13 @@ function renderBedStats(bed) {
 
   // Row 3: unit toggle + actions
   html += '<div class="bed-stat-actions">';
+  // Soil type selector
+  html += '<select class="bed-action" id="soil-type-select" title="Soil type">';
+  Object.entries(SOIL_TYPES).forEach(([key, st]) => {
+    const sel = (bed.soilType || 'loam') === key ? ' selected' : '';
+    html += '<option value="' + key + '"' + sel + '>' + st.label + '</option>';
+  });
+  html += '</select>';
   html += '<button class="bed-action" id="unit-toggle-btn">' + (unitPref === 'metric' ? '📏 Metric' : '📐 Imperial') + '</button>';
   html += '<button class="bed-action" id="export-png-btn" title="Save bed image">📸 Image</button>';
   html += '<button class="bed-action" id="export-json-btn" title="Export all beds">💾 Export</button>';
@@ -1196,6 +1252,13 @@ function renderBedStats(bed) {
   const sliderEl = document.getElementById('season-slider');
   if (sliderEl) {
     sliderEl.oninput = function() { setSeasonMonth(parseInt(this.value, 10)); };
+  }
+  const soilSelect = document.getElementById('soil-type-select');
+  if (soilSelect) {
+    soilSelect.onchange = function() {
+      const bed = getActiveBed();
+      if (bed) { bed.soilType = this.value; saveBeds(); renderBed(); }
+    };
   }
 
   // Rotation tabs

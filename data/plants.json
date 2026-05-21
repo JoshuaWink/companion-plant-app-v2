@@ -25,7 +25,8 @@
         "spread_cm": 25,
         "water_ml_per_day": 250,
         "nitrogen_g_per_m2": -3,
-        "yield_kg_per_m2": 1.5
+        "yield_kg_per_m2": 1.5,
+        "root_spread_cm": 20
       }
     },
     "family": "lamiaceae",
@@ -68,7 +69,8 @@
         "spread_cm": 45,
         "water_ml_per_day": 600,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 3.0
+        "yield_kg_per_m2": 3.0,
+        "root_spread_cm": 45
       }
     },
     "family": "solanaceae",
@@ -111,7 +113,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -12,
-        "yield_kg_per_m2": 1.8
+        "yield_kg_per_m2": 1.8,
+        "root_spread_cm": 50
       }
     },
     "family": "brassicaceae",
@@ -154,7 +157,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -10,
-        "yield_kg_per_m2": 1.5
+        "yield_kg_per_m2": 1.5,
+        "root_spread_cm": 50
       }
     },
     "family": "brassicaceae",
@@ -197,7 +201,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -10,
-        "yield_kg_per_m2": 3.5
+        "yield_kg_per_m2": 3.5,
+        "root_spread_cm": 45
       }
     },
     "family": "brassicaceae",
@@ -242,7 +247,8 @@
         "spread_cm": 8,
         "water_ml_per_day": 200,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 4.0
+        "yield_kg_per_m2": 4.0,
+        "root_spread_cm": 19
       }
     },
     "family": "apiaceae",
@@ -285,7 +291,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -12,
-        "yield_kg_per_m2": 2.0
+        "yield_kg_per_m2": 2.0,
+        "root_spread_cm": 50
       }
     },
     "family": "brassicaceae",
@@ -330,7 +337,8 @@
         "spread_cm": 25,
         "water_ml_per_day": 700,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 4.0
+        "yield_kg_per_m2": 4.0,
+        "root_spread_cm": 25
       }
     },
     "family": "apiaceae",
@@ -376,7 +384,8 @@
         "spread_cm": 20,
         "water_ml_per_day": 150,
         "nitrogen_g_per_m2": -1,
-        "yield_kg_per_m2": 1.0
+        "yield_kg_per_m2": 1.0,
+        "root_spread_cm": 16
       }
     },
     "family": "amaryllidaceae",
@@ -422,7 +431,8 @@
         "spread_cm": 15,
         "water_ml_per_day": 200,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 1.0
+        "yield_kg_per_m2": 1.0,
+        "root_spread_cm": 12
       }
     },
     "family": "apiaceae",
@@ -465,7 +475,8 @@
         "spread_cm": 30,
         "water_ml_per_day": 600,
         "nitrogen_g_per_m2": -15,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 60
       }
     },
     "family": "poaceae",
@@ -508,7 +519,8 @@
         "spread_cm": 90,
         "water_ml_per_day": 700,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 5.0
+        "yield_kg_per_m2": 5.0,
+        "root_spread_cm": 100
       }
     },
     "family": "cucurbitaceae",
@@ -555,7 +567,8 @@
         "spread_cm": 25,
         "water_ml_per_day": 200,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 0.8
+        "yield_kg_per_m2": 0.8,
+        "root_spread_cm": 22
       }
     },
     "family": "apiaceae",
@@ -600,7 +613,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 2.0
+        "yield_kg_per_m2": 2.0,
+        "root_spread_cm": 50
       }
     },
     "family": "solanaceae",
@@ -645,7 +659,8 @@
         "spread_cm": 40,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -7,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 40
       }
     },
     "family": "solanaceae",
@@ -688,7 +703,8 @@
         "spread_cm": 25,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": -5,
-        "yield_kg_per_m2": 3.0
+        "yield_kg_per_m2": 3.0,
+        "root_spread_cm": 20
       }
     },
     "family": "asteraceae",
@@ -731,7 +747,8 @@
         "spread_cm": 45,
         "water_ml_per_day": 400,
         "nitrogen_g_per_m2": -6,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 52
       }
     },
     "family": "malvaceae",
@@ -777,7 +794,8 @@
         "spread_cm": 40,
         "water_ml_per_day": 150,
         "nitrogen_g_per_m2": -1,
-        "yield_kg_per_m2": 0.5
+        "yield_kg_per_m2": 0.5,
+        "root_spread_cm": 32
       }
     },
     "family": "lamiaceae",
@@ -822,7 +840,8 @@
         "spread_cm": 20,
         "water_ml_per_day": 200,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 1.2
+        "yield_kg_per_m2": 1.2,
+        "root_spread_cm": 16
       }
     },
     "family": "apiaceae",
@@ -865,7 +884,8 @@
         "spread_cm": 15,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": 12,
-        "yield_kg_per_m2": 2.0
+        "yield_kg_per_m2": 2.0,
+        "root_spread_cm": 40
       }
     },
     "family": "fabaceae",
@@ -908,7 +928,8 @@
         "spread_cm": 35,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 4.5
+        "yield_kg_per_m2": 4.5,
+        "root_spread_cm": 50
       }
     },
     "family": "solanaceae",
@@ -951,7 +972,8 @@
         "spread_cm": 45,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -7,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 45
       }
     },
     "family": "solanaceae",
@@ -998,7 +1020,8 @@
         "spread_cm": 60,
         "water_ml_per_day": 100,
         "nitrogen_g_per_m2": -1,
-        "yield_kg_per_m2": 0.3
+        "yield_kg_per_m2": 0.3,
+        "root_spread_cm": 70
       }
     },
     "family": "lamiaceae",
@@ -1045,7 +1068,8 @@
         "spread_cm": 50,
         "water_ml_per_day": 100,
         "nitrogen_g_per_m2": -1,
-        "yield_kg_per_m2": 0.3
+        "yield_kg_per_m2": 0.3,
+        "root_spread_cm": 40
       }
     },
     "family": "lamiaceae",
@@ -1090,7 +1114,8 @@
         "spread_cm": 40,
         "water_ml_per_day": 500,
         "nitrogen_g_per_m2": -7,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 40
       }
     },
     "family": "solanaceae",
@@ -1133,7 +1158,8 @@
         "spread_cm": 15,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": -5,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 20
       }
     },
     "family": "amaranthaceae",
@@ -1176,7 +1202,8 @@
         "spread_cm": 90,
         "water_ml_per_day": 400,
         "nitrogen_g_per_m2": -5,
-        "yield_kg_per_m2": 3.5
+        "yield_kg_per_m2": 3.5,
+        "root_spread_cm": 90
       }
     },
     "family": "convolvulaceae",
@@ -1219,7 +1246,8 @@
         "spread_cm": 90,
         "water_ml_per_day": 700,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 5.0
+        "yield_kg_per_m2": 5.0,
+        "root_spread_cm": 90
       }
     },
     "family": "cucurbitaceae",
@@ -1266,7 +1294,8 @@
         "spread_cm": 25,
         "water_ml_per_day": 100,
         "nitrogen_g_per_m2": -1,
-        "yield_kg_per_m2": 0.3
+        "yield_kg_per_m2": 0.3,
+        "root_spread_cm": 34
       }
     },
     "family": "lamiaceae",
@@ -1309,7 +1338,8 @@
         "spread_cm": 60,
         "water_ml_per_day": 800,
         "nitrogen_g_per_m2": -12,
-        "yield_kg_per_m2": 5.0
+        "yield_kg_per_m2": 5.0,
+        "root_spread_cm": 80
       }
     },
     "family": "solanaceae",
@@ -1496,7 +1526,8 @@
         "spread_cm": 20,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": 15,
-        "yield_kg_per_m2": 2.5
+        "yield_kg_per_m2": 2.5,
+        "root_spread_cm": 35
       }
     },
     "family": "fabaceae",
@@ -1539,7 +1570,8 @@
         "spread_cm": 15,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": -4,
-        "yield_kg_per_m2": 3.5
+        "yield_kg_per_m2": 3.5,
+        "root_spread_cm": 18
       }
     },
     "family": "amaranthaceae",
@@ -1960,7 +1992,8 @@
         "spread_cm": 30,
         "water_ml_per_day": 400,
         "nitrogen_g_per_m2": -3,
-        "yield_kg_per_m2": 1.5
+        "yield_kg_per_m2": 1.5,
+        "root_spread_cm": 32
       }
     },
     "family": "apiaceae",
@@ -2039,7 +2072,8 @@
         "spread_cm": 10,
         "water_ml_per_day": 200,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 2.0
+        "yield_kg_per_m2": 2.0,
+        "root_spread_cm": 13
       }
     },
     "family": "amaryllidaceae",
@@ -2336,7 +2370,8 @@
         "spread_cm": 20,
         "water_ml_per_day": 150,
         "nitrogen_g_per_m2": 0,
-        "yield_kg_per_m2": 0.0
+        "yield_kg_per_m2": 0.0,
+        "root_spread_cm": 14
       }
     },
     "family": "asteraceae",
@@ -2433,7 +2468,8 @@
         "spread_cm": 60,
         "water_ml_per_day": 300,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 0.5
+        "yield_kg_per_m2": 0.5,
+        "root_spread_cm": 90
       }
     },
     "family": "lamiaceae",
@@ -2746,7 +2782,8 @@
         "spread_cm": 8,
         "water_ml_per_day": 150,
         "nitrogen_g_per_m2": -2,
-        "yield_kg_per_m2": 3.0
+        "yield_kg_per_m2": 3.0,
+        "root_spread_cm": 16
       }
     },
     "family": "brassicaceae",
@@ -3005,7 +3042,8 @@
         "spread_cm": 120,
         "water_ml_per_day": 800,
         "nitrogen_g_per_m2": -8,
-        "yield_kg_per_m2": 5.0
+        "yield_kg_per_m2": 5.0,
+        "root_spread_cm": 150
       }
     },
     "family": "cucurbitaceae",

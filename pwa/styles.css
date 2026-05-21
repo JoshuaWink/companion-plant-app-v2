@@ -1693,6 +1693,12 @@ body, .card, .field-input, .plant-chip, .plant-grid, .selected-plants,
   background: rgba(188, 71, 73, 0.08);
 }
 
+select.bed-action {
+  appearance: auto;
+  padding-right: 20px;
+  min-width: 90px;
+}
+
 /* ── Mobile ── */
 
 @media (max-width: 600px) {
