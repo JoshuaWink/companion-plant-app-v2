@@ -12,6 +12,48 @@
 - **Garden Theme** — Warm parchment/sage/honey palette, Nunito font, plant emoji chips
 - **Night Mode** — Deep forest palette, 18 fireflies, 25 stars, 6 crickets, moon, localStorage toggle
 
+## Next Up
+
+### 📊 M5: Garden Stats & Theorycrafting
+
+The feature that transforms the app from reference tool → planning engine → learning tool.
+
+**Concept**: Every plant gets a stat sheet — quantitative attributes that explain *why* companion relationships work. The garden aggregates these into real-time metrics. Add a plant, watch the stats shift. Min-max your polyculture.
+
+**Per-Plant Attributes** (extend `plants.json`):
+
+| Attribute | Values | Purpose |
+|-----------|--------|---------|
+| `nitrogen_role` | fixer / heavy-feeder / light-feeder / neutral | Nutrient budget |
+| `root_depth` | shallow / medium / deep | Subterranean diversity |
+| `growth_habit` | ground-cover / low / medium / tall / climbing | Vertical space stacking |
+| `water_need` | low / medium / high | Water budget |
+| `sun_need` | full / partial / shade | Light layer optimization |
+| `pest_deterrence` | list of pests repelled | IPM coverage |
+| `pollinator_score` | 0–3 | Beneficial insect habitat |
+| `yield_density` | low / medium / high | Space efficiency |
+
+**Garden-Level Aggregation**:
+- **Nitrogen Balance** — fixers vs feeders. Positive = self-sustaining.
+- **Root Diversity** — how many depth layers are utilized. Higher = less competition.
+- **Vertical Coverage** — ground-to-canopy ratio. Full stack = efficient light use.
+- **Pest Coverage Map** — which common pests are naturally managed.
+- **Pollinator Rating** — is the garden attracting beneficial insects?
+- **Family Diversity** — monoculture risk index.
+- **Water Profile** — total demand and consistency.
+
+**UX Vision**: A panel with bar gauges or radar chart. Color-coded: green = strong, yellow = could improve, red = gap. Gentle suggestions like *"No nitrogen fixers — consider peas or beans."* Stats shift in real-time as plants are added/removed.
+
+**Why it matters**: The stats teach the *why*. A user who starts by following companion suggestions eventually learns "I'm adding beans because my nitrogen balance is negative" — and now they understand polyculture at a deeper level. The theorycrafting IS the education. Serves hobbyists (traffic-light simplicity), farmers (nutrient budgets), and ag scientists (composable attribute analysis).
+
+**Implementation phases**:
+1. Populate attributes for 30 plants in `plants.json`
+2. Garden-level aggregation in Rust/WASM
+3. Stats panel UI with gauges and suggestions
+4. Radar chart visualization (SVG or canvas)
+
+---
+
 ## Future Ideas
 
 ### 🐝 Bumblebee Cursor
