@@ -74,6 +74,9 @@
 
     <section class="card stats-panel" id="stats-panel" aria-label="Garden statistics" hidden>
       <h2 class="section-title">📊 Garden Stats</h2>
+      <button class="stats-detail-toggle" id="stats-detail-toggle" aria-label="Toggle detailed view">
+        <span id="stats-detail-icon">🔬</span> <span id="stats-detail-label">Details</span>
+      </button>
       <div class="stats-grid">
         <div class="stat-gauge" data-stat="nitrogen">
           <div class="stat-label">🧪 Nitrogen Balance</div>
@@ -109,6 +112,25 @@
           <div class="stat-label">🛡️ Pest Coverage</div>
           <div class="stat-pests" id="stat-pest-list"></div>
         </div>
+      </div>
+      <div class="stats-detail" id="stats-detail" hidden>
+        <table class="stats-table" id="stats-table">
+          <thead>
+            <tr>
+              <th>Plant</th>
+              <th>N₂</th>
+              <th>Roots</th>
+              <th>Height</th>
+              <th>Water</th>
+              <th>Sun</th>
+              <th>Poll.</th>
+              <th>Yield</th>
+              <th>Pests Deterred</th>
+            </tr>
+          </thead>
+          <tbody id="stats-table-body"></tbody>
+        </table>
+        <div class="stats-raw" id="stats-raw"></div>
       </div>
       <div class="stat-suggestions" id="stat-suggestions"></div>
     </section>

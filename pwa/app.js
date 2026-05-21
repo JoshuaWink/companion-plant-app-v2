@@ -445,6 +445,10 @@ function updateStats() {
   ).join('');
 }
 
+  // Refresh detail table if open
+  updateStatsDetail();
+
+
 function setGauge(id, pct, level, label) {
   const fill = document.getElementById('stat-' + id);
   const val = document.getElementById('stat-' + id + '-val');
@@ -454,6 +458,109 @@ function setGauge(id, pct, level, label) {
   }
   if (val) val.textContent = label;
 }
+// --- Stats Detail Toggle ---
+
+function initStatsDetail() {
+  const toggle = document.getElementById('stats-detail-toggle');
+  if (!toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const detail = document.getElementById('stats-detail');
+    const isOpen = !detail.hidden;
+    detail.hidden = isOpen;
+    toggle.setAttribute('aria-pressed', isOpen ? 'false' : 'true');
+    document.getElementById('stats-detail-label').textContent = isOpen ? 'Details' : 'Summary';
+    if (!isOpen) updateStatsDetail();
+  });
+}
+
+function updateStatsDetail() {
+  const detail = document.getElementById('stats-detail');
+  if (!detail || detail.hidden) return;
+
+  const sel = [...selected].map(id => plants.find(p => p.id === id)).filter(Boolean);
+  const props = sel.map(p => p.properties).filter(Boolean);
+
+  // --- Per-plant attribute table ---
+  const tbody = document.getElementById('stats-table-body');
+  const nitrogenIcons = { 'fixer': '+N', 'heavy-feeder': '-N', 'light-feeder': '~', 'neutral': '~' };
+  const nitrogenClass = { 'fixer': 'cell-fixer', 'heavy-feeder': 'cell-heavy', 'light-feeder': 'cell-light', 'neutral': 'cell-neutral' };
+  const waterClass = { 'low': 'cell-pill--low', 'medium': 'cell-pill--med', 'high': 'cell-pill--high' };
+  const sunClass = { 'full': 'cell-pill--full', 'partial': 'cell-pill--partial', 'shade': 'cell-pill--low' };
+
+  tbody.innerHTML = sel.map((p, i) => {
+    const pr = p.properties || {};
+    const pests = (pr.pest_deters || []).map(d => d.replace(/-/g, ' ')).join(', ') || '—';
+    return '<tr>' +
+      '<td>' + emojiFor(p.id) + ' ' + p.name + '</td>' +
+      '<td class="' + (nitrogenClass[pr.nitrogen_role] || '') + '">' + (nitrogenIcons[pr.nitrogen_role] || '?') + '</td>' +
+      '<td>' + (pr.root_depth || '?') + '</td>' +
+      '<td>' + (pr.growth_habit || '?') + '</td>' +
+      '<td><span class="cell-pill ' + (waterClass[pr.water_need] || '') + '">' + (pr.water_need || '?') + '</span></td>' +
+      '<td><span class="cell-pill ' + (sunClass[pr.sun_need] || '') + '">' + (pr.sun_need || '?') + '</span></td>' +
+      '<td>' + (pr.pollinator_score != null ? pr.pollinator_score + '/3' : '?') + '</td>' +
+      '<td>' + (pr.yield_density || '?') + '</td>' +
+      '<td>' + pests + '</td>' +
+      '</tr>';
+  }).join('');
+
+  // --- Raw aggregated numbers ---
+  const rawEl = document.getElementById('stats-raw');
+  const nitrogenScores = { 'fixer': 2, 'light-feeder': 0, 'neutral': 0, 'heavy-feeder': -1 };
+  const waterScores = { 'low': 1, 'medium': 2, 'high': 3 };
+
+  const nRaw = props.reduce((s, p) => s + (nitrogenScores[p.nitrogen_role] || 0), 0);
+  const fixers = props.filter(p => p.nitrogen_role === 'fixer').length;
+  const heavyFeeders = props.filter(p => p.nitrogen_role === 'heavy-feeder').length;
+  const lightFeeders = props.filter(p => p.nitrogen_role === 'light-feeder').length;
+
+  const depthCounts = {};
+  const habitCounts = {};
+  const waterCounts = {};
+  const familyCounts = {};
+  const allPests = {};
+
+  props.forEach(p => {
+    depthCounts[p.root_depth] = (depthCounts[p.root_depth] || 0) + 1;
+    habitCounts[p.growth_habit] = (habitCounts[p.growth_habit] || 0) + 1;
+    waterCounts[p.water_need] = (waterCounts[p.water_need] || 0) + 1;
+    (p.pest_deters || []).forEach(pest => { allPests[pest] = (allPests[pest] || 0) + 1; });
+  });
+  sel.forEach(p => {
+    if (p.family) familyCounts[p.family] = (familyCounts[p.family] || 0) + 1;
+  });
+
+  const polTotal = props.reduce((s, p) => s + (p.pollinator_score || 0), 0);
+  const polMax = props.length * 3;
+  const waterAvg = props.reduce((s, p) => s + (waterScores[p.water_need] || 2), 0) / props.length;
+
+  function fmtMap(obj) {
+    return Object.entries(obj).sort((a,b) => b[1] - a[1]).map(([k,v]) => k + ': ' + v).join(', ');
+  }
+
+  rawEl.innerHTML =
+    '<div class="raw-section"><span class="raw-label">Nitrogen Budget:</span> ' +
+    '<span class="raw-value">score=' + nRaw + ' (fixers=' + fixers + ' heavy=' + heavyFeeders + ' light=' + lightFeeders + ')</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Root Layers:</span> ' +
+    '<span class="raw-value">' + Object.keys(depthCounts).length + '/3 &mdash; ' + fmtMap(depthCounts) + '</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Growth Layers:</span> ' +
+    '<span class="raw-value">' + Object.keys(habitCounts).length + '/5 &mdash; ' + fmtMap(habitCounts) + '</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Water Demand:</span> ' +
+    '<span class="raw-value">avg=' + waterAvg.toFixed(2) + '/3.00 &mdash; ' + fmtMap(waterCounts) + '</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Pollinator:</span> ' +
+    '<span class="raw-value">' + polTotal + '/' + polMax + ' (' + (polTotal/polMax*100).toFixed(0) + '%)</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Families:</span> ' +
+    '<span class="raw-value">' + Object.keys(familyCounts).length + '/' + sel.length + ' &mdash; ' + fmtMap(familyCounts) + '</span></div>' +
+
+    '<div class="raw-section"><span class="raw-label">Pest Coverage:</span> ' +
+    '<span class="raw-value">' + Object.keys(allPests).length + ' pests &mdash; ' + (Object.keys(allPests).length > 0 ? fmtMap(allPests) : 'none') + '</span></div>';
+}
+
 
 
 // --- Timeline ---
@@ -702,3 +809,4 @@ function spawnNightDecorations() {
 
 // Init night mode immediately (no WASM dependency)
 initNightMode();
+initStatsDetail();

@@ -662,6 +662,25 @@ body {
 [data-theme="night"] .plant-chip:hover {
   background: rgba(143,188,143,0.12);
 }
+[data-theme="night"] .plant-chip[aria-selected="true"] {
+  background: var(--cup-color-primary);
+  color: #ffffff;
+  border-color: var(--cup-color-primary);
+  box-shadow: 0 0 0 2px rgba(143, 188, 143, 0.4);
+}
+
+[data-theme="night"] .plant-chip.companion-highlight {
+  background: rgba(124, 191, 124, 0.15);
+  border-color: var(--cup-color-success);
+  box-shadow: 0 0 0 2px rgba(124, 191, 124, 0.3);
+}
+
+[data-theme="night"] .plant-chip.antagonist-highlight {
+  background: rgba(224, 112, 112, 0.15);
+  border-color: var(--cup-color-error);
+  box-shadow: 0 0 0 2px rgba(224, 112, 112, 0.3);
+}
+
 
 [data-theme="night"] .night-toggle {
   background: var(--cup-color-accent);
@@ -901,4 +920,125 @@ body, .card, .field-input, .plant-chip, .plant-grid, .selected-plants,
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Stats Detail View ── */
+
+.stats-detail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-accent-light);
+  color: var(--cup-color-on-surface);
+  cursor: pointer;
+  margin-left: var(--cup-spacing-sm);
+  transition: background 0.2s, border-color 0.2s;
+  vertical-align: middle;
+}
+
+.stats-detail-toggle:hover {
+  border-color: var(--cup-color-primary);
+  background: rgba(88, 129, 87, 0.12);
+}
+
+.stats-detail-toggle[aria-pressed="true"] {
+  background: var(--cup-color-primary);
+  color: var(--cup-color-on-primary);
+  border-color: var(--cup-color-primary);
+}
+
+[data-theme="night"] .stats-detail-toggle[aria-pressed="true"] {
+  background: var(--cup-color-primary);
+  color: #0f1a0f;
+}
+
+.stats-detail {
+  margin-top: var(--cup-spacing-md);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.stats-table th {
+  text-align: left;
+  padding: 6px 8px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cup-color-text-muted);
+  border-bottom: 2px solid var(--cup-color-border);
+  position: sticky;
+  top: 0;
+  background: var(--cup-color-surface-alt);
+}
+
+.stats-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--cup-color-border);
+  color: var(--cup-color-on-surface);
+}
+
+.stats-table tr:hover td {
+  background: rgba(88, 129, 87, 0.06);
+}
+
+[data-theme="night"] .stats-table tr:hover td {
+  background: rgba(143, 188, 143, 0.08);
+}
+
+.stats-table .cell-fixer { color: var(--cup-color-success); font-weight: 600; }
+.stats-table .cell-heavy { color: var(--cup-color-error); font-weight: 600; }
+.stats-table .cell-light { color: var(--cup-color-text-muted); }
+.stats-table .cell-neutral { color: var(--cup-color-text-muted); }
+
+.stats-table .cell-pill {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--cup-radius-full);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.stats-table .cell-pill--low { background: rgba(124,191,124,0.15); color: var(--cup-color-success); }
+.stats-table .cell-pill--med { background: rgba(212,160,74,0.15); color: var(--cup-color-warning); }
+.stats-table .cell-pill--high { background: rgba(224,112,112,0.15); color: var(--cup-color-error); }
+.stats-table .cell-pill--full { background: rgba(88,129,87,0.12); color: var(--cup-color-primary); }
+.stats-table .cell-pill--partial { background: rgba(212,160,74,0.12); color: var(--cup-color-warning); }
+
+.stats-raw {
+  margin-top: var(--cup-spacing-md);
+  padding: var(--cup-spacing-sm);
+  background: var(--cup-color-surface-alt);
+  border-radius: var(--cup-radius-md);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--cup-color-on-surface);
+  overflow-x: auto;
+}
+
+.stats-raw .raw-section {
+  margin-bottom: var(--cup-spacing-sm);
+}
+
+.stats-raw .raw-label {
+  font-weight: 700;
+  color: var(--cup-color-primary);
+  margin-right: 8px;
+}
+
+.stats-raw .raw-value {
+  color: var(--cup-color-accent);
 }
