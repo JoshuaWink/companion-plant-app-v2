@@ -28,8 +28,169 @@ const STAGE_COLORS = {
   senescence:   '#ff8a65',
 };
 
+// ── Zone → latitude mapping (approximate center of each zone band) ──
+const ZONE_LAT = {
+  '1a': 65, '1b': 63, '2a': 60, '2b': 58,
+  '3a': 55, '3b': 53, '4a': 50, '4b': 48,
+  '5a': 45, '5b': 43, '6a': 40, '6b': 38,
+  '7a': 36, '7b': 34, '8a': 32, '8b': 31,
+  '9a': 29, '9b': 28, '10a': 27, '10b': 26,
+  '11a': 25, '11b': 24, '12a': 22, '12b': 20, '13a': 18, '13b': 16,
+};
+
+// ── US cities with lat + typical temps + zone ──
+const CITIES = [
+  { name: 'Anchorage, AK',      lat: 61.2, zone: '4b', tempH: 18, tempL: 8 },
+  { name: 'Minneapolis, MN',    lat: 44.9, zone: '4b', tempH: 27, tempL: 16 },
+  { name: 'Denver, CO',         lat: 39.7, zone: '5b', tempH: 30, tempL: 14 },
+  { name: 'Chicago, IL',        lat: 41.9, zone: '5b', tempH: 28, tempL: 17 },
+  { name: 'Boston, MA',         lat: 42.4, zone: '6a', tempH: 27, tempL: 17 },
+  { name: 'Seattle, WA',        lat: 47.6, zone: '8b', tempH: 24, tempL: 13 },
+  { name: 'Portland, OR',       lat: 45.5, zone: '8b', tempH: 26, tempL: 13 },
+  { name: 'Kansas City, MO',    lat: 39.1, zone: '6a', tempH: 31, tempL: 19 },
+  { name: 'Nashville, TN',      lat: 36.2, zone: '7a', tempH: 31, tempL: 19 },
+  { name: 'Charlotte, NC',      lat: 35.2, zone: '7b', tempH: 32, tempL: 20 },
+  { name: 'Atlanta, GA',        lat: 33.7, zone: '7b', tempH: 32, tempL: 21 },
+  { name: 'Dallas, TX',         lat: 32.8, zone: '8a', tempH: 35, tempL: 23 },
+  { name: 'Austin, TX',         lat: 30.3, zone: '8b', tempH: 35, tempL: 22 },
+  { name: 'Phoenix, AZ',        lat: 33.4, zone: '9b', tempH: 41, tempL: 25 },
+  { name: 'Los Angeles, CA',    lat: 34.1, zone: '10a', tempH: 28, tempL: 16 },
+  { name: 'San Francisco, CA',  lat: 37.8, zone: '10a', tempH: 21, tempL: 12 },
+  { name: 'San Diego, CA',      lat: 32.7, zone: '10b', tempH: 25, tempL: 16 },
+  { name: 'Miami, FL',          lat: 25.8, zone: '10b', tempH: 33, tempL: 24 },
+  { name: 'Honolulu, HI',       lat: 21.3, zone: '12a', tempH: 31, tempL: 23 },
+  { name: 'New York, NY',       lat: 40.7, zone: '7a', tempH: 28, tempL: 18 },
+  { name: 'Philadelphia, PA',   lat: 40.0, zone: '7a', tempH: 29, tempL: 18 },
+  { name: 'Washington, DC',     lat: 38.9, zone: '7a', tempH: 30, tempL: 19 },
+  { name: 'Detroit, MI',        lat: 42.3, zone: '6a', tempH: 27, tempL: 16 },
+  { name: 'St. Louis, MO',      lat: 38.6, zone: '6b', tempH: 31, tempL: 19 },
+  { name: 'Salt Lake City, UT', lat: 40.8, zone: '6b', tempH: 32, tempL: 15 },
+  { name: 'Boise, ID',          lat: 43.6, zone: '6b', tempH: 32, tempL: 13 },
+  { name: 'Albuquerque, NM',    lat: 35.1, zone: '7a', tempH: 33, tempL: 15 },
+  { name: 'Raleigh, NC',        lat: 35.8, zone: '7b', tempH: 31, tempL: 19 },
+  { name: 'Pittsburgh, PA',     lat: 40.4, zone: '6b', tempH: 27, tempL: 16 },
+  { name: 'Columbus, OH',       lat: 40.0, zone: '6a', tempH: 28, tempL: 16 },
+  { name: 'Indianapolis, IN',   lat: 39.8, zone: '5b', tempH: 28, tempL: 17 },
+  { name: 'Milwaukee, WI',      lat: 43.0, zone: '5b', tempH: 26, tempL: 15 },
+  { name: 'Omaha, NE',          lat: 41.3, zone: '5b', tempH: 29, tempL: 16 },
+  { name: 'Tucson, AZ',         lat: 32.2, zone: '9a', tempH: 38, tempL: 21 },
+  { name: 'Tampa, FL',          lat: 28.0, zone: '9b', tempH: 33, tempL: 22 },
+  { name: 'Sacramento, CA',     lat: 38.6, zone: '9b', tempH: 34, tempL: 14 },
+  { name: 'Des Moines, IA',     lat: 41.6, zone: '5a', tempH: 28, tempL: 16 },
+  { name: 'Dubuque, IA',        lat: 42.5, zone: '5a', tempH: 27, tempL: 14 },
+];
+
 let plants = [];
 let seasonData = null;
+
+function setLatitude(lat, label) {
+  document.getElementById('growth-latitude').value = lat.toFixed(1);
+  const el = document.getElementById('growth-loc-label');
+  if (el) el.textContent = label || '';
+  // Save preference
+  try { localStorage.setItem('growth-location', JSON.stringify({ lat, label })); } catch(e) {}
+}
+
+function initLocationPicker() {
+  const method = document.getElementById('growth-loc-method');
+  const zoneSelect = document.getElementById('growth-zone-select');
+  const citySelect = document.getElementById('growth-city-select');
+  const latInput = document.getElementById('growth-latitude');
+  if (!method) return;
+
+  // Populate zone dropdown
+  const zones = Object.keys(ZONE_LAT).sort((a, b) => {
+    const na = parseInt(a), nb = parseInt(b);
+    return na !== nb ? na - nb : a.localeCompare(b);
+  });
+  zoneSelect.innerHTML = zones.map(z =>
+    `<option value="${z}">Zone ${z}</option>`
+  ).join('');
+
+  // Populate city dropdown
+  const sortedCities = [...CITIES].sort((a, b) => a.name.localeCompare(b.name));
+  citySelect.innerHTML = sortedCities.map((c, i) =>
+    `<option value="${i}">${c.name} (${c.zone})</option>`
+  ).join('');
+  // Store sorted ref
+  citySelect._cities = sortedCities;
+
+  // Method switcher
+  method.addEventListener('change', () => {
+    const m = method.value;
+    zoneSelect.hidden = m !== 'zone';
+    citySelect.hidden = m !== 'city';
+    latInput.hidden   = m !== 'manual';
+
+    if (m === 'gps') {
+      zoneSelect.hidden = true;
+      citySelect.hidden = true;
+      latInput.hidden = true;
+      requestGeolocation();
+    } else if (m === 'zone') {
+      onZoneChange();
+    } else if (m === 'city') {
+      onCityChange();
+    }
+  });
+
+  // Zone change
+  zoneSelect.addEventListener('change', onZoneChange);
+  function onZoneChange() {
+    const z = zoneSelect.value;
+    const lat = ZONE_LAT[z] || 42;
+    setLatitude(lat, `Zone ${z} (~${lat}°N)`);
+  }
+
+  // City change
+  citySelect.addEventListener('change', onCityChange);
+  function onCityChange() {
+    const idx = parseInt(citySelect.value);
+    const city = citySelect._cities[idx];
+    if (!city) return;
+    setLatitude(city.lat, `${city.name}`);
+    // Also set temp defaults from city data
+    document.getElementById('growth-temp-high').value = city.tempH;
+    document.getElementById('growth-temp-low').value = city.tempL;
+  }
+
+  // Manual lat change
+  latInput.addEventListener('change', () => {
+    const lat = parseFloat(latInput.value) || 42;
+    setLatitude(lat, `${lat.toFixed(1)}°`);
+  });
+
+  // Restore saved preference
+  try {
+    const saved = JSON.parse(localStorage.getItem('growth-location'));
+    if (saved) {
+      setLatitude(saved.lat, saved.label || '');
+    }
+  } catch(e) {}
+
+  // Default: trigger zone change
+  onZoneChange();
+}
+
+function requestGeolocation() {
+  const label = document.getElementById('growth-loc-label');
+  if (!navigator.geolocation) {
+    if (label) label.textContent = 'Geolocation not supported';
+    return;
+  }
+  if (label) label.textContent = 'Locating...';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      setLatitude(lat, `📍 ${lat.toFixed(2)}°N`);
+    },
+    (err) => {
+      if (label) label.textContent = 'Location denied — using default';
+      console.warn('Geolocation error:', err.message);
+    },
+    { timeout: 10000, maximumAge: 300000 }
+  );
+}
 
 // ── Init ──
 export function initGrowthSim(plantList) {
@@ -46,6 +207,9 @@ export function initGrowthSim(plantList) {
   select.innerHTML = plants.map(p =>
     `<option value="${p.id}">${p.name}</option>`
   ).join('');
+
+  // Init location picker
+  initLocationPicker();
 
   // Run button
   document.getElementById('growth-run-btn')
