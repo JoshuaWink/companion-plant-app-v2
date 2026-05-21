@@ -5,6 +5,8 @@
  * see companion/conflict overlays, view root profile.
  */
 
+import { simulate_growth } from './pkg/companion_graph.js';
+
 // ── State ──
 
 let beds = [];          // Array of bed objects
@@ -1646,20 +1648,62 @@ function getGrowthProgress(plant, month) {
   return Math.min(daysGrowing / maturityDays, 1);
 }
 
-// Dimensions at a given month — returns cm values
+// Dimensions at a given month — WASM growth engine when available, JS fallback
 function getPlantDimensions(plant, month) {
   const m = plant.properties?.metric || {};
   const matureH   = m.mature_height_cm || 0;
   const matureS   = m.spread_cm        || 0;
   const matureR   = m.root_depth_cm    || 0;
 
+  // Try WASM growth engine for plants with full metric data
+  if (month > 0 && plant.timing?.days_to_maturity && matureH > 0) {
+    try {
+      const startMonth = getPlantStartMonth(plant);
+      if (month < startMonth) {
+        return { height: 0, spread: 0, rootDepth: 0, progress: 0, fraction: 0, matureH, matureS, matureR };
+      }
+      const daysGrowing = (month - startMonth) * 30;
+      const plantDoy = startMonth * 30; // approximate planting day-of-year
+      const soilKey = document.getElementById('soil-type-select')?.value || 'loam';
+      const soil = SOIL_TYPES[soilKey] || SOIL_TYPES.loam;
+      const env = {
+        day_of_year: plantDoy,
+        latitude: 42.0,
+        altitude_m: 200,
+        temp_high_c: 26,
+        temp_low_c: 14,
+        water_ml: 600,
+        npk_available: [10.0, 5.0, 5.0],
+        soil_water_factor: soil.waterFactor,
+        soil_root_factor: soil.rootFactor,
+        soil_n2_factor: soil.n2Factor,
+      };
+      const snapJson = simulate_growth(JSON.stringify(plant), daysGrowing, JSON.stringify(env), 0.0);
+      const snap = JSON.parse(snapJson);
+      const progress = getGrowthProgress(plant, month);
+      return {
+        height: snap.height_cm,
+        spread: snap.spread_cm,
+        rootDepth: snap.root_depth_cm,
+        progress,
+        fraction: snap.growth_rate,
+        matureH, matureS, matureR,
+        stage: snap.stage,
+        stress: snap.stress_events,
+      };
+    } catch (e) {
+      // Fall through to JS sigmoid
+    }
+  }
+
+  // JS fallback
   const progress = getGrowthProgress(plant, month);
   const g = growthCurve(progress);
 
   return {
     height:    matureH * g,
     spread:    matureS * g,
-    rootDepth: matureR * (0.3 + 0.7 * g), // roots establish ~30% faster
+    rootDepth: matureR * (0.3 + 0.7 * g),
     progress:  progress,
     fraction:  g,
     matureH, matureS, matureR,
