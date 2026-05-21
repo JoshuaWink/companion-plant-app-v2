@@ -78,4 +78,17 @@ impl Garden {
     pub fn edge_count(&self) -> usize {
         self.inner.edge_count()
     }
+
+    /// Given a JSON map of {plant_id: PlantTiming} and last_frost_doy,
+    /// return a JSON array of PlantingWindow objects.
+    pub fn planting_windows(&self, timing_json: &str, last_frost_doy: u16) -> String {
+        use std::collections::HashMap;
+        let timing_map: HashMap<String, PlantTiming> =
+            serde_json::from_str(timing_json).unwrap_or_default();
+        let windows: Vec<PlantingWindow> = timing_map
+            .iter()
+            .map(|(id, t)| compute_window(id, t, last_frost_doy))
+            .collect();
+        serde_json::to_string(&windows).unwrap_or_else(|_| "[]".to_string())
+    }
 }
