@@ -354,28 +354,91 @@ function renderTopDown(bed) {
     }
   }
 
-  // Spacing radius overlay (shows plant footprint)
-  for (let r = 0; r < bed.rows; r++) {
-    for (let c = 0; c < bed.cols; c++) {
-      const plantId = bed.cells[r]?.[c];
-      if (!plantId || !isInsideShape(bed, r, c)) continue;
+  // ── Spacing footprint layer ──
+  // Build density map: for each cell, track which plant spacing zones claim it
+  const spacingMap = {};
+  for (let pr = 0; pr < bed.rows; pr++) {
+    for (let pc = 0; pc < bed.cols; pc++) {
+      const plantId = bed.cells[pr]?.[pc];
+      if (!plantId || !isInsideShape(bed, pr, pc)) continue;
       const p = plannerPlants.find(pp => pp.id === plantId);
       const m = p?.properties?.metric;
-      if (!m || !m.spread_cm) continue;
+      if (!m) continue;
+      const spacingCm = m.spacing_cm || m.spread_cm || 0;
+      if (spacingCm <= DEFAULT_CELL_CM) continue;
+      const radiusCells = Math.ceil((spacingCm / 2) / DEFAULT_CELL_CM);
+      for (let dr = -radiusCells; dr <= radiusCells; dr++) {
+        for (let dc = -radiusCells; dc <= radiusCells; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const nr = pr + dr, nc = pc + dc;
+          if (nr < 0 || nr >= bed.rows || nc < 0 || nc >= bed.cols) continue;
+          if (!isInsideShape(bed, nr, nc)) continue;
+          const distCm = Math.sqrt(dr * dr + dc * dc) * DEFAULT_CELL_CM;
+          if (distCm > spacingCm / 2) continue;
+          const k = nr + ',' + nc;
+          if (!spacingMap[k]) spacingMap[k] = { count: 0, owners: [] };
+          spacingMap[k].count++;
+          spacingMap[k].owners.push({ r: pr, c: pc, id: plantId });
+        }
+      }
+    }
+  }
 
-      const pos = gridToCanvas(r, c);
-      const cellCm = DEFAULT_CELL_CM;
-      const radiusCells = (m.spread_cm / 2) / cellCm;
-      const radiusPx = radiusCells * (CELL_SIZE + CELL_GAP);
+  // Draw footprint zones
+  for (const k in spacingMap) {
+    const [zr, zc] = k.split(',').map(Number);
+    const hasPlant = !!bed.cells[zr]?.[zc];
+    const entry = spacingMap[k];
+    const pos = gridToCanvas(zr, zc);
 
-      if (radiusPx > CELL_SIZE * 0.6) {
+    if (!hasPlant) {
+      // Empty cell in spacing zone — show claimed territory
+      if (entry.count === 1) {
+        ctx.fillStyle = isNight ? 'rgba(100,160,100,0.12)' : 'rgba(88,129,87,0.10)';
+      } else {
+        ctx.fillStyle = isNight ? 'rgba(220,180,60,0.18)' : 'rgba(200,150,40,0.14)';
+      }
+      ctx.fillRect(pos.x + 1, pos.y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+    } else {
+      // Occupied cell in another plant's zone = crowded
+      const foreignOwners = entry.owners.filter(o => !(o.r === zr && o.c === zc));
+      if (foreignOwners.length > 0) {
+        ctx.fillStyle = isNight ? 'rgba(230,170,50,0.22)' : 'rgba(210,150,30,0.18)';
+        ctx.fillRect(pos.x + 1, pos.y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+        // Crowding dot in corner
+        ctx.fillStyle = isNight ? 'rgba(255,180,60,0.6)' : 'rgba(220,150,30,0.5)';
         ctx.beginPath();
-        ctx.arc(pos.x + CELL_SIZE / 2, pos.y + CELL_SIZE / 2, radiusPx, 0, Math.PI * 2);
-        ctx.strokeStyle = isNight ? 'rgba(143,188,143,0.25)' : 'rgba(88,129,87,0.2)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([3, 3]);
-        ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.arc(pos.x + CELL_SIZE - 6, pos.y + 6, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  // Hover placement footprint preview
+  if (hoverCell && placingPlant && !bed.cells[hoverCell.row]?.[hoverCell.col] && isInsideShape(bed, hoverCell.row, hoverCell.col)) {
+    const hp = plannerPlants.find(pp => pp.id === placingPlant);
+    const hm = hp?.properties?.metric;
+    const hSpacing = hm?.spacing_cm || hm?.spread_cm || 0;
+    if (hSpacing > DEFAULT_CELL_CM) {
+      const hRadius = Math.ceil((hSpacing / 2) / DEFAULT_CELL_CM);
+      for (let dr = -hRadius; dr <= hRadius; dr++) {
+        for (let dc = -hRadius; dc <= hRadius; dc++) {
+          const nr = hoverCell.row + dr, nc = hoverCell.col + dc;
+          if (nr < 0 || nr >= bed.rows || nc < 0 || nc >= bed.cols) continue;
+          if (!isInsideShape(bed, nr, nc)) continue;
+          const distCm = Math.sqrt(dr * dr + dc * dc) * DEFAULT_CELL_CM;
+          if (distCm > hSpacing / 2) continue;
+          const fp = gridToCanvas(nr, nc);
+          const occupied = !!bed.cells[nr]?.[nc];
+          if (occupied) {
+            ctx.fillStyle = isNight ? 'rgba(255,100,80,0.15)' : 'rgba(200,60,40,0.1)';
+          } else if (spacingMap[nr + ',' + nc]) {
+            ctx.fillStyle = isNight ? 'rgba(255,200,80,0.15)' : 'rgba(200,160,40,0.1)';
+          } else {
+            ctx.fillStyle = isNight ? 'rgba(100,200,100,0.1)' : 'rgba(60,140,60,0.07)';
+          }
+          ctx.fillRect(fp.x + 1, fp.y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+        }
       }
     }
   }
@@ -839,6 +902,32 @@ function renderBedStats(bed) {
     }
   }
 
+  // ── Spacing Crowding ──
+  let crowdedCells = 0;
+  for (let pr = 0; pr < bed.rows; pr++) {
+    for (let pc = 0; pc < bed.cols; pc++) {
+      const pid = bed.cells[pr]?.[pc];
+      if (!pid || !isInsideShape(bed, pr, pc)) continue;
+      const p = plannerPlants.find(pp => pp.id === pid);
+      const spacingCm = p?.properties?.metric?.spacing_cm || p?.properties?.metric?.spread_cm || 0;
+      if (spacingCm <= DEFAULT_CELL_CM) continue;
+      const radCells = Math.ceil((spacingCm / 2) / DEFAULT_CELL_CM);
+      // Check if any other plant is within this plant's spacing radius
+      let tooClose = false;
+      for (let dr = -radCells; dr <= radCells && !tooClose; dr++) {
+        for (let dc = -radCells; dc <= radCells && !tooClose; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const nr = pr + dr, nc = pc + dc;
+          if (nr < 0 || nr >= bed.rows || nc < 0 || nc >= bed.cols) continue;
+          if (!bed.cells[nr]?.[nc] || !isInsideShape(bed, nr, nc)) continue;
+          const distCm = Math.sqrt(dr * dr + dc * dc) * DEFAULT_CELL_CM;
+          if (distCm <= spacingCm / 2) { tooClose = true; }
+        }
+      }
+      if (tooClose) crowdedCells++;
+    }
+  }
+
   // ── Metric Calculations ──
   const dim = bed.dimensions_cm || { width: bed.cols * DEFAULT_CELL_CM, depth: bed.rows * DEFAULT_CELL_CM, soil_depth: 30 };
   const areaCm2 = dim.width * dim.depth;
@@ -886,6 +975,14 @@ function renderBedStats(bed) {
   html += '<div class="bed-stat"><span class="bed-stat-label">Companions</span><span class="bed-stat-value bed-stat--good">' + companionPairs + ' pairs ✓</span></div>';
   if (conflictPairs > 0) {
     html += '<div class="bed-stat"><span class="bed-stat-label">Conflicts</span><span class="bed-stat-value bed-stat--bad">' + conflictPairs + ' pairs ⚠</span></div>';
+  }
+
+  // Spacing density
+  if (filledCells > 0) {
+    const spacingPct = Math.round((1 - crowdedCells / filledCells) * 100);
+    const spClass = spacingPct >= 80 ? 'bed-stat--good' : (spacingPct >= 50 ? '' : 'bed-stat--bad');
+    const spIcon = spacingPct >= 80 ? '✓' : (spacingPct >= 50 ? '~' : '⚠');
+    html += '<div class="bed-stat"><span class="bed-stat-label">📐 Spacing</span><span class="bed-stat-value ' + spClass + '">' + spacingPct + '% clear ' + spIcon + '</span></div>';
   }
 
   // Row 2: metric stats (only show if plants have metric data)
