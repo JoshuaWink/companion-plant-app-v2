@@ -979,6 +979,8 @@ function spawnDayDecorations() {
     bf.style.setProperty('--bf-dy2', (-40 + Math.random() * 80) + 'px');
     bf.style.setProperty('--bf-dx3', (-60 + Math.random() * 120) + 'px');
     bf.style.setProperty('--bf-dy3', (-40 + Math.random() * 80) + 'px');
+    bf.style.setProperty('--bf-dx4', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--bf-dy4', (-40 + Math.random() * 80) + 'px');
     canvas.appendChild(bf);
   }
 
