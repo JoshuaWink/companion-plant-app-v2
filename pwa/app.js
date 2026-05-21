@@ -5,6 +5,7 @@
  * queries the graph for companions/conflicts/succession dependencies.
  */
 import init, { Garden } from './pkg/companion_graph.js';
+import { initPlanner } from './planner.js';
 
 let garden = null;
 let plants = [];
@@ -103,6 +104,9 @@ async function boot() {
   setupSearch();
   setupStubToggle();
   await loadZones();
+
+  // Init bed planner with plant data and WASM engine
+  initPlanner(plants, garden, emojiFor);
 }
 
 // --- Render ---

@@ -54,6 +54,45 @@ The feature that transforms the app from reference tool → planning engine → 
 
 ---
 
+## In Progress
+
+### 🗺️ M6: Interactive Garden Bed Planner
+
+The feature that transforms the app from *planning engine* → **spatial design tool**.
+
+**North Star**: Drag plants onto a physical bed layout. See companions light up green, conflicts flash red. Peek underground to see how roots interleave. Look sideways to see the vertical canopy stack. Plan before you plant.
+
+**Three Audiences, One Tool**:
+- **Hobbyist** — 4×8 raised bed on the patio. Drag, drop, done.
+- **Farmer** — Multiple beds, row layouts, farm-level overview. Save/load plans.
+- **Researcher** — Precise spacing, labeled plots, custom shapes for breeding experiments.
+
+**Architecture**: Canvas-based rendering with logical grid model. Top-down primary view, side cross-section for depth/height. Beds are shape objects (rect, circle, polygon) with cell grids overlaid.
+
+**Phases**:
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| P1 | Single rectangular bed, top-down grid, drag-to-place, companion overlay | 🔨 Building |
+| P2 | Side-view cross-section (roots + vertical layers for active bed) | Planned |
+| P3 | Multiple beds, farm-level view, save/load layouts | Planned |
+| P4 | Circular beds, L-shapes, row layouts, custom polygons | Planned |
+| P5 | Crop rotation timeline — same bed across seasons | Planned |
+| P6 | Spacing rules, plant-specific radius, interplanting zones | Planned |
+
+**P1 Deliverables** (current milestone):
+- Bed creator panel (dimensions: rows × cols, name)
+- Canvas renderer with grid cells, plant emojis, snap-to-grid
+- Plant placement via click (select plant → click cell)
+- Real-time companion/conflict highlighting per cell
+- Bed sidebar showing selected bed stats
+- Top-down view with color-coded cells
+- Side-view toggle showing root depth + vertical profile
+- Clear cell / clear bed controls
+- LocalStorage persistence for bed layouts
+
+---
+
 ## Future Ideas
 
 ### 🐝 Bumblebee Cursor

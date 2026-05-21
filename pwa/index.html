@@ -183,6 +183,41 @@
       <div class="stat-suggestions" id="stat-suggestions"></div>
     </section>
 
+    <section class="card planner-panel" id="planner-panel" aria-label="Garden Bed Planner">
+      <h2 class="section-title">🗺️ Garden Bed Planner</h2>
+
+      <div class="planner-layout">
+        <div class="planner-toolbar">
+          <div class="planner-bed-tabs" id="planner-bed-tabs"></div>
+          <div class="planner-controls">
+            <input type="text" id="bed-name" class="field-input planner-input" placeholder="Bed name" maxlength="24">
+            <label class="planner-dim-label">
+              <input type="number" id="bed-cols" class="field-input planner-dim" value="8" min="2" max="20">×
+              <input type="number" id="bed-rows" class="field-input planner-dim" value="4" min="2" max="20">
+            </label>
+            <select id="bed-shape" class="field-input planner-select">
+              <option value="rectangle">Rectangle</option>
+              <option value="circle">Circle</option>
+            </select>
+            <button class="planner-btn" id="planner-add-bed">＋ New Bed</button>
+          </div>
+        </div>
+
+        <div class="planner-palette-bar">
+          <span class="planner-placing" id="planner-placing-label">Select a plant to place</span>
+          <div class="planner-palette" id="planner-palette"></div>
+        </div>
+
+        <div class="planner-canvas-wrap">
+          <canvas id="planner-canvas" class="planner-canvas"></canvas>
+          <canvas id="planner-side-canvas" class="planner-canvas planner-side-canvas" hidden></canvas>
+          <button class="planner-view-btn" id="planner-view-toggle">👁️ Side View</button>
+        </div>
+
+        <div class="planner-bed-stats" id="planner-bed-stats"></div>
+      </div>
+    </section>
+
     <section class="card timeline-panel" aria-label="Planting timeline">
       <h2 class="section-title">📅 Planting Timeline</h2>
       <div class="zone-selector">

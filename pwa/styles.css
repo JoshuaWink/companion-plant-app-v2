@@ -1408,3 +1408,304 @@ body, .card, .field-input, .plant-chip, .plant-grid, .selected-plants,
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Garden Bed Planner ── */
+
+.planner-panel {
+  overflow: visible;
+}
+
+.planner-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cup-spacing-md);
+}
+
+/* ── Toolbar ── */
+
+.planner-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cup-spacing-sm);
+}
+
+.planner-bed-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.bed-tab {
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-surface-alt);
+  color: var(--cup-color-on-surface);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.bed-tab:hover {
+  border-color: var(--cup-color-primary);
+}
+
+.bed-tab-active {
+  background: var(--cup-color-primary);
+  color: #fff;
+  border-color: var(--cup-color-primary);
+}
+
+[data-theme="night"] .bed-tab-active {
+  color: #fff;
+}
+
+.bed-tab-add {
+  font-weight: 700;
+  font-size: 0.9rem;
+  min-width: 32px;
+}
+
+.planner-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.planner-input {
+  max-width: 120px;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+}
+
+.planner-dim-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--cup-color-text-muted);
+}
+
+.planner-dim {
+  width: 48px;
+  padding: 4px;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.planner-select {
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  max-width: 110px;
+}
+
+.planner-btn {
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--cup-color-primary);
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-primary);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.planner-btn:hover {
+  opacity: 0.85;
+}
+
+/* ── Plant Palette ── */
+
+.planner-palette-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.planner-placing {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cup-color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.planner-placing.placing-active {
+  color: var(--cup-color-primary);
+}
+
+.planner-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.palette-plant {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border: 2px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  background: var(--cup-color-surface-alt);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.palette-plant:hover {
+  border-color: var(--cup-color-primary);
+  transform: scale(1.1);
+}
+
+.palette-active {
+  border-color: var(--cup-color-primary);
+  background: rgba(88, 129, 87, 0.15);
+  box-shadow: 0 0 0 2px rgba(88, 129, 87, 0.3);
+}
+
+[data-theme="night"] .palette-active {
+  background: rgba(143, 188, 143, 0.15);
+  box-shadow: 0 0 0 2px rgba(143, 188, 143, 0.3);
+}
+
+.palette-eraser {
+  font-size: 0.9rem;
+}
+
+/* ── Canvas Area ── */
+
+.planner-canvas-wrap {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  background: var(--cup-color-surface-alt);
+  min-height: 200px;
+}
+
+.planner-canvas {
+  display: block;
+  cursor: crosshair;
+}
+
+.planner-side-canvas {
+  margin-top: 2px;
+  border-top: 1px solid var(--cup-color-border);
+}
+
+.planner-view-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-surface);
+  color: var(--cup-color-on-surface);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+  z-index: 1;
+}
+
+.planner-view-btn:hover {
+  opacity: 1;
+  border-color: var(--cup-color-primary);
+}
+
+/* ── Bed Stats Sidebar ── */
+
+.planner-bed-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cup-spacing-sm);
+}
+
+.bed-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px;
+  background: var(--cup-color-surface-alt);
+  border-radius: var(--cup-radius-md);
+  border: 1px solid var(--cup-color-border);
+  min-width: 100px;
+}
+
+.bed-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cup-color-text-muted);
+}
+
+.bed-stat-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cup-color-on-surface);
+}
+
+.bed-stat--good {
+  color: var(--cup-color-success);
+}
+
+.bed-stat--bad {
+  color: var(--cup-color-error);
+}
+
+.bed-stat-actions {
+  display: flex;
+  gap: 6px;
+  flex-basis: 100%;
+}
+
+.bed-action {
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-full);
+  background: var(--cup-color-surface);
+  color: var(--cup-color-on-surface);
+  cursor: pointer;
+}
+
+.bed-action:hover {
+  border-color: var(--cup-color-primary);
+}
+
+.bed-action--danger {
+  color: var(--cup-color-error);
+  border-color: rgba(188, 71, 73, 0.3);
+}
+
+.bed-action--danger:hover {
+  border-color: var(--cup-color-error);
+  background: rgba(188, 71, 73, 0.08);
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 600px) {
+  .planner-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .planner-input, .planner-dim, .planner-select {
+    max-width: none;
+  }
+  .palette-plant {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+  }
+}
