@@ -58,38 +58,91 @@ The feature that transforms the app from reference tool → planning engine → 
 
 ### 🗺️ M6: Interactive Garden Bed Planner
 
-The feature that transforms the app from *planning engine* → **spatial design tool**.
+The feature that transforms the app from *planning engine* → **spatial design tool** → **garden studio**.
 
-**North Star**: Drag plants onto a physical bed layout. See companions light up green, conflicts flash red. Peek underground to see how roots interleave. Look sideways to see the vertical canopy stack. Plan before you plant.
+**North Star**: A two-layer experience. Layer 1 is a warm, expressive canvas where you design your garden visually — place plants, see companions glow, feel the space. Layer 2 is a research desk where you see the math: water budgets in liters, nitrogen balance in kg/m², root competition in centimeters, yield projections in kg/m². Same garden, two lenses. One for dreaming, one for doing.
 
 **Three Audiences, One Tool**:
-- **Hobbyist** — 4×8 raised bed on the patio. Drag, drop, done.
-- **Farmer** — Multiple beds, row layouts, farm-level overview. Save/load plans.
-- **Researcher** — Precise spacing, labeled plots, custom shapes for breeding experiments.
+- **Hobbyist** — 4×8 raised bed on the patio. Drag, drop, done. Green = good, red = bad.
+- **Farmer** — Multiple beds, rows, blocks. Real dimensions. Water and nutrient budgets. Rotation planning.
+- **Researcher** — Precise spacing in metric, labeled plots, exportable data, controlled experiments.
 
-**Architecture**: Canvas-based rendering with logical grid model. Top-down primary view, side cross-section for depth/height. Beds are shape objects (rect, circle, polygon) with cell grids overlaid.
+**Philosophy**: The real world isn't gridded. We want something that captures freedom and creativity but also offers grid tools and precise placement when you want them. Grid is a tool, not a cage — you can toggle it on/off like guidelines in a drawing app. Behind the scenes, everything is metric. On screen, the user chooses their unit preference.
 
-**Phases**:
+**Architecture**: Canvas-based rendering with logical grid model. Metric internally (all dimensions in cm, areas in m², volumes in L, weights in kg). Display conversion to user's preferred unit system. Top-down primary view, side cross-section for depth/height. Beds are shape objects (rect, circle, polygon) with cell grids overlaid.
+
+**Completed — P1** ✅:
+- Canvas renderer with grid cells, plant emojis, snap-to-grid
+- Plant placement via click (select plant → click cell)
+- Real-time companion/conflict highlighting per cell (19 companion pairs + 6 conflicts detected in test bed)
+- Side-view toggle showing root depth + vertical soil profile
+- Multiple beds with tabs (tested: rectangle + circle shapes)
+- Bed stats: variety count, fill ratio, companion/conflict pair counts
+- LocalStorage persistence for bed layouts
+- Night mode support
+- Touch support for mobile
+
+**Three Evolution Arcs**:
+
+#### Arc A — Make the Grid Real (metric foundation)
+
+The grid currently has no physical dimensions. "8×4" doesn't mean anything in the real world. Arc A gives every cell a real-world size and every plant a real-world footprint.
 
 | Phase | Feature | Status |
 |-------|---------|--------|
-| P1 | Single rectangular bed, top-down grid, drag-to-place, companion overlay | 🔨 Building |
-| P2 | Side-view cross-section (roots + vertical layers for active bed) | Planned |
-| P3 | Multiple beds, farm-level view, save/load layouts | Planned |
-| P4 | Circular beds, L-shapes, row layouts, custom polygons | Planned |
-| P5 | Crop rotation timeline — same bed across seasons | Planned |
-| P6 | Spacing rules, plant-specific radius, interplanting zones | Planned |
+| A1 | Bed physical dimensions (width × depth in cm, height in cm) | Planned |
+| A2 | Per-plant spacing data in plants.json (spacing_cm, root_depth_cm, height_cm, spread_cm) | Planned |
+| A3 | Spacing radius overlay on grid (circles showing each plant's footprint) | Planned |
+| A4 | Unit preference toggle (metric/imperial) — pure display conversion | Planned |
+| A5 | Water budget calculator (mL/plant/day → L/bed/week) | Planned |
+| A6 | Nitrogen balance (kg N/m²/season — fixers vs feeders) | Planned |
+| A7 | Soil volume calculator (bed dimensions × depth = L of growing medium) | Planned |
+| A8 | Yield estimates (kg/m² expected harvest by plant) | Planned |
 
-**P1 Deliverables** (current milestone):
-- Bed creator panel (dimensions: rows × cols, name)
-- Canvas renderer with grid cells, plant emojis, snap-to-grid
-- Plant placement via click (select plant → click cell)
-- Real-time companion/conflict highlighting per cell
-- Bed sidebar showing selected bed stats
-- Top-down view with color-coded cells
-- Side-view toggle showing root depth + vertical profile
-- Clear cell / clear bed controls
-- LocalStorage persistence for bed layouts
+#### Arc B — Make It Expressive (creative freedom)
+
+The planner should feel like a garden, not a spreadsheet with emojis. Arc B adds tactile, visual richness and creative tools.
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| B1 | Grid toggle — optional guidelines, freeform placement alongside snap-to-grid | Planned |
+| B2 | Plant footprint circles proportional to real spread (not uniform cells) | Planned |
+| B3 | Drag-and-drop plant placement + rearrangement | Planned |
+| B4 | Undo/redo stack | Planned |
+| B5 | Season scrubber — slide through months to see garden change | Planned |
+| B6 | Growth visualization — soft spread circles that expand through season | Planned |
+| B7 | Export bed as image (PNG download) | Planned |
+| B8 | Soil texture and visual richness on top-down canvas | Planned |
+
+#### Arc C — Make It Scale (farmer tools)
+
+Same engine, bigger scope. The difference between a hobbyist and a farmer is the number of beds and the depth of data.
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| C1 | Farm overview — multiple beds on a property canvas with zoom/pan | Planned |
+| C2 | Row/block abstractions for field-scale layouts | Planned |
+| C3 | Crop rotation planner — same bed across seasons/years | Planned |
+| C4 | Drill-down navigation: farm → block → bed → cell | Planned |
+| C5 | Custom polygon shapes for irregular beds | Planned |
+| C6 | Print-friendly / PDF export of full farm plan | Planned |
+| C7 | Import/export bed layouts for sharing between gardeners | Planned |
+
+**Metric Data Model** (behind the scenes):
+
+```
+bed.dimensions_cm = { width: 240, depth: 120, soil_depth: 30 }
+cell_resolution_cm = 15          // 6 in — the universal grid unit
+plant.spacing_cm = 60            // minimum distance between same plants
+plant.root_depth_cm = 45         // actual depth, not categorical
+plant.mature_height_cm = 150     // mature canopy height
+plant.spread_cm = 60             // mature canopy/ground spread
+plant.water_ml_per_day = 500     // per-plant water need
+plant.nitrogen_kg_per_m2 = 0.02  // nitrogen contribution (+) or demand (-)
+plant.yield_kg_per_m2 = 3.5      // expected harvest density
+```
+
+All calculations in metric. `displayLength(cm, pref)` → `"24 in"` or `"60 cm"`. The conversion is a display concern, never a data concern.
 
 ---
 

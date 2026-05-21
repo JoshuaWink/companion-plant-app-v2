@@ -48,50 +48,74 @@ Most companion planting apps stop at the spatial question. The temporal question
 
 ---
 
-# M6 Intention — Interactive Garden Bed Planner
+# M6 Intention — Garden Studio
 
-> Let people see their garden before they build it.
+> A two-layer garden studio: dream on the canvas, verify in the numbers.
 
 ## North Star
 
-A spatial design tool where you drag plants onto physical bed layouts. The companion graph engine validates every placement in real-time — companions glow green, conflicts flash red. You can peek underground to see root interleaving. Look sideways to see the vertical canopy. Plan before you plant.
+**Layer 1 — The Garden Canvas**: Warm, expressive, creative. Place plants and watch companions glow green, conflicts flash red. Feel the space. Freeform or grid-assisted — your choice. It's a drawing app that happens to know about plants.
+
+**Layer 2 — The Research Desk**: Precise, metric-first, scientific. Water budget in liters per week. Nitrogen balance in kg/m²/season. Root depth in centimeters. Yield projections in kg/m². Soil volume in liters. Same garden, different lens — toggle between dreaming and doing.
+
+The real world isn't gridded. We want something that captures the freedom and creativity of actual gardening — beds aren't always rectangles, plants don't space themselves in perfect rows, a garden evolves through a season. But we also want precision tools available when you need them: grid snapping, spacing guides, measurement overlays.
+
+Behind the scenes, everything is metric. On screen, the user chooses their unit preference.
 
 ## Why This Matters
 
-The companion planting data is powerful but abstract. "Tomatoes and basil are companions" is information. Seeing them placed 12 inches apart in a 4×8 bed, with basil's shallow roots drawn above tomato's deep taproots — that's understanding. The spatial planner closes the gap between knowing and doing.
+"Tomatoes and basil are companions" is information. Seeing them placed 60cm apart in a 1.2m × 2.4m bed, with basil's 15cm root system drawn above tomato's 60cm taproot — that's understanding. Then clicking "Research" and seeing that this bed needs 12L of water per day, produces a net nitrogen surplus of +0.3 kg/m²/season, and will yield approximately 8kg of tomatoes — that's planning.
 
 This serves three audiences with the same tool:
-- **Hobbyist**: "Where do I put things in my raised bed?"
-- **Farmer**: "How do I lay out multiple beds and rotate across seasons?"
-- **Researcher**: "How do I design controlled planting experiments with precise spacing?"
+- **Hobbyist**: Friendly canvas, emoji plants, green/red feedback. "My garden, my way."
+- **Farmer**: Real dimensions, water/nutrient budgets, crop rotation, multi-bed management.
+- **Researcher**: Metric precision, exportable data, controlled spacing, labeled experiments.
 
 ## What Success Feels Like
 
-"I dragged 8 plants onto my bed and the tool showed me exactly why that layout works — the roots don't compete, the tall plants shade the lettuce, and the marigolds protect the perimeter. I printed the layout and took it to the garden."
+"I designed my raised bed on the canvas in 5 minutes — just dragging plants around, watching the companion overlay light up. Then I switched to the research view and saw that my nitrogen balance was negative, so I added some peas. The water calculator told me I need 15L/day for the whole bed. I exported the layout as an image and taped it to my shed wall."
+
+## Answered Questions (from P1)
+
+1. **Cell size** — 15cm (6in) base resolution internally. Display adapts to user preference.
+2. **Side view** — Canvas toggle (implemented). Button switches between top-down and cross-section.
+3. **Persistence** — LocalStorage works (implemented). Export/import is planned.
+4. **Companion detection** — WASM graph engine queries work. 19 companion pairs detected in test bed with 17 varieties.
 
 ## Open Questions
 
-1. Cell size — 6" or 12" squares? Configurable per bed?
-2. Multi-cell plants — squash, watermelon span multiple cells
-3. Side view — separate panel or canvas toggle?
-4. Persistence — LocalStorage MVP, export/import for sharing
-5. Spacing data — do we need per-plant spacing in plants.json?
+1. **Freeform vs grid**: How do we blend freeform placement with grid snap? Toggle? Hold Shift to snap?
+2. **Multi-cell plants**: Squash and watermelon need 90-120cm spread. How do we show multi-cell footprints?
+3. **Season scrubber**: What data drives plant appearance changes through the season? Just planting windows or growth stages?
+4. **Farm overview**: At what point does the canvas need pan/zoom? When beds > 3? When total area > 10m²?
+5. **Metric data sources**: Where do we get authoritative plant spacing, water need, yield data in metric?
+6. **Rotation rules**: Which plant families shouldn't follow each other? Is this graph data or a separate model?
 
 ## Constraints
 
 - Zero dependencies — Canvas API only
-- Mobile-friendly (touch drag)
+- Mobile-friendly (touch + responsive)
 - Night mode compatible
 - WASM engine validates companion/conflict
 - Offline-first
+- Metric internally, user-preference display
+- Two-layer architecture: canvas (visual) + research desk (data)
+
+## The Three Arcs
+
+| Arc | Theme | Core Question |
+|-----|-------|---------------|
+| **A** | Make the Grid Real | What are the actual physical measurements? |
+| **B** | Make It Expressive | How does a garden feel, not just function? |
+| **C** | Make It Scale | How does this work for 1 bed and 100 beds? |
 
 ## Phases
 
 | Phase | Status |
 |-------|--------|
 | Explore | ✅ Done |
-| Prototype | 🔨 Building |
-| Crystallize | 🔨 Building |
-| Roadmap | ✅ Done |
-| Build | 🔨 P1 In Progress |
-| Reflect | Not started |
+| Prototype | ✅ P1 Complete |
+| Crystallize | 🔨 Vision defined, arcs mapped |
+| Roadmap | ✅ Three arcs documented |
+| Build | 🔨 Arc A next |
+| Reflect | Ongoing — observed in browser, identified gaps |
