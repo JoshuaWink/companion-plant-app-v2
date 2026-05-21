@@ -113,6 +113,54 @@
           <div class="stat-pests" id="stat-pest-list"></div>
         </div>
       </div>
+      <div class="stats-visuals" id="stats-visuals">
+        <div class="visual-panel" id="visual-roots">
+          <div class="visual-title">🌱 Root Profile</div>
+          <div class="root-diagram" id="root-diagram">
+            <div class="soil-layer soil-shallow" data-depth="shallow">
+              <span class="soil-label">Shallow</span>
+              <div class="soil-plants" id="soil-shallow-plants"></div>
+            </div>
+            <div class="soil-layer soil-medium" data-depth="medium">
+              <span class="soil-label">Medium</span>
+              <div class="soil-plants" id="soil-medium-plants"></div>
+            </div>
+            <div class="soil-layer soil-deep" data-depth="deep">
+              <span class="soil-label">Deep</span>
+              <div class="soil-plants" id="soil-deep-plants"></div>
+            </div>
+          </div>
+        </div>
+        <div class="visual-panel" id="visual-vertical">
+          <div class="visual-title">🌿 Garden Layers</div>
+          <div class="layer-diagram" id="layer-diagram">
+            <div class="height-tier" data-tier="climbing"><span class="tier-label">Climbing</span><div class="tier-plants" id="tier-climbing"></div></div>
+            <div class="height-tier" data-tier="tall"><span class="tier-label">Tall</span><div class="tier-plants" id="tier-tall"></div></div>
+            <div class="height-tier" data-tier="medium"><span class="tier-label">Medium</span><div class="tier-plants" id="tier-medium"></div></div>
+            <div class="height-tier" data-tier="low"><span class="tier-label">Low</span><div class="tier-plants" id="tier-low"></div></div>
+            <div class="height-tier" data-tier="ground-cover"><span class="tier-label">Ground</span><div class="tier-plants" id="tier-ground-cover"></div></div>
+            <div class="ground-line"></div>
+          </div>
+        </div>
+        <div class="visual-panel visual-panel--wide" id="visual-nitrogen">
+          <div class="visual-title">⚖️ Nitrogen Balance</div>
+          <div class="balance-diagram" id="balance-diagram">
+            <div class="balance-side balance-fixers" id="balance-fixers">
+              <div class="balance-label">Fixers (+N)</div>
+              <div class="balance-plants" id="balance-fixer-plants"></div>
+            </div>
+            <div class="balance-fulcrum">
+              <div class="balance-beam" id="balance-beam"></div>
+              <div class="balance-pivot">▲</div>
+              <div class="balance-score" id="balance-score"></div>
+            </div>
+            <div class="balance-side balance-feeders" id="balance-feeders">
+              <div class="balance-label">Feeders (−N)</div>
+              <div class="balance-plants" id="balance-feeder-plants"></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="stats-detail" id="stats-detail" hidden>
         <table class="stats-table" id="stats-table">
           <thead>

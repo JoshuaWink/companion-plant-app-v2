@@ -443,10 +443,13 @@ function updateStats() {
   sugEl.innerHTML = suggestions.map(s =>
     '<div class="suggestion">' + s + '</div>'
   ).join('');
-}
+
+  // Refresh visual diagrams
+  updateVisuals();
 
   // Refresh detail table if open
   updateStatsDetail();
+}
 
 
 function setGauge(id, pct, level, label) {
@@ -459,6 +462,132 @@ function setGauge(id, pct, level, label) {
   if (val) val.textContent = label;
 }
 // --- Stats Detail Toggle ---
+
+
+// --- Garden Visual Diagrams ---
+
+function updateVisuals() {
+  const visuals = document.getElementById('stats-visuals');
+  if (!visuals) return;
+
+  const sel = [...selected].map(id => plants.find(p => p.id === id)).filter(Boolean);
+  const props = sel.map(p => p.properties).filter(Boolean);
+
+  if (props.length === 0) return;
+
+  updateRootDiagram(sel, props);
+  updateLayerDiagram(sel, props);
+  updateBalanceDiagram(sel, props);
+}
+
+function updateRootDiagram(sel, props) {
+  const depths = { shallow: [], medium: [], deep: [] };
+
+  sel.forEach((p, i) => {
+    const pr = p.properties;
+    if (!pr || !pr.root_depth) return;
+    const d = pr.root_depth;
+    if (depths[d]) depths[d].push(p);
+  });
+
+  ['shallow', 'medium', 'deep'].forEach(depth => {
+    const container = document.getElementById('soil-' + depth + '-plants');
+    const layer = container.closest('.soil-layer');
+    if (!container) return;
+
+    if (depths[depth].length === 0) {
+      layer.classList.add('soil-empty');
+      container.innerHTML = '<span class="soil-gap-hint">no plants here</span>';
+    } else {
+      layer.classList.remove('soil-empty');
+      container.innerHTML = depths[depth].map(p =>
+        '<span class="soil-plant">' + emojiFor(p.id) + ' ' + p.name + '</span>'
+      ).join('');
+    }
+  });
+}
+
+function updateLayerDiagram(sel, props) {
+  const tiers = {
+    'climbing': [],
+    'tall': [],
+    'medium': [],
+    'low': [],
+    'ground-cover': []
+  };
+
+  sel.forEach(p => {
+    const pr = p.properties;
+    if (!pr || !pr.growth_habit) return;
+    const h = pr.growth_habit;
+    if (tiers[h]) tiers[h].push(p);
+  });
+
+  Object.keys(tiers).forEach(tier => {
+    const container = document.getElementById('tier-' + tier);
+    const row = container ? container.closest('.height-tier') : null;
+    if (!container || !row) return;
+
+    if (tiers[tier].length === 0) {
+      row.classList.add('tier-empty');
+      container.innerHTML = '<span class="tier-gap-hint">empty layer</span>';
+    } else {
+      row.classList.remove('tier-empty');
+      container.innerHTML = tiers[tier].map(p =>
+        '<span class="tier-plant">' + emojiFor(p.id) + ' ' + p.name + '</span>'
+      ).join('');
+    }
+  });
+}
+
+function updateBalanceDiagram(sel, props) {
+  const nitrogenScores = { 'fixer': 2, 'light-feeder': 0, 'neutral': 0, 'heavy-feeder': -1 };
+  const fixers = [];
+  const feeders = [];
+  const neutrals = [];
+
+  sel.forEach(p => {
+    const pr = p.properties;
+    if (!pr) return;
+    const role = pr.nitrogen_role;
+    if (role === 'fixer') fixers.push(p);
+    else if (role === 'heavy-feeder') feeders.push(p);
+    else neutrals.push(p);
+  });
+
+  // Render fixer side
+  const fixerEl = document.getElementById('balance-fixer-plants');
+  fixerEl.innerHTML = fixers.map(p =>
+    '<span class="balance-plant balance-plant--fixer">' + emojiFor(p.id) + ' ' + p.name + '</span>'
+  ).join('') || '<span class="tier-gap-hint">none</span>';
+
+  // Render feeder side
+  const feederEl = document.getElementById('balance-feeder-plants');
+  feederEl.innerHTML = feeders.map(p =>
+    '<span class="balance-plant balance-plant--feeder">' + emojiFor(p.id) + ' ' + p.name + '</span>'
+  ).join('') || '<span class="tier-gap-hint">none</span>';
+
+  // Neutrals below feeders (smaller)
+  if (neutrals.length > 0) {
+    feederEl.innerHTML += '<div style="width:100%;margin-top:2px">' + neutrals.map(p =>
+      '<span class="balance-plant balance-plant--neutral">' + emojiFor(p.id) + '</span>'
+    ).join(' ') + '</div>';
+  }
+
+  // Tilt the beam
+  const nRaw = props.reduce((s, p) => s + (nitrogenScores[p.nitrogen_role] || 0), 0);
+  const beam = document.getElementById('balance-beam');
+  const maxTilt = 12; // degrees
+  const tilt = Math.max(-maxTilt, Math.min(maxTilt, -nRaw * 3));
+  beam.style.transform = 'rotate(' + tilt + 'deg)';
+
+  // Score badge
+  const scoreEl = document.getElementById('balance-score');
+  const sign = nRaw > 0 ? 'positive' : nRaw < 0 ? 'negative' : 'neutral';
+  const prefix = nRaw > 0 ? '+' : '';
+  scoreEl.textContent = prefix + nRaw;
+  scoreEl.dataset.sign = sign;
+}
 
 function initStatsDetail() {
   const toggle = document.getElementById('stats-detail-toggle');
