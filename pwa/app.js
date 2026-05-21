@@ -881,6 +881,7 @@ function initNightMode() {
       icon.textContent = '\uD83C\uDF19';
       label.textContent = 'Night';
       localStorage.setItem('garden-theme', 'day');
+      spawnDayDecorations();
     } else {
       document.documentElement.setAttribute('data-theme', 'night');
       icon.textContent = '\u2600\uFE0F';
@@ -940,6 +941,81 @@ function spawnNightDecorations() {
   }
 }
 
+function spawnDayDecorations() {
+  const canvas = document.getElementById('day-canvas');
+  if (!canvas || canvas.childElementCount > 0) return;
+
+  // Sun rays — rotating conic gradient beam
+  const ray = document.createElement('div');
+  ray.className = 'day-ray';
+  canvas.appendChild(ray);
+
+  // Clouds — 4 drifting cloud emojis at different speeds/heights
+  const cloudEmojis = ['☁️', '⛅', '☁️', '⛅'];
+  for (let i = 0; i < 4; i++) {
+    const cloud = document.createElement('div');
+    cloud.className = 'day-cloud';
+    cloud.textContent = cloudEmojis[i];
+    cloud.style.top = (8 + i * 7 + Math.random() * 5) + '%';
+    cloud.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+    cloud.style.setProperty('--cloud-dur', (60 + Math.random() * 60) + 's');
+    cloud.style.setProperty('--cloud-delay', (-Math.random() * 80) + 's');
+    canvas.appendChild(cloud);
+  }
+
+  // Butterflies — 5 flitting colorful shapes
+  const bfColors = ['#e88fd0', '#8fd0e8', '#e8d08f', '#8fe8a0', '#d08fe8'];
+  for (let i = 0; i < 5; i++) {
+    const bf = document.createElement('div');
+    bf.className = 'day-butterfly';
+    bf.style.left = (15 + Math.random() * 70) + '%';
+    bf.style.top = (30 + Math.random() * 50) + '%';
+    bf.style.setProperty('--bf-color', bfColors[i % bfColors.length]);
+    bf.style.setProperty('--bf-dur', (14 + Math.random() * 12) + 's');
+    bf.style.setProperty('--bf-delay', (Math.random() * -15) + 's');
+    bf.style.setProperty('--bf-dx1', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--bf-dy1', (-40 + Math.random() * 80) + 'px');
+    bf.style.setProperty('--bf-dx2', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--bf-dy2', (-40 + Math.random() * 80) + 'px');
+    bf.style.setProperty('--bf-dx3', (-60 + Math.random() * 120) + 'px');
+    bf.style.setProperty('--bf-dy3', (-40 + Math.random() * 80) + 'px');
+    canvas.appendChild(bf);
+  }
+
+  // Bees — 4 buzzing yellow dots
+  for (let i = 0; i < 4; i++) {
+    const bee = document.createElement('div');
+    bee.className = 'day-bee';
+    bee.style.left = (20 + Math.random() * 60) + '%';
+    bee.style.top = (40 + Math.random() * 40) + '%';
+    bee.style.setProperty('--bee-dur', (10 + Math.random() * 10) + 's');
+    bee.style.setProperty('--bee-delay', (Math.random() * -10) + 's');
+    bee.style.setProperty('--bee-dx1', (-25 + Math.random() * 50) + 'px');
+    bee.style.setProperty('--bee-dy1', (-20 + Math.random() * 40) + 'px');
+    bee.style.setProperty('--bee-dx2', (-25 + Math.random() * 50) + 'px');
+    bee.style.setProperty('--bee-dy2', (-20 + Math.random() * 40) + 'px');
+    bee.style.setProperty('--bee-dx3', (-25 + Math.random() * 50) + 'px');
+    bee.style.setProperty('--bee-dy3', (-20 + Math.random() * 40) + 'px');
+    bee.style.setProperty('--bee-dx4', (-25 + Math.random() * 50) + 'px');
+    bee.style.setProperty('--bee-dy4', (-20 + Math.random() * 40) + 'px');
+    canvas.appendChild(bee);
+  }
+
+  // Dandelion seeds — 8 floating puffs drifting upward
+  for (let i = 0; i < 8; i++) {
+    const seed = document.createElement('div');
+    seed.className = 'day-seed';
+    seed.style.left = (5 + Math.random() * 90) + '%';
+    seed.style.top = (60 + Math.random() * 35) + '%';
+    seed.style.setProperty('--seed-dur', (15 + Math.random() * 20) + 's');
+    seed.style.setProperty('--seed-delay', (-Math.random() * 20) + 's');
+    seed.style.setProperty('--seed-dx', (-100 + Math.random() * 200) + 'px');
+    seed.style.setProperty('--seed-dy', (-200 - Math.random() * 200) + 'px');
+    canvas.appendChild(seed);
+  }
+}
+
 // Init night mode immediately (no WASM dependency)
 initNightMode();
+spawnDayDecorations();
 initStatsDetail();
