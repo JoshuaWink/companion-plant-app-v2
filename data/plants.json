@@ -17,7 +17,16 @@
         "mosquitoes",
         "thrips",
         "flies"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 20,
+        "root_depth_cm": 20,
+        "mature_height_cm": 45,
+        "spread_cm": 25,
+        "water_ml_per_day": 250,
+        "nitrogen_g_per_m2": -3,
+        "yield_kg_per_m2": 1.5
+      }
     },
     "family": "lamiaceae",
     "timing": {
@@ -51,7 +60,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 45,
+        "mature_height_cm": 75,
+        "spread_cm": 45,
+        "water_ml_per_day": 600,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 3.0
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -85,7 +103,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 45,
+        "mature_height_cm": 60,
+        "spread_cm": 50,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -12,
+        "yield_kg_per_m2": 1.8
+      }
     },
     "family": "brassicaceae",
     "timing": {
@@ -119,7 +146,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 60,
+        "root_depth_cm": 50,
+        "mature_height_cm": 90,
+        "spread_cm": 50,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -10,
+        "yield_kg_per_m2": 1.5
+      }
     },
     "family": "brassicaceae",
     "timing": {
@@ -153,7 +189,16 @@
       "sun_need": "full",
       "pollinator_score": 0,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 40,
+        "mature_height_cm": 40,
+        "spread_cm": 50,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -10,
+        "yield_kg_per_m2": 3.5
+      }
     },
     "family": "brassicaceae",
     "timing": {
@@ -189,7 +234,16 @@
       "yield_density": "high",
       "pest_deters": [
         "carrot-fly"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 8,
+        "root_depth_cm": 30,
+        "mature_height_cm": 30,
+        "spread_cm": 8,
+        "water_ml_per_day": 200,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 4.0
+      }
     },
     "family": "apiaceae",
     "timing": {
@@ -223,7 +277,16 @@
       "sun_need": "full",
       "pollinator_score": 0,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 40,
+        "mature_height_cm": 50,
+        "spread_cm": 50,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -12,
+        "yield_kg_per_m2": 2.0
+      }
     },
     "family": "brassicaceae",
     "timing": {
@@ -259,7 +322,16 @@
       "yield_density": "medium",
       "pest_deters": [
         "cabbage-moth"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 25,
+        "root_depth_cm": 20,
+        "mature_height_cm": 50,
+        "spread_cm": 25,
+        "water_ml_per_day": 700,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 4.0
+      }
     },
     "family": "apiaceae",
     "timing": {
@@ -296,7 +368,16 @@
       "pest_deters": [
         "aphids",
         "japanese-beetles"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 15,
+        "root_depth_cm": 15,
+        "mature_height_cm": 30,
+        "spread_cm": 20,
+        "water_ml_per_day": 150,
+        "nitrogen_g_per_m2": -1,
+        "yield_kg_per_m2": 1.0
+      }
     },
     "family": "amaryllidaceae",
     "timing": {
@@ -333,7 +414,16 @@
       "pest_deters": [
         "aphids",
         "spider-mites"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 15,
+        "root_depth_cm": 15,
+        "mature_height_cm": 50,
+        "spread_cm": 15,
+        "water_ml_per_day": 200,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 1.0
+      }
     },
     "family": "apiaceae",
     "timing": {
@@ -367,7 +457,16 @@
       "sun_need": "full",
       "pollinator_score": 0,
       "yield_density": "low",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 30,
+        "root_depth_cm": 90,
+        "mature_height_cm": 240,
+        "spread_cm": 30,
+        "water_ml_per_day": 600,
+        "nitrogen_g_per_m2": -15,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "poaceae",
     "timing": {
@@ -401,7 +500,16 @@
       "sun_need": "full",
       "pollinator_score": 2,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 60,
+        "root_depth_cm": 40,
+        "mature_height_cm": 45,
+        "spread_cm": 90,
+        "water_ml_per_day": 700,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 5.0
+      }
     },
     "family": "cucurbitaceae",
     "timing": {
@@ -439,7 +547,16 @@
         "aphids",
         "spider-mites",
         "squash-bugs"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 25,
+        "root_depth_cm": 20,
+        "mature_height_cm": 90,
+        "spread_cm": 25,
+        "water_ml_per_day": 200,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 0.8
+      }
     },
     "family": "apiaceae",
     "timing": {
@@ -475,7 +592,16 @@
       "yield_density": "medium",
       "pest_deters": [
         "aphids"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 45,
+        "mature_height_cm": 90,
+        "spread_cm": 50,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 2.0
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -511,7 +637,16 @@
       "yield_density": "medium",
       "pest_deters": [
         "aphids"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 35,
+        "root_depth_cm": 40,
+        "mature_height_cm": 75,
+        "spread_cm": 40,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -7,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -545,7 +680,16 @@
       "sun_need": "partial",
       "pollinator_score": 0,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 20,
+        "root_depth_cm": 15,
+        "mature_height_cm": 25,
+        "spread_cm": 25,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": -5,
+        "yield_kg_per_m2": 3.0
+      }
     },
     "family": "asteraceae",
     "timing": {
@@ -579,7 +723,16 @@
       "sun_need": "full",
       "pollinator_score": 2,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 60,
+        "mature_height_cm": 150,
+        "spread_cm": 45,
+        "water_ml_per_day": 400,
+        "nitrogen_g_per_m2": -6,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "malvaceae",
     "timing": {
@@ -616,7 +769,16 @@
       "pest_deters": [
         "aphids",
         "cabbage-moth"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 30,
+        "root_depth_cm": 20,
+        "mature_height_cm": 40,
+        "spread_cm": 40,
+        "water_ml_per_day": 150,
+        "nitrogen_g_per_m2": -1,
+        "yield_kg_per_m2": 0.5
+      }
     },
     "family": "lamiaceae",
     "timing": {
@@ -652,7 +814,16 @@
       "yield_density": "medium",
       "pest_deters": [
         "asparagus-beetle"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 20,
+        "root_depth_cm": 25,
+        "mature_height_cm": 30,
+        "spread_cm": 20,
+        "water_ml_per_day": 200,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 1.2
+      }
     },
     "family": "apiaceae",
     "timing": {
@@ -686,7 +857,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 8,
+        "root_depth_cm": 30,
+        "mature_height_cm": 120,
+        "spread_cm": 15,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": 12,
+        "yield_kg_per_m2": 2.0
+      }
     },
     "family": "fabaceae",
     "timing": {
@@ -720,7 +900,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 30,
+        "root_depth_cm": 40,
+        "mature_height_cm": 60,
+        "spread_cm": 35,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 4.5
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -754,7 +943,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "medium",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 45,
+        "mature_height_cm": 75,
+        "spread_cm": 45,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -7,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -792,7 +990,16 @@
         "cabbage-moth",
         "carrot-fly",
         "bean-beetles"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 60,
+        "root_depth_cm": 30,
+        "mature_height_cm": 90,
+        "spread_cm": 60,
+        "water_ml_per_day": 100,
+        "nitrogen_g_per_m2": -1,
+        "yield_kg_per_m2": 0.3
+      }
     },
     "family": "lamiaceae",
     "timing": {
@@ -830,7 +1037,16 @@
         "cabbage-moth",
         "carrot-fly",
         "flea-beetles"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 45,
+        "root_depth_cm": 25,
+        "mature_height_cm": 60,
+        "spread_cm": 50,
+        "water_ml_per_day": 100,
+        "nitrogen_g_per_m2": -1,
+        "yield_kg_per_m2": 0.3
+      }
     },
     "family": "lamiaceae",
     "timing": {
@@ -866,7 +1082,16 @@
       "yield_density": "medium",
       "pest_deters": [
         "aphids"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 35,
+        "root_depth_cm": 40,
+        "mature_height_cm": 75,
+        "spread_cm": 40,
+        "water_ml_per_day": 500,
+        "nitrogen_g_per_m2": -7,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -900,7 +1125,16 @@
       "sun_need": "partial",
       "pollinator_score": 0,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 15,
+        "root_depth_cm": 15,
+        "mature_height_cm": 25,
+        "spread_cm": 15,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": -5,
+        "yield_kg_per_m2": 2.5
+      }
     },
     "family": "amaranthaceae",
     "timing": {
@@ -934,7 +1168,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 30,
+        "root_depth_cm": 40,
+        "mature_height_cm": 30,
+        "spread_cm": 90,
+        "water_ml_per_day": 400,
+        "nitrogen_g_per_m2": -5,
+        "yield_kg_per_m2": 3.5
+      }
     },
     "family": "convolvulaceae",
     "timing": {
@@ -968,7 +1211,16 @@
       "sun_need": "full",
       "pollinator_score": 2,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 60,
+        "root_depth_cm": 30,
+        "mature_height_cm": 45,
+        "spread_cm": 90,
+        "water_ml_per_day": 700,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 5.0
+      }
     },
     "family": "cucurbitaceae",
     "timing": {
@@ -1006,7 +1258,16 @@
         "cabbage-worm",
         "corn-earworm",
         "whiteflies"
-      ]
+      ],
+      "metric": {
+        "spacing_cm": 20,
+        "root_depth_cm": 15,
+        "mature_height_cm": 25,
+        "spread_cm": 25,
+        "water_ml_per_day": 100,
+        "nitrogen_g_per_m2": -1,
+        "yield_kg_per_m2": 0.3
+      }
     },
     "family": "lamiaceae",
     "timing": {
@@ -1040,7 +1301,16 @@
       "sun_need": "full",
       "pollinator_score": 1,
       "yield_density": "high",
-      "pest_deters": []
+      "pest_deters": [],
+      "metric": {
+        "spacing_cm": 60,
+        "root_depth_cm": 60,
+        "mature_height_cm": 150,
+        "spread_cm": 60,
+        "water_ml_per_day": 800,
+        "nitrogen_g_per_m2": -12,
+        "yield_kg_per_m2": 5.0
+      }
     },
     "family": "solanaceae",
     "timing": {
@@ -1208,37 +1478,87 @@
   {
     "id": "beans",
     "name": "Beans",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "annual",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "fixer",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "medium",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 15,
+        "root_depth_cm": 30,
+        "mature_height_cm": 60,
+        "spread_cm": 20,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": 15,
+        "yield_kg_per_m2": 2.5
+      }
+    },
+    "family": "fabaceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        65
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 0,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": true,
+      "succession_interval_days": 14
     }
   },
   {
     "id": "beets",
     "name": "Beets",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "biennial",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "low",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "high",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 10,
+        "root_depth_cm": 25,
+        "mature_height_cm": 30,
+        "spread_cm": 15,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": -4,
+        "yield_kg_per_m2": 3.5
+      }
+    },
+    "family": "amaranthaceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        70
+      ],
+      "days_to_germination": [
+        5,
+        8
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": true,
+      "succession_interval_days": 21
     }
   },
   {
@@ -1622,19 +1942,44 @@
   {
     "id": "fennel",
     "name": "Fennel",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "perennial",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "tall",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "medium",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 25,
+        "root_depth_cm": 30,
+        "mature_height_cm": 120,
+        "spread_cm": 30,
+        "water_ml_per_day": 400,
+        "nitrogen_g_per_m2": -3,
+        "yield_kg_per_m2": 1.5
+      }
+    },
+    "family": "apiaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        90
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 50,
+      "indoor_start_weeks_before_frost": 4,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": 0
     }
   },
   {
@@ -1676,19 +2021,44 @@
   {
     "id": "garlic",
     "name": "Garlic",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "perennial",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "medium",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 15,
+        "root_depth_cm": 20,
+        "mature_height_cm": 40,
+        "spread_cm": 10,
+        "water_ml_per_day": 200,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 2.0
+      }
+    },
+    "family": "amaryllidaceae",
+    "timing": {
+      "days_to_maturity": [
+        90,
+        240
+      ],
+      "days_to_germination": [
+        7,
+        14
+      ],
+      "frost_tolerance": "hard",
+      "min_soil_temp_f": 32,
+      "indoor_start_weeks_before_frost": 0,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": false,
+      "succession_interval_days": 0
     }
   },
   {
@@ -1946,19 +2316,46 @@
   {
     "id": "marigolds",
     "name": "Marigolds",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "annual",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
-      "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "nitrogen_role": "neutral",
+      "root_depth": "shallow",
+      "growth_habit": "low",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 1,
+      "yield_density": "low",
+      "pest_deters": [
+        "nematodes"
+      ],
+      "metric": {
+        "spacing_cm": 20,
+        "root_depth_cm": 15,
+        "mature_height_cm": 30,
+        "spread_cm": 20,
+        "water_ml_per_day": 150,
+        "nitrogen_g_per_m2": 0,
+        "yield_kg_per_m2": 0.0
+      }
+    },
+    "family": "asteraceae",
+    "timing": {
+      "days_to_maturity": [
+        50,
+        60
+      ],
+      "days_to_germination": [
+        5,
+        7
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 6,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": 0
     }
   },
   {
@@ -2018,19 +2415,44 @@
   {
     "id": "mint",
     "name": "Mint",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "perennial",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "light-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "medium",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "low",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 30,
+        "root_depth_cm": 25,
+        "mature_height_cm": 45,
+        "spread_cm": 60,
+        "water_ml_per_day": 300,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 0.5
+      }
+    },
+    "family": "lamiaceae",
+    "timing": {
+      "days_to_maturity": [
+        60,
+        90
+      ],
+      "days_to_germination": [
+        10,
+        15
+      ],
+      "frost_tolerance": "moderate",
+      "min_soil_temp_f": 60,
+      "indoor_start_weeks_before_frost": 8,
+      "direct_sow": false,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": 0
     }
   },
   {
@@ -2306,19 +2728,44 @@
   {
     "id": "radishes",
     "name": "Radishes",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "annual",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "light-feeder",
+      "root_depth": "shallow",
+      "growth_habit": "ground-cover",
+      "water_need": "low",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "high",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 5,
+        "root_depth_cm": 15,
+        "mature_height_cm": 15,
+        "spread_cm": 8,
+        "water_ml_per_day": 150,
+        "nitrogen_g_per_m2": -2,
+        "yield_kg_per_m2": 3.0
+      }
+    },
+    "family": "brassicaceae",
+    "timing": {
+      "days_to_maturity": [
+        22,
+        30
+      ],
+      "days_to_germination": [
+        3,
+        5
+      ],
+      "frost_tolerance": "light",
+      "min_soil_temp_f": 45,
+      "indoor_start_weeks_before_frost": 0,
+      "direct_sow": true,
+      "transplant": false,
+      "succession_sow": true,
+      "succession_interval_days": 10
     }
   },
   {
@@ -2540,19 +2987,44 @@
   {
     "id": "squash",
     "name": "Squash",
-    "lifecycle": null,
-    "stub": true,
+    "lifecycle": "annual",
+    "stub": false,
     "properties": {
-      "water_needs": null,
-      "sun_hours": null,
-      "soil_ph": null,
-      "root_depth": null,
-      "height_cm": null,
-      "nutrient_needs": null,
-      "nutrient_gives": null,
+      "nitrogen_role": "heavy-feeder",
+      "root_depth": "medium",
+      "growth_habit": "medium",
+      "water_need": "high",
+      "sun_need": "full",
+      "pollinator_score": 0,
+      "yield_density": "high",
       "pest_deters": [],
-      "pest_attracts": [],
-      "allelopathic_emits": []
+      "metric": {
+        "spacing_cm": 90,
+        "root_depth_cm": 30,
+        "mature_height_cm": 45,
+        "spread_cm": 120,
+        "water_ml_per_day": 800,
+        "nitrogen_g_per_m2": -8,
+        "yield_kg_per_m2": 5.0
+      }
+    },
+    "family": "cucurbitaceae",
+    "timing": {
+      "days_to_maturity": [
+        45,
+        65
+      ],
+      "days_to_germination": [
+        5,
+        10
+      ],
+      "frost_tolerance": "none",
+      "min_soil_temp_f": 65,
+      "indoor_start_weeks_before_frost": 3,
+      "direct_sow": true,
+      "transplant": true,
+      "succession_sow": false,
+      "succession_interval_days": 0
     }
   },
   {

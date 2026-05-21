@@ -17,11 +17,52 @@ let plannerGarden = null; // WASM Garden (set from app.js)
 let emojiLookup = null;  // emojiFor function (set from app.js)
 let canvas, ctx;
 let sideCanvas, sideCtx;
+let unitPref = 'metric'; // 'metric' | 'imperial'
 
 const CELL_SIZE = 48;
 const CELL_GAP = 1;
 const GRID_PAD = 24;
 const EMOJI_SIZE = 24;
+const DEFAULT_CELL_CM = 15; // each cell = 15cm × 15cm (≈6in)
+
+// ── Unit Conversion ──
+
+function displayLength(cm) {
+  if (unitPref === 'imperial') {
+    const inches = cm / 2.54;
+    if (inches >= 36) return (inches / 12).toFixed(1) + ' ft';
+    return Math.round(inches) + ' in';
+  }
+  if (cm >= 100) return (cm / 100).toFixed(1) + ' m';
+  return Math.round(cm) + ' cm';
+}
+
+function displayArea(cm2) {
+  if (unitPref === 'imperial') {
+    const sqft = cm2 / 929.03;
+    return sqft.toFixed(1) + ' ft²';
+  }
+  const m2 = cm2 / 10000;
+  return m2.toFixed(2) + ' m²';
+}
+
+function displayVolume(liters) {
+  if (unitPref === 'imperial') {
+    const gal = liters * 0.264172;
+    return gal.toFixed(1) + ' gal';
+  }
+  return liters.toFixed(1) + ' L';
+}
+
+function displayWeight(grams) {
+  if (unitPref === 'imperial') {
+    const oz = grams * 0.035274;
+    if (oz >= 16) return (oz / 16).toFixed(1) + ' lb';
+    return oz.toFixed(1) + ' oz';
+  }
+  if (grams >= 1000) return (grams / 1000).toFixed(1) + ' kg';
+  return Math.round(grams) + ' g';
+}
 
 // ── Bed Model ──
 
@@ -32,6 +73,11 @@ function createBed(name, rows, cols, shape) {
     cols,
     shape: shape || 'rectangle',  // rectangle | circle
     cells: Array.from({ length: rows }, () => Array(cols).fill(null)),
+    dimensions_cm: {
+      width: cols * DEFAULT_CELL_CM,
+      depth: rows * DEFAULT_CELL_CM,
+      soil_depth: 30,
+    },
   };
 }
 
@@ -250,12 +296,40 @@ function renderTopDown(bed) {
     }
   }
 
-  // Bed label
+  // Spacing radius overlay (shows plant footprint)
+  for (let r = 0; r < bed.rows; r++) {
+    for (let c = 0; c < bed.cols; c++) {
+      const plantId = bed.cells[r]?.[c];
+      if (!plantId || !isInsideShape(bed, r, c)) continue;
+      const p = plannerPlants.find(pp => pp.id === plantId);
+      const m = p?.properties?.metric;
+      if (!m || !m.spread_cm) continue;
+
+      const pos = gridToCanvas(r, c);
+      const cellCm = DEFAULT_CELL_CM;
+      const radiusCells = (m.spread_cm / 2) / cellCm;
+      const radiusPx = radiusCells * (CELL_SIZE + CELL_GAP);
+
+      if (radiusPx > CELL_SIZE * 0.6) {
+        ctx.beginPath();
+        ctx.arc(pos.x + CELL_SIZE / 2, pos.y + CELL_SIZE / 2, radiusPx, 0, Math.PI * 2);
+        ctx.strokeStyle = isNight ? 'rgba(143,188,143,0.25)' : 'rgba(88,129,87,0.2)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+
+  // Bed label with real dimensions
+  const dim = bed.dimensions_cm || { width: bed.cols * DEFAULT_CELL_CM, depth: bed.rows * DEFAULT_CELL_CM };
+  const dimLabel = displayLength(dim.width) + ' × ' + displayLength(dim.depth);
   ctx.fillStyle = textColor;
   ctx.font = '11px Nunito, sans-serif';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText(bed.name + ' (' + bed.cols + '×' + bed.rows + ')', GRID_PAD, 6);
+  ctx.fillText(bed.name + '  ' + dimLabel, GRID_PAD, 6);
 }
 
 // ── Canvas Rendering — Side Cross-Section ──
@@ -363,12 +437,14 @@ function renderSideView(bed) {
     });
   }
 
-  // Side view label
+  // Side view label with soil depth
+  const sideDim = bed.dimensions_cm || {};
+  const soilLabel = sideDim.soil_depth ? ' · Soil: ' + displayLength(sideDim.soil_depth) : '';
   sideCtx.fillStyle = isNight ? '#d4e4c8' : '#344e41';
   sideCtx.font = '11px Nunito, sans-serif';
   sideCtx.textAlign = 'left';
   sideCtx.textBaseline = 'top';
-  sideCtx.fillText('Side View — Roots & Height', GRID_PAD, 6);
+  sideCtx.fillText('Side View — Roots & Height' + soilLabel, GRID_PAD, 6);
 }
 
 // ── Event Handlers ──
@@ -609,20 +685,91 @@ function renderBedStats(bed) {
     }
   }
 
-  statsEl.innerHTML =
-    '<div class="bed-stat"><span class="bed-stat-label">Plants</span><span class="bed-stat-value">' + plantCount + ' varieties</span></div>' +
-    '<div class="bed-stat"><span class="bed-stat-label">Filled</span><span class="bed-stat-value">' + filledCells + '/' + totalCells + ' cells</span></div>' +
-    '<div class="bed-stat"><span class="bed-stat-label">Companions</span><span class="bed-stat-value bed-stat--good">' + companionPairs + ' pairs ✓</span></div>' +
-    (conflictPairs > 0 ?
-      '<div class="bed-stat"><span class="bed-stat-label">Conflicts</span><span class="bed-stat-value bed-stat--bad">' + conflictPairs + ' pairs ⚠</span></div>' : '') +
-    '<div class="bed-stat-actions">' +
-    '<button class="bed-action" id="clear-bed-btn">Clear Bed</button>' +
-    (beds.length > 1 ? '<button class="bed-action bed-action--danger" id="remove-bed-btn">Remove Bed</button>' : '') +
-    '</div>';
+  // ── Metric Calculations ──
+  const dim = bed.dimensions_cm || { width: bed.cols * DEFAULT_CELL_CM, depth: bed.rows * DEFAULT_CELL_CM, soil_depth: 30 };
+  const areaCm2 = dim.width * dim.depth;
+  const areaM2 = areaCm2 / 10000;
+  const soilVolL = (areaCm2 * (dim.soil_depth || 30)) / 1000;
+
+  // Count plant instances (not unique varieties — actual cell count per plant)
+  const plantCounts = {};
+  for (let r = 0; r < bed.rows; r++) {
+    for (let c = 0; c < bed.cols; c++) {
+      const pid = bed.cells[r]?.[c];
+      if (pid && isInsideShape(bed, r, c)) {
+        plantCounts[pid] = (plantCounts[pid] || 0) + 1;
+      }
+    }
+  }
+
+  // Water budget: sum water_ml_per_day for each planted cell
+  let waterMlDay = 0;
+  let nitrogenGM2 = 0;
+  let yieldKgM2 = 0;
+  let metricPlants = 0;
+
+  for (const [pid, count] of Object.entries(plantCounts)) {
+    const p = plannerPlants.find(pp => pp.id === pid);
+    const m = p?.properties?.metric;
+    if (!m) continue;
+    metricPlants++;
+    waterMlDay += (m.water_ml_per_day || 0) * count;
+    nitrogenGM2 += (m.nitrogen_g_per_m2 || 0); // per variety contribution
+    yieldKgM2 += (m.yield_kg_per_m2 || 0);
+  }
+
+  const waterLWeek = (waterMlDay * 7) / 1000;
+  const nBalance = nitrogenGM2; // g/m² — positive = surplus, negative = needs fertilizer
+  const nStatus = nBalance >= 0 ? 'surplus' : (nBalance >= -15 ? 'moderate' : 'deficit');
+  const nClass = nBalance >= 0 ? 'bed-stat--good' : (nBalance >= -15 ? '' : 'bed-stat--bad');
+
+  // ── Build HTML ──
+  let html = '';
+
+  // Row 1: basic counts
+  html += '<div class="bed-stat"><span class="bed-stat-label">Plants</span><span class="bed-stat-value">' + plantCount + ' varieties</span></div>';
+  html += '<div class="bed-stat"><span class="bed-stat-label">Filled</span><span class="bed-stat-value">' + filledCells + '/' + totalCells + ' cells</span></div>';
+  html += '<div class="bed-stat"><span class="bed-stat-label">Companions</span><span class="bed-stat-value bed-stat--good">' + companionPairs + ' pairs ✓</span></div>';
+  if (conflictPairs > 0) {
+    html += '<div class="bed-stat"><span class="bed-stat-label">Conflicts</span><span class="bed-stat-value bed-stat--bad">' + conflictPairs + ' pairs ⚠</span></div>';
+  }
+
+  // Row 2: metric stats (only show if plants have metric data)
+  if (metricPlants > 0) {
+    html += '<div class="bed-stat"><span class="bed-stat-label">Bed Area</span><span class="bed-stat-value">' + displayArea(areaCm2) + '</span></div>';
+    html += '<div class="bed-stat"><span class="bed-stat-label">Soil Volume</span><span class="bed-stat-value">' + displayVolume(soilVolL) + '</span></div>';
+    html += '<div class="bed-stat"><span class="bed-stat-label">💧 Water</span><span class="bed-stat-value">' + displayVolume(waterLWeek) + '/week</span></div>';
+
+    const nLabel = nBalance >= 0 ? '+' + Math.abs(nBalance).toFixed(0) + ' g/m²' : nBalance.toFixed(0) + ' g/m²';
+    html += '<div class="bed-stat"><span class="bed-stat-label">🌿 Nitrogen</span><span class="bed-stat-value ' + nClass + '">' + nLabel + ' ' + nStatus + '</span></div>';
+
+    if (yieldKgM2 > 0) {
+      const totalYieldKg = yieldKgM2 * areaM2;
+      html += '<div class="bed-stat"><span class="bed-stat-label">🌾 Est. Yield</span><span class="bed-stat-value">' + displayWeight(totalYieldKg * 1000) + '</span></div>';
+    }
+  }
+
+  // Row 3: unit toggle + actions
+  html += '<div class="bed-stat-actions">';
+  html += '<button class="bed-action" id="unit-toggle-btn">' + (unitPref === 'metric' ? '📏 Metric' : '📐 Imperial') + '</button>';
+  html += '<button class="bed-action" id="clear-bed-btn">Clear Bed</button>';
+  if (beds.length > 1) {
+    html += '<button class="bed-action bed-action--danger" id="remove-bed-btn">Remove Bed</button>';
+  }
+  html += '</div>';
+
+  statsEl.innerHTML = html;
 
   // Wire action buttons
   document.getElementById('clear-bed-btn')?.addEventListener('click', clearActiveBed);
   document.getElementById('remove-bed-btn')?.addEventListener('click', removeBed);
+  document.getElementById('unit-toggle-btn')?.addEventListener('click', toggleUnits);
+}
+
+function toggleUnits() {
+  unitPref = unitPref === 'metric' ? 'imperial' : 'metric';
+  try { localStorage.setItem('garden-units', unitPref); } catch (e) {}
+  renderBed();
 }
 
 // ── View Toggle ──
@@ -662,9 +809,23 @@ export function initPlanner(plantsData, gardenEngine, emojiFn) {
   ctx = canvas.getContext('2d');
   sideCtx = sideCanvas?.getContext('2d');
 
+  // Load preferences
+  try { unitPref = localStorage.getItem('garden-units') || 'metric'; } catch (e) {}
+
   // Load saved beds or create default
   if (!loadBeds() || beds.length === 0) {
     beds = [createBed('My Garden Bed', 4, 8, 'rectangle')];
+  }
+
+  // Ensure all beds have dimensions_cm (migration for pre-metric beds)
+  for (const b of beds) {
+    if (!b.dimensions_cm) {
+      b.dimensions_cm = {
+        width: b.cols * DEFAULT_CELL_CM,
+        depth: b.rows * DEFAULT_CELL_CM,
+        soil_depth: 30,
+      };
+    }
   }
 
   // Event listeners

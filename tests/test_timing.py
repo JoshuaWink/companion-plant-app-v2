@@ -34,7 +34,7 @@ class TestTimingPresence:
         assert missing == [], f"Plants missing timing: {missing}"
 
     def test_full_plant_count(self):
-        assert len(FULL_PLANTS) == 30
+        assert len(FULL_PLANTS) == 38
 
 
 class TestTimingFields:
