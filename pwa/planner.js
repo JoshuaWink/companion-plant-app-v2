@@ -458,7 +458,7 @@ function renderTopDown(bed) {
 function renderSideView(bed) {
   if (!sideCanvas || !sideCtx || !bed) return;
 
-  const SIDE_H = 200;
+  const SIDE_H = 260;
   const dpr = window.devicePixelRatio || 1;
   const size = getCanvasSize(bed);
   sideCanvas.width = size.w * dpr;
@@ -468,104 +468,197 @@ function renderSideView(bed) {
   sideCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const isNight = document.documentElement.dataset.theme === 'night';
+  const RULER_W = 32;
+  const SKY_H   = 140;
+  const GROUND_H = 3;
+  const SOIL_H  = SIDE_H - SKY_H - GROUND_H;
+  const groundY = SKY_H;
 
-  // Sky
-  const skyGrad = sideCtx.createLinearGradient(0, 0, 0, 60);
+  // ── Collect all plants across the bed with their column positions ──
+  const colEntries = [];
+  for (let c = 0; c < bed.cols; c++) {
+    const seen = new Set();
+    for (let r = 0; r < bed.rows; r++) {
+      const pid = bed.cells[r][c];
+      if (pid && isInsideShape(bed, r, c) && !seen.has(pid)) {
+        const p = plannerPlants.find(pp => pp.id === pid);
+        if (p) { colEntries.push({ plant: p, col: c }); seen.add(pid); }
+      }
+    }
+  }
+
+  // ── Determine max height and root depth for proportional scaling ──
+  let maxHcm = 0, maxRcm = 0;
+  colEntries.forEach(({ plant }) => {
+    const dim = getPlantDimensions(plant, seasonMonth);
+    const mh = dim.matureH || 0;
+    const mr = dim.matureR || 0;
+    if (mh > maxHcm) maxHcm = mh;
+    if (mr > maxRcm) maxRcm = mr;
+  });
+  if (maxHcm === 0) maxHcm = 200;
+  if (maxRcm === 0) maxRcm = 90;
+
+  const aboveSpace = SKY_H - 30;
+  const belowSpace = SOIL_H - 10;
+  const pxPerCmAbove = aboveSpace / maxHcm;
+  const pxPerCmBelow = belowSpace / maxRcm;
+
+  // ── Sky gradient ──
+  const skyGrad = sideCtx.createLinearGradient(0, 0, 0, groundY);
   skyGrad.addColorStop(0, isNight ? '#0a150a' : '#d4eaf7');
   skyGrad.addColorStop(1, isNight ? '#1b2a1b' : '#f0ead2');
   sideCtx.fillStyle = skyGrad;
-  sideCtx.fillRect(0, 0, size.w, 60);
+  sideCtx.fillRect(0, 0, size.w, groundY);
 
-  // Ground line
-  const groundY = 60;
+  // ── Ground line ──
   sideCtx.fillStyle = isNight ? '#2a3a20' : '#8B7355';
-  sideCtx.fillRect(0, groundY, size.w, 3);
+  sideCtx.fillRect(0, groundY, size.w, GROUND_H);
 
-  // Soil layers
-  const soilColors = isNight
-    ? ['#3a2e18', '#2e2210', '#201808']
-    : ['#8B7355', '#6B5B3E', '#4A3B26'];
-  const layerH = (SIDE_H - groundY - 3) / 3;
-  soilColors.forEach((c, i) => {
-    sideCtx.fillStyle = c;
-    sideCtx.fillRect(0, groundY + 3 + i * layerH, size.w, layerH);
-  });
+  // ── Soil gradient ──
+  const soilGrad = sideCtx.createLinearGradient(0, groundY + GROUND_H, 0, SIDE_H);
+  if (isNight) {
+    soilGrad.addColorStop(0, '#3a2e18');
+    soilGrad.addColorStop(0.5, '#2e2210');
+    soilGrad.addColorStop(1, '#201808');
+  } else {
+    soilGrad.addColorStop(0, '#8B7355');
+    soilGrad.addColorStop(0.5, '#6B5B3E');
+    soilGrad.addColorStop(1, '#4A3B26');
+  }
+  sideCtx.fillStyle = soilGrad;
+  sideCtx.fillRect(0, groundY + GROUND_H, size.w, SOIL_H);
 
-  // Soil layer labels
-  sideCtx.fillStyle = 'rgba(255,255,255,0.3)';
-  sideCtx.font = '9px Nunito, sans-serif';
-  sideCtx.textAlign = 'left';
-  ['Shallow', 'Medium', 'Deep'].forEach((label, i) => {
-    sideCtx.fillText(label, 4, groundY + 3 + i * layerH + 12);
-  });
+  // ── Height ruler (left side) ──
+  sideCtx.strokeStyle = isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)';
+  sideCtx.fillStyle   = isNight ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)';
+  sideCtx.font = '8px Nunito, sans-serif';
+  sideCtx.textAlign = 'right';
+  sideCtx.textBaseline = 'middle';
+  const hTickCm = maxHcm <= 60 ? 10 : (maxHcm <= 150 ? 25 : 50);
+  for (let cm = hTickCm; cm <= maxHcm; cm += hTickCm) {
+    const y = groundY - cm * pxPerCmAbove;
+    if (y < 16) break;
+    sideCtx.lineWidth = 0.5;
+    sideCtx.beginPath();
+    sideCtx.moveTo(RULER_W, y);
+    sideCtx.lineTo(size.w, y);
+    sideCtx.stroke();
+    sideCtx.fillText(displayLength(cm), RULER_W - 3, y);
+  }
+  const rTickCm = maxRcm <= 40 ? 10 : (maxRcm <= 80 ? 20 : 30);
+  for (let cm = rTickCm; cm <= maxRcm; cm += rTickCm) {
+    const y = groundY + GROUND_H + cm * pxPerCmBelow;
+    if (y > SIDE_H - 5) break;
+    sideCtx.lineWidth = 0.5;
+    sideCtx.beginPath();
+    sideCtx.moveTo(RULER_W, y);
+    sideCtx.lineTo(size.w, y);
+    sideCtx.stroke();
+    sideCtx.fillText(displayLength(cm), RULER_W - 3, y);
+  }
+  sideCtx.fillText('0', RULER_W - 3, groundY + 1);
 
-  // Depth map
-  const depthY = { 'shallow': groundY + 3 + layerH * 0.4, 'medium': groundY + 3 + layerH * 1.4, 'deep': groundY + 3 + layerH * 2.4 };
-  const heightY = { 'ground-cover': groundY - 5, 'low': groundY - 15, 'medium': groundY - 28, 'tall': groundY - 42, 'climbing': groundY - 55 };
+  // ── Categorical fallback heights/depths ──
+  const catDepthFrac = { 'shallow': 0.3, 'medium': 0.6, 'deep': 0.9 };
+  const catHeightCm  = { 'ground-cover': 10, 'low': 30, 'medium': 60, 'tall': 120, 'climbing': 200 };
 
-  // Draw each column's plant profile
-  for (let c = 0; c < bed.cols; c++) {
-    // Collect all plants in this column
-    const colPlants = [];
-    for (let r = 0; r < bed.rows; r++) {
-      const pid = bed.cells[r][c];
-      if (pid && isInsideShape(bed, r, c)) {
-        const p = plannerPlants.find(pp => pp.id === pid);
-        if (p && !colPlants.find(cp => cp.id === pid)) colPlants.push(p);
-      }
+  // ── Draw each column's plants ──
+  colEntries.forEach(({ plant, col }) => {
+    const cx = GRID_PAD + col * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
+    const pr = plant.properties || {};
+    const m  = pr.metric || {};
+    const dim = getPlantDimensions(plant, seasonMonth);
+
+    let stemPx, rootPx, canopyPx;
+    if (m.mature_height_cm) {
+      stemPx   = dim.height   * pxPerCmAbove;
+      rootPx   = dim.rootDepth * pxPerCmBelow;
+      canopyPx = dim.spread   * pxPerCmAbove * 0.5;
+    } else {
+      const catH = catHeightCm[pr.growth_habit || 'low'] || 30;
+      const catR = (catDepthFrac[pr.root_depth || 'shallow'] || 0.3) * maxRcm;
+      const frac = seasonMonth > 0 ? growthCurve(getGrowthProgress(plant, seasonMonth)) : 1;
+      stemPx   = catH * frac * pxPerCmAbove;
+      rootPx   = catR * (0.3 + 0.7 * frac) * pxPerCmBelow;
+      canopyPx = (catH * 0.3 * frac) * pxPerCmAbove;
     }
 
-    const cx = GRID_PAD + c * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
-
-    colPlants.forEach(p => {
-      const pr = p.properties || {};
-      const rootD = pr.root_depth || 'shallow';
-      const habit = pr.growth_habit || 'low';
-      const ry = depthY[rootD] || depthY.shallow;
-      const hy = heightY[habit] || heightY.low;
-
-      // Root line
-      sideCtx.strokeStyle = isNight ? 'rgba(143,188,143,0.5)' : 'rgba(139,115,85,0.6)';
-      sideCtx.lineWidth = 2;
-      sideCtx.setLineDash([3, 3]);
+    // Not yet planted — show seed dot
+    if (seasonMonth > 0 && dim.progress <= 0) {
+      sideCtx.fillStyle = isNight ? 'rgba(143,188,143,0.3)' : 'rgba(139,115,85,0.3)';
       sideCtx.beginPath();
-      sideCtx.moveTo(cx, groundY + 3);
-      sideCtx.lineTo(cx, ry);
-      sideCtx.stroke();
-      sideCtx.setLineDash([]);
-
-      // Root dot
-      sideCtx.fillStyle = isNight ? '#8fbc8f' : '#6B5B3E';
-      sideCtx.beginPath();
-      sideCtx.arc(cx, ry, 4, 0, Math.PI * 2);
+      sideCtx.arc(cx, groundY + GROUND_H + 6, 3, 0, Math.PI * 2);
       sideCtx.fill();
+      return;
+    }
 
-      // Stem line above ground
-      sideCtx.strokeStyle = isNight ? '#5a8a5a' : '#588157';
-      sideCtx.lineWidth = 2;
-      sideCtx.setLineDash([]);
-      sideCtx.beginPath();
-      sideCtx.moveTo(cx, groundY);
-      sideCtx.lineTo(cx, hy);
-      sideCtx.stroke();
+    const stemTopY  = groundY - Math.max(stemPx, 2);
+    const rootBotY  = groundY + GROUND_H + Math.max(rootPx, 2);
 
-      // Plant emoji at top
-      const emoji = emojiLookup ? emojiLookup(p.id) : '🌱';
-      sideCtx.font = '16px serif';
+    // Root line (dashed)
+    sideCtx.strokeStyle = isNight ? 'rgba(143,188,143,0.5)' : 'rgba(139,115,85,0.6)';
+    sideCtx.lineWidth = 1.5;
+    sideCtx.setLineDash([3, 3]);
+    sideCtx.beginPath();
+    sideCtx.moveTo(cx, groundY + GROUND_H);
+    sideCtx.lineTo(cx, rootBotY);
+    sideCtx.stroke();
+    sideCtx.setLineDash([]);
+
+    // Root tip dot
+    sideCtx.fillStyle = isNight ? '#8fbc8f' : '#6B5B3E';
+    sideCtx.beginPath();
+    sideCtx.arc(cx, rootBotY, 2.5, 0, Math.PI * 2);
+    sideCtx.fill();
+
+    // Stem line
+    const stemW = m.mature_height_cm ? Math.max(1.5, Math.min(4, m.mature_height_cm / 80)) : 2;
+    sideCtx.strokeStyle = isNight ? '#5a8a5a' : '#588157';
+    sideCtx.lineWidth = stemW;
+    sideCtx.beginPath();
+    sideCtx.moveTo(cx, groundY);
+    sideCtx.lineTo(cx, stemTopY);
+    sideCtx.stroke();
+
+    // Canopy ellipse
+    const canopyR = Math.max(canopyPx, 6);
+    const canopyAlpha = dim.fraction >= 0.8 ? 0.35 : (dim.fraction >= 0.4 ? 0.25 : 0.15);
+    sideCtx.fillStyle = isNight
+      ? 'rgba(100,180,100,' + canopyAlpha + ')'
+      : 'rgba(88,129,87,' + canopyAlpha + ')';
+    sideCtx.beginPath();
+    sideCtx.ellipse(cx, stemTopY + canopyR * 0.3, canopyR, canopyR * 0.7, 0, 0, Math.PI * 2);
+    sideCtx.fill();
+
+    // Plant emoji
+    const emoji = emojiLookup ? emojiLookup(plant.id) : '🌱';
+    sideCtx.font = stemPx > 15 ? '14px serif' : '10px serif';
+    sideCtx.textAlign = 'center';
+    sideCtx.textBaseline = 'bottom';
+    sideCtx.fillStyle = 'white';
+    sideCtx.fillText(emoji, cx, stemTopY - canopyR * 0.2);
+
+    // Height label
+    if (m.mature_height_cm && stemPx > 12) {
+      const hLabel = displayLength(Math.round(dim.height));
+      sideCtx.font = '8px Nunito, sans-serif';
       sideCtx.textAlign = 'center';
       sideCtx.textBaseline = 'bottom';
-      sideCtx.fillText(emoji, cx, hy);
-    });
-  }
+      sideCtx.fillStyle = isNight ? 'rgba(212,228,200,0.7)' : 'rgba(52,78,65,0.7)';
+      sideCtx.fillText(hLabel, cx, stemTopY - canopyR * 0.2 - 14);
+    }
+  });
 
-  // Side view label with soil depth
+  // ── Title label ──
   const sideDim = bed.dimensions_cm || {};
-  const soilLabel = sideDim.soil_depth ? ' · Soil: ' + displayLength(sideDim.soil_depth) : '';
+  const soilLabel = sideDim.soil_depth ? ' \u00b7 Soil: ' + displayLength(sideDim.soil_depth) : '';
+  const monthLabel = seasonMonth > 0 ? ' \u00b7 ' + MONTH_NAMES[seasonMonth] : '';
   sideCtx.fillStyle = isNight ? '#d4e4c8' : '#344e41';
   sideCtx.font = '11px Nunito, sans-serif';
   sideCtx.textAlign = 'left';
   sideCtx.textBaseline = 'top';
-  sideCtx.fillText('Side View — Roots & Height' + soilLabel, GRID_PAD, 6);
+  sideCtx.fillText('Side View \u2014 Growth Profile' + soilLabel + monthLabel, GRID_PAD, 6);
 }
 
 // ── Event Handlers ──
@@ -1018,6 +1111,35 @@ function renderBedStats(bed) {
   html += '<input type="range" id="season-slider" class="season-slider" min="0" max="12" value="' + seasonMonth + '" title="Slide to filter by month">';
   html += '</div>';
 
+  // Row 5: growth progress (when season scrubber is active)
+  if (seasonMonth > 0 && filledCells > 0) {
+    let growthSum = 0, growthCount = 0;
+    let tallest = '', tallestH = 0;
+    for (let r = 0; r < bed.rows; r++) {
+      for (let c = 0; c < bed.cols; c++) {
+        const pid = bed.cells[r]?.[c];
+        if (!pid || !isInsideShape(bed, r, c)) continue;
+        const p = plannerPlants.find(pp => pp.id === pid);
+        if (!p) continue;
+        const dim = getPlantDimensions(p, seasonMonth);
+        if (dim.matureH > 0) {
+          growthSum += dim.fraction;
+          growthCount++;
+          if (dim.height > tallestH) { tallestH = dim.height; tallest = p.name || p.id; }
+        }
+      }
+    }
+    if (growthCount > 0) {
+      const avgGrowth = Math.round((growthSum / growthCount) * 100);
+      const gClass = avgGrowth >= 80 ? 'bed-stat--good' : (avgGrowth >= 30 ? '' : 'bed-stat--warn');
+      const gPhase = avgGrowth >= 90 ? 'mature' : (avgGrowth >= 50 ? 'mid-season' : (avgGrowth > 0 ? 'early' : 'dormant'));
+      html += '<div class="bed-stat"><span class="bed-stat-label">🌱 Growth</span><span class="bed-stat-value ' + gClass + '">' + avgGrowth + '% \u2014 ' + gPhase + '</span></div>';
+      if (tallest && tallestH > 0) {
+        html += '<div class="bed-stat"><span class="bed-stat-label">📏 Tallest</span><span class="bed-stat-value">' + tallest + ' \u00b7 ' + displayLength(Math.round(tallestH)) + '</span></div>';
+      }
+    }
+  }
+
   // Hidden file input for import
   html += '<input type="file" id="import-file-input" accept=".json" hidden>';
 
@@ -1139,9 +1261,67 @@ function importBedsJSON(file) {
   reader.readAsText(file);
 }
 
-// ── Season Scrubber ──
+// ── Growth Engine ──
 
 const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Sigmoid growth curve — slow establishment, fast vegetative, maturity plateau
+function growthCurve(t) {
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  const k = 8;
+  const raw = 1 / (1 + Math.exp(-k * (t - 0.5)));
+  const lo  = 1 / (1 + Math.exp(-k * -0.5));
+  const hi  = 1 / (1 + Math.exp(-k *  0.5));
+  return (raw - lo) / (hi - lo);
+}
+
+// Earliest month a plant starts growing (based on frost tolerance + indoor start)
+function getPlantStartMonth(plant) {
+  const t = plant.timing;
+  if (!t) return 4; // default: April
+  const frost = t.frost_tolerance || 'none';
+  const startWeeks = t.indoor_start_weeks_before_frost || 0;
+  const indoorOffset = Math.ceil(startWeeks / 4);
+
+  if (frost === 'hard')     return 1;
+  if (frost === 'moderate') return Math.max(1, 2 - indoorOffset);
+  if (frost === 'light')    return Math.max(1, 3 - indoorOffset);
+  return Math.max(1, 4 - indoorOffset); // 'none'
+}
+
+// Growth progress [0..1] at a given month — 0 = not started, 1 = mature
+function getGrowthProgress(plant, month) {
+  if (month <= 0) return 1; // scrubber off → show at maturity
+  const startMonth = getPlantStartMonth(plant);
+  if (month < startMonth) return 0; // not planted yet
+
+  const t = plant.timing;
+  const dtm = t?.days_to_maturity;
+  const maturityDays = dtm ? (dtm[0] + dtm[1]) / 2 : 75; // default 75 days
+  const daysGrowing = (month - startMonth) * 30; // approximate
+  return Math.min(daysGrowing / maturityDays, 1);
+}
+
+// Dimensions at a given month — returns cm values
+function getPlantDimensions(plant, month) {
+  const m = plant.properties?.metric || {};
+  const matureH   = m.mature_height_cm || 0;
+  const matureS   = m.spread_cm        || 0;
+  const matureR   = m.root_depth_cm    || 0;
+
+  const progress = getGrowthProgress(plant, month);
+  const g = growthCurve(progress);
+
+  return {
+    height:    matureH * g,
+    spread:    matureS * g,
+    rootDepth: matureR * (0.3 + 0.7 * g), // roots establish ~30% faster
+    progress:  progress,
+    fraction:  g,
+    matureH, matureS, matureR,
+  };
+}
 
 function isPlantInSeason(plant, month) {
   const t = plant.timing;
@@ -1248,7 +1428,7 @@ function renderBed() {
   if (!bed) return;
 
   renderTopDown(bed);
-  if (viewMode === 'side') renderSideView(bed);
+  renderSideView(bed);
   renderBedStats(bed);
 }
 
