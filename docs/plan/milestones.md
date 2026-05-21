@@ -49,48 +49,77 @@
 
 ---
 
-## M4: Temporal Edges — Succession Dependencies
+## M4: Temporal Edges — Succession Dependencies (DONE ✓)
 
 > Model "Plant A prepares for Plant B" as a graph edge.
 
-- [ ] Add `precedes` edge type to the Rust graph model
-- [ ] Add `gap_days` and `mechanism` fields to precedes edges
-- [ ] Research and add 5-10 well-documented succession pairs (cover crop → cash crop)
-- [ ] WASM binding: `temporal_deps(plant_ids)` → sequence constraints
-- [ ] Timeline UI: show dependency arrows between related timeline bars
-- [ ] Warning: "Clover needs to be tilled under 2 weeks before tomatoes go in"
-- [ ] TDD: test succession chain resolution
-
-**Done when**: Selecting "crimson clover" + "tomatoes" shows the temporal dependency and timing constraint in the timeline.
+- [x] Add `precedes` edge type to the Rust graph model
+- [x] Add `gap_days` and `mechanism` fields to precedes edges
+- [x] Research and add 10 well-documented succession pairs (cover crop → cash crop)
+- [x] WASM binding: `temporal_deps(plant_ids)` → sequence constraints
+- [x] Succession Plan UI in PWA
+- [x] TDD: test succession chain resolution
 
 ---
 
-## M5: Reason String Mining (NLP Enrichment)
+## M5: Garden Stats & Theorycrafting (DONE ✓)
 
-> Extract temporal hints from existing 584 relationship reason strings.
+> Per-plant quantitative attributes + garden-level aggregation metrics.
 
-- [ ] Categorize reason strings by temporal implication
-- [ ] Build extraction pipeline (Python, regex + pattern matching)
-- [ ] Generate candidate `precedes` edges from mined patterns
-- [ ] Human review: validate or reject each candidate
-- [ ] Add validated edges to relationships.json
-- [ ] Mark confidence tier on each mined edge
-
-**Done when**: Existing reason text has been mined for temporal relationships, validated candidates added to graph.
+- [x] Enrich plants.json: spacing_cm, root_depth_cm, height_cm, spread_cm, water_ml_per_day, nitrogen_kg_per_m2, yield_kg_per_m2
+- [x] 38 fully enriched plants with metric data
+- [x] Garden-level aggregation: water budget, nitrogen balance, yield estimates
+- [x] Stats panel UI with labeled metric values
 
 ---
 
-## M6: Crop Rotation Foundations
+## M6: Interactive Garden Bed Planner (IN PROGRESS)
 
-> Add family-based rotation rules for multi-season planning.
+> Spatial design tool — canvas-based bed planner with metric foundation.
 
-- [ ] Research rotation rules: nightshade 3-year, brassica 4-year, legume rotation patterns
-- [ ] Define rotation constraint model (family + years_before_repeat)
-- [ ] Implement rotation conflict detection in the engine
-- [ ] UI: "If you grew tomatoes here last year, don't plant peppers (same family) this year"
-- [ ] TDD: rotation conflict tests
+### P1: Core Planner (DONE ✓)
 
-**Done when**: Engine can flag rotation conflicts given planting history.
+- [x] Canvas renderer with grid cells, plant emojis, snap-to-grid
+- [x] Plant placement via click (select plant → click cell)
+- [x] Real-time companion/conflict highlighting per cell
+- [x] Side-view toggle showing root depth + vertical soil profile
+- [x] Multiple beds with tabs (rectangle + circle shapes)
+- [x] Bed stats: variety count, fill ratio, companion/conflict pair counts
+- [x] LocalStorage persistence for bed layouts
+- [x] Night mode + touch support
+
+### Arc A: Metric Foundation (DONE ✓)
+
+- [x] Bed physical dimensions (width × depth × soil_depth in cm)
+- [x] Spacing radius overlay on grid (dashed circles per plant)
+- [x] Unit preference toggle (metric ↔ imperial, pure display conversion)
+- [x] Water budget (L/week), nitrogen balance (g/m²), soil volume (L), yield (kg)
+- [x] 301 Python + 20 Rust tests passing
+
+### Arc B: Make It Expressive (DONE ✓)
+
+- [x] Undo/redo stack (Ctrl+Z / Ctrl+Shift+Z, max 50 states)
+- [x] Drag-and-drop: rearrange plants on canvas + drag from palette
+- [x] Season month scrubber: Jan→Dec slider dims out-of-season plants
+- [x] Export bed as PNG image (📸 button)
+- [x] Soil texture on empty cells (procedural earth dots)
+
+### Arc C: Make It Scale — partial (IN PROGRESS)
+
+- [x] Import/export bed layouts as JSON for sharing
+- [x] Crop rotation: save layout snapshots, switch between seasons
+- [x] Event delegation for robust dynamic UI
+- [ ] Farm overview — multiple beds on a property canvas with zoom/pan
+- [ ] Row/block abstractions for field-scale layouts
+- [ ] Drill-down navigation: farm → block → bed → cell
+- [ ] Custom polygon shapes for irregular beds
+- [ ] Print-friendly / PDF export of full farm plan
+
+### Remaining Arc B items
+
+- [ ] Grid toggle — optional guidelines, freeform placement
+- [ ] Plant footprint circles proportional to real spread
+- [ ] Growth visualization — soft spread circles that expand through season
 
 ---
 
@@ -99,7 +128,7 @@
 - Open-Meteo weather integration ("safe to plant today?")
 - Variety-level DTM and timing
 - GDD (Growing Degree Day) accumulation model
-- Farmer's Almanac overlay (cultural/fun)
-- Bed layout spatial optimizer
-- Multi-year planning calendar
-- Community-contributed timing data
+- Bumblebee cursor + garden creatures
+- Plant life cycle SVGs
+- Soil integration layer
+- Reason string mining (NLP enrichment from 584 relationship reason strings)

@@ -12,9 +12,9 @@
 - **Garden Theme** — Warm parchment/sage/honey palette, Nunito font, plant emoji chips
 - **Night Mode** — Deep forest palette, 18 fireflies, 25 stars, 6 crickets, moon, localStorage toggle
 
-## Next Up
+## Completed (continued)
 
-### 📊 M5: Garden Stats & Theorycrafting
+### 📊 M5: Garden Stats & Theorycrafting ✅
 
 The feature that transforms the app from reference tool → planning engine → learning tool.
 
@@ -54,8 +54,6 @@ The feature that transforms the app from reference tool → planning engine → 
 
 ---
 
-## In Progress
-
 ### 🗺️ M6: Interactive Garden Bed Planner
 
 The feature that transforms the app from *planning engine* → **spatial design tool** → **garden studio**.
@@ -90,14 +88,14 @@ The grid currently has no physical dimensions. "8×4" doesn't mean anything in t
 
 | Phase | Feature | Status |
 |-------|---------|--------|
-| A1 | Bed physical dimensions (width × depth in cm, height in cm) | Planned |
-| A2 | Per-plant spacing data in plants.json (spacing_cm, root_depth_cm, height_cm, spread_cm) | Planned |
-| A3 | Spacing radius overlay on grid (circles showing each plant's footprint) | Planned |
-| A4 | Unit preference toggle (metric/imperial) — pure display conversion | Planned |
-| A5 | Water budget calculator (mL/plant/day → L/bed/week) | Planned |
-| A6 | Nitrogen balance (kg N/m²/season — fixers vs feeders) | Planned |
-| A7 | Soil volume calculator (bed dimensions × depth = L of growing medium) | Planned |
-| A8 | Yield estimates (kg/m² expected harvest by plant) | Planned |
+| A1 | Bed physical dimensions (width × depth in cm, height in cm) | ✅ Done |
+| A2 | Per-plant spacing data in plants.json (spacing_cm, root_depth_cm, height_cm, spread_cm) | ✅ Done |
+| A3 | Spacing radius overlay on grid (circles showing each plant's footprint) | ✅ Done |
+| A4 | Unit preference toggle (metric/imperial) — pure display conversion | ✅ Done |
+| A5 | Water budget calculator (mL/plant/day → L/bed/week) | ✅ Done |
+| A6 | Nitrogen balance (kg N/m²/season — fixers vs feeders) | ✅ Done |
+| A7 | Soil volume calculator (bed dimensions × depth = L of growing medium) | ✅ Done |
+| A8 | Yield estimates (kg/m² expected harvest by plant) | ✅ Done |
 
 #### Arc B — Make It Expressive (creative freedom)
 
@@ -107,12 +105,12 @@ The planner should feel like a garden, not a spreadsheet with emojis. Arc B adds
 |-------|---------|--------|
 | B1 | Grid toggle — optional guidelines, freeform placement alongside snap-to-grid | Planned |
 | B2 | Plant footprint circles proportional to real spread (not uniform cells) | Planned |
-| B3 | Drag-and-drop plant placement + rearrangement | Planned |
-| B4 | Undo/redo stack | Planned |
-| B5 | Season scrubber — slide through months to see garden change | Planned |
+| B3 | Drag-and-drop plant placement + rearrangement | ✅ Done |
+| B4 | Undo/redo stack | ✅ Done |
+| B5 | Season scrubber — slide through months to see garden change | ✅ Done |
 | B6 | Growth visualization — soft spread circles that expand through season | Planned |
-| B7 | Export bed as image (PNG download) | Planned |
-| B8 | Soil texture and visual richness on top-down canvas | Planned |
+| B7 | Export bed as image (PNG download) | ✅ Done |
+| B8 | Soil texture and visual richness on top-down canvas | ✅ Done |
 
 #### Arc C — Make It Scale (farmer tools)
 
@@ -122,11 +120,11 @@ Same engine, bigger scope. The difference between a hobbyist and a farmer is the
 |-------|---------|--------|
 | C1 | Farm overview — multiple beds on a property canvas with zoom/pan | Planned |
 | C2 | Row/block abstractions for field-scale layouts | Planned |
-| C3 | Crop rotation planner — same bed across seasons/years | Planned |
+| C3 | Crop rotation planner — same bed across seasons/years | ✅ Done |
 | C4 | Drill-down navigation: farm → block → bed → cell | Planned |
 | C5 | Custom polygon shapes for irregular beds | Planned |
 | C6 | Print-friendly / PDF export of full farm plan | Planned |
-| C7 | Import/export bed layouts for sharing between gardeners | Planned |
+| C7 | Import/export bed layouts for sharing between gardeners | ✅ Done |
 
 **Metric Data Model** (behind the scenes):
 
