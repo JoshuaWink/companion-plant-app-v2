@@ -1709,3 +1709,120 @@ body, .card, .field-input, .plant-chip, .plant-grid, .selected-plants,
     font-size: 0.95rem;
   }
 }
+
+/* ── Season Scrubber ── */
+
+.bed-stat-season {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--cup-color-border, #ddd5bd);
+}
+
+.season-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cup-color-text-muted, #6b705c);
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.season-slider {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--cup-color-border, #ddd5bd);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.season-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cup-color-primary, #588157);
+  cursor: grab;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+[data-theme="night"] .bed-stat-season {
+  border-top-color: #3a5a3a;
+}
+
+[data-theme="night"] .season-slider {
+  background: #2a3a2a;
+}
+
+[data-theme="night"] .season-slider::-webkit-slider-thumb {
+  background: #5a8a5a;
+  border-color: #1b2a1b;
+}
+
+/* ── Palette Dimming (out-of-season) ── */
+
+.palette-dimmed {
+  opacity: 0.3;
+  filter: grayscale(60%);
+}
+
+/* ── Rotation Tabs ── */
+
+.planner-rotation-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.rotation-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--cup-color-text-muted, #6b705c);
+  margin-right: 0.25rem;
+}
+
+.rotation-tab {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--cup-color-border, #ddd5bd);
+  border-radius: 4px;
+  background: var(--cup-color-surface, #faf6ee);
+  color: var(--cup-color-text, #344e41);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rotation-tab:hover {
+  background: var(--cup-color-primary, #588157);
+  color: #fff;
+}
+
+.rotation-tab-save {
+  border-style: dashed;
+}
+
+[data-theme="night"] .rotation-tab {
+  background: #243024;
+  border-color: #3a5a3a;
+  color: #d4e4c8;
+}
+
+[data-theme="night"] .rotation-tab:hover {
+  background: #3a5a3a;
+}
+
+/* ── Drag cursor on canvas ── */
+
+.planner-canvas {
+  cursor: crosshair;
+}
+
+.planner-canvas.dragging {
+  cursor: grabbing;
+}

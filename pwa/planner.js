@@ -25,6 +25,17 @@ const GRID_PAD = 24;
 const EMOJI_SIZE = 24;
 const DEFAULT_CELL_CM = 15; // each cell = 15cm × 15cm (≈6in)
 
+// ── Undo/Redo ──
+let undoStack = [];
+let redoStack = [];
+const MAX_UNDO = 50;
+
+// ── Drag State ──
+let dragging = null; // { row, col, plantId } when dragging from canvas
+
+// ── Season Scrubber ──
+let seasonMonth = 0; // 0 = off, 1-12 = active month filter
+
 // ── Unit Conversion ──
 
 function displayLength(cm) {
@@ -62,6 +73,34 @@ function displayWeight(grams) {
   }
   if (grams >= 1000) return (grams / 1000).toFixed(1) + ' kg';
   return Math.round(grams) + ' g';
+}
+
+// ── Undo / Redo ──
+
+function pushUndo() {
+  const bed = getActiveBed();
+  if (!bed) return;
+  undoStack.push(JSON.parse(JSON.stringify(bed.cells)));
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+  redoStack = [];
+}
+
+function undo() {
+  const bed = getActiveBed();
+  if (!bed || undoStack.length === 0) return;
+  redoStack.push(JSON.parse(JSON.stringify(bed.cells)));
+  bed.cells = undoStack.pop();
+  saveBeds();
+  renderBed();
+}
+
+function redo() {
+  const bed = getActiveBed();
+  if (!bed || redoStack.length === 0) return;
+  undoStack.push(JSON.parse(JSON.stringify(bed.cells)));
+  bed.cells = redoStack.pop();
+  saveBeds();
+  renderBed();
 }
 
 // ── Bed Model ──
@@ -254,18 +293,37 @@ function renderTopDown(bed) {
       }
       ctx.fillRect(pos.x, pos.y, CELL_SIZE, CELL_SIZE);
 
+      // Soil texture dots (subtle earth feeling)
+      if (inside && !bed.cells[r][c]) {
+        ctx.fillStyle = isNight ? 'rgba(90,120,70,0.08)' : 'rgba(139,115,85,0.06)';
+        const seed = r * 31 + c * 17;
+        for (let d = 0; d < 4; d++) {
+          const dx = ((seed + d * 7) % 37) * (CELL_SIZE / 37);
+          const dy = ((seed + d * 13) % 41) * (CELL_SIZE / 41);
+          ctx.beginPath();
+          ctx.arc(pos.x + dx, pos.y + dy, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
       // Cell border
       ctx.strokeStyle = cellBorder;
       ctx.lineWidth = 1;
       ctx.strokeRect(pos.x + 0.5, pos.y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
 
-      // Plant emoji
+      // Plant emoji (dimmed if out of season)
       if (inside && bed.cells[r][c]) {
-        const emoji = emojiLookup ? emojiLookup(bed.cells[r][c]) : '🌱';
+        const pid = bed.cells[r][c];
+        if (seasonMonth > 0) {
+          const p = plannerPlants.find(pp => pp.id === pid);
+          ctx.globalAlpha = (p && !isPlantInSeason(p, seasonMonth)) ? 0.25 : 1;
+        }
+        const emoji = emojiLookup ? emojiLookup(pid) : '🌱';
         ctx.font = EMOJI_SIZE + 'px serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(emoji, pos.x + CELL_SIZE / 2, pos.y + CELL_SIZE / 2 + 1);
+        ctx.globalAlpha = 1;
       }
 
       // Outside shape X marker
@@ -461,6 +519,13 @@ function handleCanvasClick(e) {
   if (row < 0 || col < 0 || row >= bed.rows || col >= bed.cols) return;
   if (!isInsideShape(bed, row, col)) return;
 
+  // Drag-from-canvas: pick up a planted cell
+  if (!placingPlant && bed.cells[row][col]) {
+    dragging = { row, col, plantId: bed.cells[row][col] };
+    return; // wait for mouseup
+  }
+
+  pushUndo();
   if (placingPlant) {
     if (bed.cells[row][col] === placingPlant) {
       setCell(bed, row, col, null); // Toggle off same plant
@@ -488,10 +553,90 @@ function handleCanvasMove(e) {
     hoverCell = cell;
     renderBed();
   }
+
+  // If dragging, draw ghost on canvas
+  if (dragging) {
+    renderBed();
+    const emoji = emojiLookup ? emojiLookup(dragging.plantId) : '🌱';
+    ctx.globalAlpha = 0.5;
+    ctx.font = EMOJI_SIZE + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(emoji, x, y);
+    ctx.globalAlpha = 1;
+    canvas.style.cursor = 'grabbing';
+  }
+}
+
+function handleCanvasUp(e) {
+  if (!dragging) return;
+  const bed = getActiveBed();
+  if (!bed) { dragging = null; return; }
+
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const { row, col } = canvasToGrid(x, y);
+
+  // Valid target?
+  if (row >= 0 && col >= 0 && row < bed.rows && col < bed.cols
+      && isInsideShape(bed, row, col)
+      && !(row === dragging.row && col === dragging.col)) {
+    pushUndo();
+    // If target is occupied, swap
+    const targetPlant = bed.cells[row][col];
+    setCell(bed, row, col, dragging.plantId);
+    setCell(bed, dragging.row, dragging.col, targetPlant);
+    saveBeds();
+  }
+
+  dragging = null;
+  canvas.style.cursor = '';
+  renderBed();
+}
+
+// ── Palette Drag-and-Drop ──
+
+function handleCanvasDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const cell = canvasToGrid(x, y);
+  if (cell.row !== hoverCell?.row || cell.col !== hoverCell?.col) {
+    hoverCell = cell;
+    renderBed();
+  }
+}
+
+function handleCanvasDrop(e) {
+  e.preventDefault();
+  const plantId = e.dataTransfer.getData('text/plant-id');
+  if (!plantId) return;
+
+  const bed = getActiveBed();
+  if (!bed) return;
+  const rect = canvas.getBoundingClientRect();
+  const { row, col } = canvasToGrid(e.clientX - rect.left, e.clientY - rect.top);
+  if (row < 0 || col < 0 || row >= bed.rows || col >= bed.cols) return;
+  if (!isInsideShape(bed, row, col)) return;
+
+  pushUndo();
+  setCell(bed, row, col, plantId);
+  placingPlant = plantId;
+  saveBeds();
+  renderPlantPalette();
+  updatePlacingLabel();
+  renderBed();
 }
 
 function handleCanvasLeave() {
   hoverCell = null;
+  if (dragging) {
+    dragging = null;
+    canvas.style.cursor = '';
+  }
   renderBed();
 }
 
@@ -550,8 +695,9 @@ function renderPlantPalette() {
   palette.innerHTML = enriched.map(p => {
     const emoji = emojiLookup ? emojiLookup(p.id) : '🌱';
     const isActive = placingPlant === p.id;
-    return '<button class="palette-plant' + (isActive ? ' palette-active' : '') + '" ' +
-      'data-plant="' + p.id + '" title="' + p.name + '">' +
+    const dimmed = seasonMonth > 0 && !isPlantInSeason(p, seasonMonth) ? ' palette-dimmed' : '';
+    return '<button class="palette-plant' + (isActive ? ' palette-active' : '') + dimmed + '" ' +
+      'data-plant="' + p.id + '" title="' + p.name + '" draggable="true">' +
       emoji + '</button>';
   }).join('') +
     '<button class="palette-plant palette-eraser' + (!placingPlant ? ' palette-active' : '') + '" ' +
@@ -565,6 +711,13 @@ function handlePaletteClick(e) {
   placingPlant = plantId;
   renderPlantPalette();
   updatePlacingLabel();
+}
+
+function handlePaletteDragStart(e) {
+  const btn = e.target.closest('.palette-plant');
+  if (!btn || !btn.dataset.plant) { e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plant-id', btn.dataset.plant);
+  e.dataTransfer.effectAllowed = 'copy';
 }
 
 function updatePlacingLabel() {
@@ -640,6 +793,7 @@ function removeBed() {
 function clearActiveBed() {
   const bed = getActiveBed();
   if (bed) {
+    pushUndo();
     clearBed(bed);
     saveBeds();
     renderBed();
@@ -752,23 +906,229 @@ function renderBedStats(bed) {
   // Row 3: unit toggle + actions
   html += '<div class="bed-stat-actions">';
   html += '<button class="bed-action" id="unit-toggle-btn">' + (unitPref === 'metric' ? '📏 Metric' : '📐 Imperial') + '</button>';
+  html += '<button class="bed-action" id="export-png-btn" title="Save bed image">📸 Image</button>';
+  html += '<button class="bed-action" id="export-json-btn" title="Export all beds">💾 Export</button>';
+  html += '<button class="bed-action" id="import-json-btn" title="Import beds">📂 Import</button>';
   html += '<button class="bed-action" id="clear-bed-btn">Clear Bed</button>';
   if (beds.length > 1) {
     html += '<button class="bed-action bed-action--danger" id="remove-bed-btn">Remove Bed</button>';
   }
   html += '</div>';
 
+  // Row 4: season scrubber
+  html += '<div class="bed-stat-season">';
+  html += '<label class="season-label">🗓️ Season: <span id="season-month-label">' + (seasonMonth === 0 ? 'All Year' : MONTH_NAMES[seasonMonth]) + '</span></label>';
+  html += '<input type="range" id="season-slider" class="season-slider" min="0" max="12" value="' + seasonMonth + '" title="Slide to filter by month">';
+  html += '</div>';
+
+  // Hidden file input for import
+  html += '<input type="file" id="import-file-input" accept=".json" hidden>';
+
   statsEl.innerHTML = html;
 
-  // Wire action buttons
-  document.getElementById('clear-bed-btn')?.addEventListener('click', clearActiveBed);
-  document.getElementById('remove-bed-btn')?.addEventListener('click', removeBed);
-  document.getElementById('unit-toggle-btn')?.addEventListener('click', toggleUnits);
+  // Direct slider wiring (input events from CDP don't bubble reliably)
+  const sliderEl = document.getElementById('season-slider');
+  if (sliderEl) {
+    sliderEl.oninput = function() { setSeasonMonth(parseInt(this.value, 10)); };
+  }
+
+  // Rotation tabs
+  renderRotationTabs(bed);
+}
+
+// ── Stats Event Delegation (persistent, survives innerHTML replacement) ──
+let statsDelegated = false;
+function ensureStatsEventDelegation() {
+  if (statsDelegated) return;
+  const statsEl = document.getElementById('planner-bed-stats');
+  if (!statsEl) return;
+  statsDelegated = true;
+
+  statsEl.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.id === 'clear-bed-btn') clearActiveBed();
+    else if (btn.id === 'remove-bed-btn') removeBed();
+    else if (btn.id === 'unit-toggle-btn') toggleUnits();
+    else if (btn.id === 'export-png-btn') exportBedImage();
+    else if (btn.id === 'export-json-btn') exportBedsJSON();
+    else if (btn.id === 'import-json-btn') document.getElementById('import-file-input')?.click();
+  });
+
+  statsEl.addEventListener('input', function(e) {
+    if (e.target.id === 'season-slider') {
+      setSeasonMonth(parseInt(e.target.value, 10));
+    }
+  });
+
+  statsEl.addEventListener('change', function(e) {
+    if (e.target.id === 'import-file-input') {
+      importBedsJSON(e.target.files[0]);
+    }
+  });
 }
 
 function toggleUnits() {
   unitPref = unitPref === 'metric' ? 'imperial' : 'metric';
   try { localStorage.setItem('garden-units', unitPref); } catch (e) {}
+  renderBed();
+}
+
+// ── Export PNG ──
+
+function exportBedImage() {
+  const bed = getActiveBed();
+  if (!bed || !canvas) return;
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (bed.name || 'garden-bed').replace(/\s+/g, '-').toLowerCase() + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+
+// ── Import / Export Beds (JSON) ──
+
+function exportBedsJSON() {
+  const data = JSON.stringify(beds, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'garden-beds.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importBedsJSON(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported) || imported.length === 0) {
+        alert('Invalid bed file — expected an array of beds.');
+        return;
+      }
+      // Validate structure
+      for (const b of imported) {
+        if (!b.cells || !b.rows || !b.cols) {
+          alert('Invalid bed data — missing cells, rows, or cols.');
+          return;
+        }
+      }
+      pushUndo();
+      beds = imported;
+      activeBedIdx = 0;
+      // Ensure dimensions_cm on all imported beds
+      for (const b of beds) {
+        if (!b.dimensions_cm) {
+          b.dimensions_cm = { width: b.cols * DEFAULT_CELL_CM, depth: b.rows * DEFAULT_CELL_CM, soil_depth: 30 };
+        }
+      }
+      saveBeds();
+      renderBedTabs();
+      renderBed();
+    } catch (err) {
+      alert('Could not parse bed file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Season Scrubber ──
+
+const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function isPlantInSeason(plant, month) {
+  const t = plant.timing;
+  if (!t) return true; // no timing data = always show
+
+  // Simple frost-window model (zone-6 average).
+  // Outdoor growing window determined by frost tolerance:
+  //   none    → May–Sep (frost-free only)
+  //   light   → Mar–Nov (tolerates light frost)
+  //   moderate→ Feb–Nov (spring/fall crops)
+  //   hard    → year-round (garlic, onions, cold-hardy greens)
+  const frost = t.frost_tolerance || 'none';
+
+  // Indoor start extends the "active" window earlier
+  const startWeeks = t.indoor_start_weeks_before_frost || 0;
+  const indoorOffset = Math.ceil(startWeeks / 4); // months of indoor activity
+
+  let startMonth, endMonth;
+  if (frost === 'hard') {
+    startMonth = 1; endMonth = 12;
+  } else if (frost === 'moderate') {
+    startMonth = Math.max(1, 2 - indoorOffset); endMonth = 11;
+  } else if (frost === 'light') {
+    startMonth = Math.max(1, 3 - indoorOffset); endMonth = 11;
+  } else {
+    // frost === 'none' — tender crops
+    startMonth = Math.max(1, 4 - indoorOffset); endMonth = 10;
+  }
+
+  return month >= startMonth && month <= endMonth;
+}
+
+function setSeasonMonth(m) {
+  seasonMonth = m;
+  renderPlantPalette();
+  renderBed();
+  const label = document.getElementById('season-month-label');
+  if (label) label.textContent = m === 0 ? 'All Year' : MONTH_NAMES[m];
+}
+
+// ── Crop Rotation ──
+
+function addRotationSeason(bed) {
+  if (!bed.rotations) bed.rotations = [];
+  bed.rotations.push({
+    label: 'Season ' + (bed.rotations.length + 1),
+    cells: JSON.parse(JSON.stringify(bed.cells)),
+  });
+  saveBeds();
+}
+
+function renderRotationTabs(bed) {
+  const container = document.getElementById('rotation-tabs');
+  if (!container || !bed.rotations || bed.rotations.length === 0) {
+    if (container) container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  container.innerHTML = '<span class="rotation-label">Rotations:</span> ' +
+    bed.rotations.map((rot, i) =>
+      '<button class="rotation-tab" data-rot-idx="' + i + '">' + rot.label + '</button>'
+    ).join('') +
+    '<button class="rotation-tab rotation-tab-save" id="save-rotation-btn">💾 Save Current</button>';
+}
+
+function handleRotationTabClick(e) {
+  const tab = e.target.closest('.rotation-tab');
+  if (!tab) return;
+  const bed = getActiveBed();
+  if (!bed) return;
+
+  if (tab.id === 'save-rotation-btn') {
+    addRotationSeason(bed);
+    renderRotationTabs(bed);
+    return;
+  }
+
+  const idx = parseInt(tab.dataset.rotIdx);
+  if (isNaN(idx) || !bed.rotations?.[idx]) return;
+
+  // Load that rotation's cells into the current bed
+  pushUndo();
+  bed.cells = JSON.parse(JSON.stringify(bed.rotations[idx].cells));
+  saveBeds();
   renderBed();
 }
 
@@ -828,16 +1188,44 @@ export function initPlanner(plantsData, gardenEngine, emojiFn) {
     }
   }
 
-  // Event listeners
-  canvas.addEventListener('click', handleCanvasClick);
+  // Event listeners — canvas
+  canvas.addEventListener('mousedown', handleCanvasClick);
   canvas.addEventListener('mousemove', handleCanvasMove);
+  canvas.addEventListener('mouseup', handleCanvasUp);
   canvas.addEventListener('mouseleave', handleCanvasLeave);
   canvas.addEventListener('touchstart', handleCanvasTouch, { passive: false });
 
-  document.getElementById('planner-palette')?.addEventListener('click', handlePaletteClick);
+  // Palette drag-and-drop onto canvas
+  canvas.addEventListener('dragover', handleCanvasDragOver);
+  canvas.addEventListener('drop', handleCanvasDrop);
+
+  // Palette click + drag
+  const paletteEl = document.getElementById('planner-palette');
+  paletteEl?.addEventListener('click', handlePaletteClick);
+  paletteEl?.addEventListener('dragstart', handlePaletteDragStart);
+
   document.getElementById('planner-bed-tabs')?.addEventListener('click', handleBedTabClick);
   document.getElementById('planner-view-toggle')?.addEventListener('click', toggleView);
   document.getElementById('planner-add-bed')?.addEventListener('click', addNewBed);
+
+  // Rotation tabs
+  document.getElementById('rotation-tabs')?.addEventListener('click', handleRotationTabClick);
+
+  // Keyboard shortcuts (undo/redo)
+  document.addEventListener('keydown', function(e) {
+    // Only handle when planner is visible
+    if (!document.getElementById('planner-panel')) return;
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      e.preventDefault();
+      undo();
+    } else if ((e.ctrlKey || e.metaKey) && (e.key === 'Z' || e.key === 'y')) {
+      e.preventDefault();
+      redo();
+    }
+  });
+
+  // Event delegation for dynamic stats UI
+  ensureStatsEventDelegation();
 
   // Initial render
   renderBedTabs();
