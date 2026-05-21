@@ -252,6 +252,68 @@
         </div>
       </div>
     </section>
+    <section class="card growth-panel" id="growth-panel" aria-label="Growth Simulator">
+      <h2 class="section-title">🌱 Growth Simulator</h2>
+      <div class="growth-controls">
+        <div class="growth-control-row">
+          <div class="growth-field">
+            <label for="growth-plant-select" class="field-label">Plant</label>
+            <select id="growth-plant-select" class="field-input"></select>
+          </div>
+          <div class="growth-field">
+            <label for="growth-latitude" class="field-label">Latitude</label>
+            <input type="number" id="growth-latitude" class="field-input" value="42" min="-90" max="90" step="0.1">
+          </div>
+          <div class="growth-field">
+            <label for="growth-planting-doy" class="field-label">Plant Date (day of year)</label>
+            <input type="number" id="growth-planting-doy" class="field-input" value="120" min="1" max="365">
+          </div>
+        </div>
+        <div class="growth-control-row">
+          <div class="growth-field">
+            <label for="growth-temp-high" class="field-label">Avg High °C</label>
+            <input type="number" id="growth-temp-high" class="field-input" value="28" step="0.5">
+          </div>
+          <div class="growth-field">
+            <label for="growth-temp-low" class="field-label">Avg Low °C</label>
+            <input type="number" id="growth-temp-low" class="field-input" value="16" step="0.5">
+          </div>
+          <div class="growth-field">
+            <label for="growth-water" class="field-label">Water (mL/day)</label>
+            <input type="number" id="growth-water" class="field-input" value="600" min="0" max="3000" step="50">
+          </div>
+          <div class="growth-field">
+            <label for="growth-soil-select" class="field-label">Soil Type</label>
+            <select id="growth-soil-select" class="field-input">
+              <option value="loam">Loam</option>
+              <option value="sandy">Sandy</option>
+              <option value="sandy-loam">Sandy Loam</option>
+              <option value="silt-loam">Silt Loam</option>
+              <option value="clay-loam">Clay Loam</option>
+              <option value="clay">Clay</option>
+            </select>
+          </div>
+        </div>
+        <button id="growth-run-btn" class="btn btn--primary">▶ Run Simulation</button>
+      </div>
+      <div id="growth-empty" class="empty-state center-text">Select a plant and click Run to simulate its growth season</div>
+      <div id="growth-results" hidden>
+        <div class="growth-snapshot-card" id="growth-snapshot"></div>
+        <div class="growth-day-control">
+          <label for="growth-day-slider" class="field-label">Day <span id="growth-day-label">0</span></label>
+          <input type="range" id="growth-day-slider" min="0" max="180" value="0" class="growth-slider">
+          <div class="growth-stage-badge" id="growth-stage-badge">seed</div>
+        </div>
+        <div class="growth-charts">
+          <canvas id="growth-chart-height" width="600" height="220"></canvas>
+          <canvas id="growth-chart-stress" width="600" height="120"></canvas>
+        </div>
+        <details class="growth-data-details">
+          <summary>Raw Data</summary>
+          <pre id="growth-raw-json" class="growth-raw"></pre>
+        </details>
+      </div>
+    </section>
   </main>
 
   <script type="module" src="app.js"></script>

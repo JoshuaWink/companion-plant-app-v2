@@ -6,6 +6,7 @@
  */
 import init, { Garden } from './pkg/companion_graph.js';
 import { initPlanner } from './planner.js';
+import { initGrowthSim } from './growth-sim.js';
 
 let garden = null;
 let plants = [];
@@ -107,6 +108,9 @@ async function boot() {
 
   // Init bed planner with plant data and WASM engine
   initPlanner(plants, garden, emojiFor);
+
+  // Init growth simulator
+  initGrowthSim(plants);
 }
 
 // --- Render ---

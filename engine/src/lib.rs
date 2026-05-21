@@ -1,16 +1,15 @@
-//! Companion Garden Graph Engine
+//! Companion Garden Engine
 //!
-//! Loads plant relationship data and answers graph queries:
-//! - companions/antagonists for a given plant
-//! - conflict detection for a set of plants
-//! - temporal succession dependencies
-//! - planting window calculations
+//! Graph queries (companions, antagonists, conflicts, succession)
+//! + plant lifecycle simulation (growth curves, environment response, stress)
 
 mod graph;
+pub mod growth;
 mod model;
 mod timeline;
 
 pub use graph::CompanionGraph;
+pub use growth::{Environment, PlantGenetics, Snapshot, simulate_plant, genetics_from_json};
 pub use model::{Edge, Plant, RelationType, TemporalDep};
 pub use timeline::{compute_window, PlantTiming, PlantingWindow};
 
@@ -100,4 +99,77 @@ impl Garden {
             .collect();
         serde_json::to_string(&windows).unwrap_or_else(|_| "[]".to_string())
     }
+}
+
+// ── Growth Simulation WASM API ──
+
+/// Simulate a single plant for one day.
+/// `plant_json` — a single plant object from plants.json
+/// `day` — days since planting
+/// `env_json` — Environment object as JSON
+/// `gdd_so_far` — accumulated GDD from previous days
+/// Returns Snapshot as JSON.
+#[wasm_bindgen]
+pub fn simulate_growth(plant_json: &str, day: u16, env_json: &str, gdd_so_far: f32) -> Result<String, JsError> {
+    let plant_val: serde_json::Value =
+        serde_json::from_str(plant_json).map_err(|e| JsError::new(&e.to_string()))?;
+    let genetics = growth::genetics_from_json(&plant_val)
+        .ok_or_else(|| JsError::new("Could not parse plant genetics — missing required fields"))?;
+    let env: growth::Environment =
+        serde_json::from_str(env_json).map_err(|e| JsError::new(&e.to_string()))?;
+
+    let snap = growth::simulate_plant(&genetics, day, &env, gdd_so_far);
+    serde_json::to_string(&snap).map_err(|e| JsError::new(&e.to_string()))
+}
+
+/// Simulate a full season for one plant.
+/// Returns JSON array of Snapshots, one per day.
+#[wasm_bindgen]
+pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Result<String, JsError> {
+    let plant_val: serde_json::Value =
+        serde_json::from_str(plant_json).map_err(|e| JsError::new(&e.to_string()))?;
+    let genetics = growth::genetics_from_json(&plant_val)
+        .ok_or_else(|| JsError::new("Could not parse plant genetics"))?;
+    let base_env: growth::Environment =
+        serde_json::from_str(env_json).map_err(|e| JsError::new(&e.to_string()))?;
+
+    let mut snapshots = Vec::with_capacity(num_days as usize);
+    let mut gdd = 0.0_f32;
+
+    for day in 0..num_days {
+        let mut env = base_env.clone();
+        env.day_of_year = ((base_env.day_of_year as u32 + day as u32) % 365) as u16;
+        if env.day_of_year == 0 { env.day_of_year = 1; }
+
+        let snap = growth::simulate_plant(&genetics, day, &env, gdd);
+        gdd = snap.gdd_accumulated;
+        snapshots.push(snap);
+    }
+
+    serde_json::to_string(&snapshots).map_err(|e| JsError::new(&e.to_string()))
+}
+
+/// Simulate multiple plants in a bed for one day.
+/// Returns JSON array of {plant_id, snapshot} objects.
+#[wasm_bindgen]
+pub fn simulate_bed(plants_json: &str, day: u16, env_json: &str) -> Result<String, JsError> {
+    let plants: Vec<serde_json::Value> =
+        serde_json::from_str(plants_json).map_err(|e| JsError::new(&e.to_string()))?;
+    let env: growth::Environment =
+        serde_json::from_str(env_json).map_err(|e| JsError::new(&e.to_string()))?;
+
+    let mut snapshots = Vec::with_capacity(plants.len());
+    for plant_val in &plants {
+        let genetics = match growth::genetics_from_json(plant_val) {
+            Some(g) => g,
+            None => continue,
+        };
+        let snap = growth::simulate_plant(&genetics, day, &env, 0.0);
+        snapshots.push(serde_json::json!({
+            "plant_id": genetics.id,
+            "snapshot": snap,
+        }));
+    }
+
+    serde_json::to_string(&snapshots).map_err(|e| JsError::new(&e.to_string()))
 }
