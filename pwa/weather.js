@@ -29,7 +29,7 @@ export async function fetchDailyWeather(lat, lon, startDate, endDate) {
     longitude: lon.toFixed(2),
     start_date: startDate,
     end_date: endDate,
-    daily: 'temperature_2m_max,temperature_2m_min,precipitation_sum,sunshine_duration',
+    daily: 'temperature_2m_max,temperature_2m_min,precipitation_sum,sunshine_duration,relative_humidity_2m_mean,wind_speed_10m_max',
     temperature_unit: 'celsius',
     timezone: 'auto',
   });
@@ -59,6 +59,10 @@ function transformResponse(data) {
     sunshine_hours: d.sunshine_duration?.[i] != null
       ? +(d.sunshine_duration[i] / 3600).toFixed(1)
       : null,
+    humidity_pct: d.relative_humidity_2m_mean?.[i] ?? 0,
+    wind_speed_ms: d.wind_speed_10m_max?.[i] != null
+      ? +(d.wind_speed_10m_max[i] / 3.6).toFixed(1)
+      : 2.0,
   }));
 
   return { days };

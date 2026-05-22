@@ -2117,6 +2117,10 @@ select.bed-action {
   color: var(--cup-color-primary, #43a047);
 }
 
+.growth-snap-val.growth-val-warn {
+  color: var(--cup-color-accent, #dda15e);
+}
+
 .growth-snap-unit {
   font-size: 0.65rem;
   text-transform: uppercase;

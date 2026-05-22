@@ -612,6 +612,7 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
   const plantJson = JSON.stringify(plant);
   const snapshots = [];
   let gdd = 0;
+  let soilMoisture = 0; // 0 = let engine auto-init from field capacity
 
   for (let day = 0; day < numDays; day++) {
     const w = weather[day];
@@ -620,15 +621,24 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
       day_of_year: ((baseEnv.day_of_year + day - 1) % 365) + 1,
     };
 
-    // Override temps from real weather when available
+    // Override from real weather when available
     if (w) {
       if (w.temp_high_c != null) dayEnv.temp_high_c = w.temp_high_c;
       if (w.temp_low_c != null) dayEnv.temp_low_c = w.temp_low_c;
+      if (w.humidity_pct) dayEnv.humidity_pct = w.humidity_pct;
+      if (w.precip_mm) dayEnv.precip_mm = w.precip_mm;
+      if (w.wind_speed_ms) dayEnv.wind_speed_ms = w.wind_speed_ms;
+    }
+
+    // Carry soil moisture from previous day
+    if (soilMoisture > 0) {
+      dayEnv.soil_moisture_mm = soilMoisture;
     }
 
     const snapJson = simulate_growth(plantJson, day, JSON.stringify(dayEnv), gdd);
     const snap = JSON.parse(snapJson);
     gdd = snap.gdd_accumulated;
+    soilMoisture = snap.soil_moisture_mm || 0;
     snapshots.push(snap);
   }
 
@@ -702,6 +712,26 @@ function onDaySlider() {
       <div class="growth-snap-metric">
         <span class="growth-snap-val">${snap.yield_projected_kg.toFixed(2)}<small> kg</small></span>
         <span class="growth-snap-unit">Yield / m² <span class="growth-alt">${kgM2ToLbFt2(snap.yield_projected_kg)} lb/ft²</span></span>
+      </div>
+      <div class="growth-snap-metric" title="Vapor Pressure Deficit \u2014 atmospheric drying power. High VPD forces stomata to close. Optimal: 0.4\u20131.5 kPa.">
+        <span class="growth-snap-val ${(snap.vpd_kpa || 0) > 2.0 ? 'growth-val-warn' : ''}">${(snap.vpd_kpa || 0).toFixed(2)}<small> kPa</small></span>
+        <span class="growth-snap-unit">VPD <span class="growth-alt">${(snap.vpd_kpa || 0) < 0.8 ? 'humid' : (snap.vpd_kpa || 0) > 2.0 ? 'dry stress' : 'optimal'}</span></span>
+      </div>
+      <div class="growth-snap-metric" title="Stomatal conductance \u2014 how open the leaf pores are. Controls both CO2 uptake and water loss.">
+        <span class="growth-snap-val ${(snap.stomatal_conductance || 0) < 0.3 ? 'growth-val-warn' : ''}">${((snap.stomatal_conductance || 0) * 100).toFixed(0)}<small>%</small></span>
+        <span class="growth-snap-unit">Stomata Open <span class="growth-alt">${(snap.stomatal_conductance || 0) > 0.7 ? 'healthy' : (snap.stomatal_conductance || 0) > 0.3 ? 'restricted' : 'closing'}</span></span>
+      </div>
+      <div class="growth-snap-metric" title="Daily transpiration \u2014 water lost through leaf pores.">
+        <span class="growth-snap-val">${((snap.transpiration_ml || 0) / 1000).toFixed(1)}<small> L</small></span>
+        <span class="growth-snap-unit">Transpiration <span class="growth-alt">${(snap.transpiration_ml || 0).toFixed(0)} mL/day</span></span>
+      </div>
+      <div class="growth-snap-metric" title="Net photosynthesis \u2014 carbon assimilation after nighttime respiration losses.">
+        <span class="growth-snap-val">${((snap.net_photosynthesis || 0) * 100).toFixed(0)}<small>%</small></span>
+        <span class="growth-snap-unit">Net Photo <span class="growth-alt">${((snap.respiration_loss || 0) * 100).toFixed(0)}% resp loss</span></span>
+      </div>
+      <div class="growth-snap-metric" title="Soil moisture in root zone. Below wilting point plants cannot extract water.">
+        <span class="growth-snap-val">${(snap.soil_moisture_mm || 0).toFixed(0)}<small> mm</small></span>
+        <span class="growth-snap-unit">Soil Moisture <span class="growth-alt">LAI ${(snap.lai || 0).toFixed(1)}</span></span>
       </div>
     </div>
     <div class="growth-snap-stress">${stressHtml}</div>

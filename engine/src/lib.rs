@@ -9,7 +9,7 @@ mod model;
 mod timeline;
 
 pub use graph::CompanionGraph;
-pub use growth::{Environment, PlantGenetics, Snapshot, simulate_plant, genetics_from_json};
+pub use growth::{Environment, PlantGenetics, Snapshot, simulate_plant, genetics_from_json, PhotoPath};
 pub use model::{Edge, Plant, RelationType, TemporalDep};
 pub use timeline::{compute_window, PlantTiming, PlantingWindow};
 
@@ -124,6 +124,7 @@ pub fn simulate_growth(plant_json: &str, day: u16, env_json: &str, gdd_so_far: f
 
 /// Simulate a full season for one plant.
 /// Returns JSON array of Snapshots, one per day.
+/// Soil moisture carries over between days for realistic water dynamics.
 #[wasm_bindgen]
 pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Result<String, JsError> {
     let plant_val: serde_json::Value =
@@ -135,14 +136,20 @@ pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Resul
 
     let mut snapshots = Vec::with_capacity(num_days as usize);
     let mut gdd = 0.0_f32;
+    let mut soil_moisture = base_env.soil_moisture_mm;
 
     for day in 0..num_days {
         let mut env = base_env.clone();
         env.day_of_year = ((base_env.day_of_year as u32 + day as u32) % 365) as u16;
         if env.day_of_year == 0 { env.day_of_year = 1; }
 
+        if soil_moisture > 0.0 {
+            env.soil_moisture_mm = soil_moisture;
+        }
+
         let snap = growth::simulate_plant(&genetics, day, &env, gdd);
         gdd = snap.gdd_accumulated;
+        soil_moisture = snap.soil_moisture_mm;
         snapshots.push(snap);
     }
 
