@@ -6,7 +6,7 @@
  * and lets the user scrub through days with a slider.
  */
 import { simulate_season, simulate_growth } from './pkg/companion_graph.js';
-import { fetchDailyWeather, doyToDate as doyToIsoDate, defaultWeatherYear } from './weather.js';
+import { fetchDailyWeather, fetchCurrentConditions, fetchForecast, fetchCropAlerts, doyToDate as doyToIsoDate, defaultWeatherYear } from './weather.js';
 import { optimizeGrowth, compareWithCurrent, sensitivityAnalysis, doyLabel } from './optimizer.js';
 
 // ── Soil presets (mirrors planner.js) ──
@@ -183,7 +183,10 @@ const CITIES = [
 let plants = [];
 let seasonData = null;
 let transplantAdvisorCache = null;
-let weatherData = null; // per-day weather from Open-Meteo
+let weatherData = null; // per-day weather (historical)
+let forecastData = null; // 7-day forecast from NWS/Open-Meteo
+let currentConditions = null; // current observation snapshot
+let activeAlerts = []; // active weather alerts for location
 let currentLocation = { lat: 42, lon: -71.1, label: '' };
 
 function getChartDayFromClientX(canvas, clientX) {
@@ -520,18 +523,31 @@ async function runSimulation() {
 
   // Fetch real weather if enabled
   weatherData = null;
+  forecastData = null;
+  currentConditions = null;
+  activeAlerts = [];
+
   if (useWeather && currentLocation.lon !== 0) {
     try {
       const btn = document.getElementById('growth-run-btn');
       btn.textContent = '☁️ Fetching weather…';
       btn.disabled = true;
 
+      // Fetch historical, forecast, current, and alerts in parallel
       const startDate = doyToIsoDate(plantDoy, weatherYear);
       const endDate = doyToIsoDate(Math.min(plantDoy + numDays - 1, 365), weatherYear);
-      const result = await fetchDailyWeather(
-        currentLocation.lat, currentLocation.lon, startDate, endDate
-      );
-      weatherData = result.days;
+
+      const [histResult, fcstResult, currResult, alertsResult] = await Promise.allSettled([
+        fetchDailyWeather(currentLocation.lat, currentLocation.lon, startDate, endDate),
+        fetchForecast(currentLocation.lat, currentLocation.lon),
+        fetchCurrentConditions(currentLocation.lat, currentLocation.lon),
+        fetchCropAlerts(currentLocation.lat, currentLocation.lon),
+      ]);
+
+      weatherData = histResult.status === 'fulfilled' ? histResult.value.days : null;
+      forecastData = fcstResult.status === 'fulfilled' ? fcstResult.value : null;
+      currentConditions = currResult.status === 'fulfilled' ? currResult.value : null;
+      activeAlerts = alertsResult.status === 'fulfilled' ? alertsResult.value : [];
 
       btn.textContent = '▶ Run Simulation';
       btn.disabled = false;
@@ -544,15 +560,22 @@ async function runSimulation() {
     }
   }
 
+  // Update weather badge
   if (weatherBadge) {
     if (weatherData && weatherData.length > 0) {
-      weatherBadge.textContent = `☁️ Open-Meteo · ${weatherYear}`;
+      const src = forecastData?.source === 'nws' ? 'NWS + Open-Meteo' : 'Open-Meteo';
+      weatherBadge.textContent = `☁️ ${src} · ${weatherYear}`;
       weatherBadge.hidden = false;
     } else {
       weatherBadge.textContent = '';
       weatherBadge.hidden = true;
     }
   }
+
+  // Render current conditions + alerts
+  renderCurrentConditions(currentConditions);
+  renderWeatherAlerts(activeAlerts);
+  renderForecastSummary(forecastData);
 
   const baseEnv = {
     day_of_year: plantDoy,
@@ -1556,6 +1579,132 @@ function updateTransplantAdvisor(activeDay = null, forceRebuild = false) {
   renderTransplantAdvisor(transplantAdvisorCache, day);
   drawTransplantReadinessChart(transplantAdvisorCache, day);
   drawHardeningPlanChart(transplantAdvisorCache);
+}
+
+
+// ── Current conditions + alerts rendering ──
+
+function renderCurrentConditions(obs) {
+  let container = document.getElementById('growth-current-conditions');
+  if (!container) {
+    // Create container after weather badge
+    const badge = document.getElementById('growth-weather-badge');
+    if (!badge) return;
+    container = document.createElement('div');
+    container.id = 'growth-current-conditions';
+    container.className = 'growth-current-box';
+    badge.parentElement.insertBefore(container, badge.nextSibling);
+  }
+
+  if (!obs) {
+    container.hidden = true;
+    return;
+  }
+
+  const tempF = obs.temp_c != null ? (obs.temp_c * 9 / 5 + 32).toFixed(0) : '—';
+  const tempC = obs.temp_c != null ? obs.temp_c.toFixed(1) : '—';
+  const humidity = obs.humidity_pct != null ? obs.humidity_pct.toFixed(0) : '—';
+  const wind = obs.wind_speed_ms != null ? obs.wind_speed_ms.toFixed(1) : '—';
+  const vpd = obs.vpd_kpa != null ? obs.vpd_kpa.toFixed(2) : '—';
+  const dewpt = obs.dewpoint_c != null ? obs.dewpoint_c.toFixed(1) : '—';
+  const src = obs.source === 'nws' ? `NWS · ${obs.station}` : 'Open-Meteo';
+  const time = obs.timestamp ? new Date(obs.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+  container.innerHTML = `
+    <div class="growth-current-header">
+      <strong>📡 Current Conditions</strong>
+      <span class="growth-hint">${src} · ${time}</span>
+    </div>
+    <div class="growth-current-grid">
+      <span class="growth-current-item">🌡️ ${tempC}°C / ${tempF}°F</span>
+      <span class="growth-current-item">💧 ${humidity}% RH</span>
+      <span class="growth-current-item">🌬️ ${wind} m/s</span>
+      <span class="growth-current-item">🔬 VPD ${vpd} kPa</span>
+      <span class="growth-current-item">💦 Dew ${dewpt}°C</span>
+      <span class="growth-current-item">${obs.description || ''}</span>
+    </div>
+  `;
+  container.hidden = false;
+}
+
+function renderWeatherAlerts(alerts) {
+  let container = document.getElementById('growth-weather-alerts');
+  if (!container) {
+    const conditions = document.getElementById('growth-current-conditions');
+    const anchor = conditions || document.getElementById('growth-weather-badge');
+    if (!anchor) return;
+    container = document.createElement('div');
+    container.id = 'growth-weather-alerts';
+    container.className = 'growth-alerts-box';
+    anchor.parentElement.insertBefore(container, anchor.nextSibling);
+  }
+
+  if (!alerts || alerts.length === 0) {
+    container.hidden = true;
+    return;
+  }
+
+  const sevIcon = { Extreme: '🔴', Severe: '🟠', Moderate: '🟡', Minor: '🟢', Unknown: '⚪' };
+
+  container.innerHTML = `
+    <div class="growth-alerts-header">
+      <strong>⚠️ Active Weather Alerts</strong>
+    </div>
+    ${alerts.map(a => `
+      <div class="growth-alert-item growth-alert-${a.severity.toLowerCase()}">
+        <span>${sevIcon[a.severity] || '⚪'} <strong>${a.event}</strong></span>
+        <span class="growth-hint">${a.headline || ''}</span>
+        ${a.instruction ? `<span class="growth-hint growth-alert-action">${a.instruction}</span>` : ''}
+      </div>
+    `).join('')}
+  `;
+  container.hidden = false;
+}
+
+function renderForecastSummary(forecast) {
+  let container = document.getElementById('growth-forecast-summary');
+  if (!container) {
+    const alerts = document.getElementById('growth-weather-alerts');
+    const conditions = document.getElementById('growth-current-conditions');
+    const anchor = alerts || conditions || document.getElementById('growth-weather-badge');
+    if (!anchor) return;
+    container = document.createElement('div');
+    container.id = 'growth-forecast-summary';
+    container.className = 'growth-forecast-box';
+    anchor.parentElement.insertBefore(container, anchor.nextSibling);
+  }
+
+  if (!forecast || !forecast.days || forecast.days.length === 0) {
+    container.hidden = true;
+    return;
+  }
+
+  const src = forecast.source === 'nws' ? 'NWS Forecast' : 'Open-Meteo Forecast';
+  const days = forecast.days.slice(0, 7);
+
+  container.innerHTML = `
+    <div class="growth-forecast-header">
+      <strong>📅 7-Day Forecast</strong>
+      <span class="growth-hint">${src}</span>
+    </div>
+    <div class="growth-forecast-grid">
+      ${days.map(d => {
+        const date = new Date(d.date + 'T12:00:00');
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const hi = d.temp_high_c != null ? d.temp_high_c.toFixed(0) : '—';
+        const lo = d.temp_low_c != null ? d.temp_low_c.toFixed(0) : '—';
+        const precip = d.precip_prob != null ? d.precip_prob : 0;
+        const precipIcon = precip > 50 ? '🌧️' : precip > 20 ? '🌦️' : '☀️';
+        return `<div class="growth-forecast-day">
+          <span class="growth-forecast-dayname">${dayName}</span>
+          <span class="growth-forecast-icon">${precipIcon}</span>
+          <span class="growth-forecast-temps">${hi}° / ${lo}°</span>
+          ${precip > 0 ? `<span class="growth-hint">${precip}%</span>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+  container.hidden = false;
 }
 
 // ── Weather controls ──
