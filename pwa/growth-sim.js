@@ -636,6 +636,8 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
   const snapshots = [];
   let gdd = 0;
   let soilMoisture = 0; // 0 = let engine auto-init from field capacity
+  // Track peak structural dimensions — plants don't shrink
+  let peakHeight = 0, peakSpread = 0, peakRoot = 0;
 
   for (let day = 0; day < numDays; day++) {
     const w = weather[day];
@@ -662,6 +664,15 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
     const snap = JSON.parse(snapJson);
     gdd = snap.gdd_accumulated;
     soilMoisture = snap.soil_moisture_mm || 0;
+
+    // Enforce monotonic structural dimensions — plants can't un-grow
+    peakHeight = Math.max(peakHeight, snap.height_cm);
+    peakSpread = Math.max(peakSpread, snap.spread_cm);
+    peakRoot = Math.max(peakRoot, snap.root_depth_cm);
+    snap.height_cm = peakHeight;
+    snap.spread_cm = peakSpread;
+    snap.root_depth_cm = peakRoot;
+
     snapshots.push(snap);
   }
 

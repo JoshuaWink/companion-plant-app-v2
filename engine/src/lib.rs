@@ -137,6 +137,10 @@ pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Resul
     let mut snapshots = Vec::with_capacity(num_days as usize);
     let mut gdd = 0.0_f32;
     let mut soil_moisture = base_env.soil_moisture_mm;
+    // Track peak structural dimensions — plants don't shrink
+    let mut peak_height = 0.0_f32;
+    let mut peak_spread = 0.0_f32;
+    let mut peak_root = 0.0_f32;
 
     for day in 0..num_days {
         let mut env = base_env.clone();
@@ -147,9 +151,20 @@ pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Resul
             env.soil_moisture_mm = soil_moisture;
         }
 
-        let snap = growth::simulate_plant(&genetics, day, &env, gdd);
+        let mut snap = growth::simulate_plant(&genetics, day, &env, gdd);
         gdd = snap.gdd_accumulated;
         soil_moisture = snap.soil_moisture_mm;
+
+        // Enforce monotonic structural dimensions — plants can't un-grow.
+        // Daily weather variation affects metabolic rate (growth_rate field)
+        // but not achieved structure.
+        peak_height = peak_height.max(snap.height_cm);
+        peak_spread = peak_spread.max(snap.spread_cm);
+        peak_root = peak_root.max(snap.root_depth_cm);
+        snap.height_cm = peak_height;
+        snap.spread_cm = peak_spread;
+        snap.root_depth_cm = peak_root;
+
         snapshots.push(snap);
     }
 
