@@ -1194,13 +1194,28 @@ pub fn simulate_plant(
         stage, genetics.fruit_sink_strength, growth_progress,
     );
 
-    // -- Combined growth rate --
+    // -- Structural efficiency vs daily metabolic rate --
+    //
+    // KEY INSIGHT: Height, spread, and root depth are CUMULATIVE structural
+    // traits. A plant that grew to 80cm doesn't shrink when it starts fruiting.
+    // Carbon partitioning (veg_fraction) and wind stress are TRANSIENT daily
+    // factors that slow NEW growth but don't undo existing structure.
+    //
+    // structural_efficiency: How well has the plant built its body over its
+    //   lifetime? Driven by photosynthesis, nutrients, soil temperature.
+    //   These are relatively stable across the season.
+    //
+    // growth_rate: How metabolically productive is the plant TODAY?
+    //   Includes transient factors. Used for yield, resource consumption,
+    //   and the growth_rate field in Snapshot (daily metabolic indicator).
+    //
+    let structural_efficiency = (net_photo * nutrient_factor * soil_temp_factor).clamp(0.0, 1.5);
     let growth_rate = (net_photo * nutrient_factor * soil_temp_factor * wind_factor * veg_fraction).clamp(0.0, 1.5);
 
-    // -- Morphological traits (scaled by growth rate) --
-    let height_cm = ideal_height * growth_rate;
-    let spread_cm = ideal_spread * growth_rate;
-    let root_depth_cm = ideal_root * growth_rate;
+    // -- Morphological traits (cumulative — plants don't shrink) --
+    let height_cm = ideal_height * structural_efficiency;
+    let spread_cm = ideal_spread * structural_efficiency;
+    let root_depth_cm = ideal_root * structural_efficiency;
 
     let leaf_count = estimate_leaf_count(spread_cm, genetics.max_spread_cm, &genetics.growth_habit);
     let leaf_span_cm = spread_cm * 0.8;
@@ -1739,7 +1754,7 @@ mod tests {
         let g = tomato_genetics();
         let env = summer_env();
         let snap = simulate_plant(&g, 85, &env, 1500.0);
-        assert!(snap.height_cm > 30.0, "height: {}", snap.height_cm);
+        assert!(snap.height_cm > 50.0, "height: {}", snap.height_cm);
         assert!(snap.yield_projected_kg > 0.0);
     }
 
@@ -2134,6 +2149,58 @@ mod tests {
         // Mulch should conserve soil moisture (less evaporation)
         assert!(snap_mulch.soil_moisture_mm >= snap_bare.soil_moisture_mm - 1.0,
             "Mulch should conserve soil moisture: {} vs {}", snap_mulch.soil_moisture_mm, snap_bare.soil_moisture_mm);
+    }
+
+    // -- Structural integrity: plants don't shrink at stage transitions --
+
+    #[test]
+    fn test_height_does_not_drop_at_fruiting() {
+        // A tomato at day 55 (late vegetative/flowering) should not be taller
+        // than at day 65 (fruiting). Carbon partitioning slows NEW growth
+        // but doesn't shrink existing structure.
+        let g = tomato_genetics();
+        let env = summer_env();
+        let snap_veg = simulate_plant(&g, 55, &env, 800.0);
+        let snap_fruit = simulate_plant(&g, 65, &env, 1000.0);
+        assert!(snap_fruit.height_cm >= snap_veg.height_cm * 0.95,
+            "Plant should not shrink at fruiting transition: day55={:.1}cm, day65={:.1}cm",
+            snap_veg.height_cm, snap_fruit.height_cm);
+    }
+
+    #[test]
+    fn test_height_monotonic_across_season() {
+        // Height should generally increase (or plateau) across the season,
+        // never drop significantly from one day to the next.
+        let g = tomato_genetics();
+        let env = summer_env();
+        let mut prev_height = 0.0_f32;
+        let mut gdd = 0.0_f32;
+        for day in 1..=100 {
+            let snap = simulate_plant(&g, day, &env, gdd);
+            assert!(snap.height_cm >= prev_height * 0.95,
+                "Height dropped >5% at day {}: {:.1} -> {:.1}",
+                day, prev_height, snap.height_cm);
+            prev_height = snap.height_cm;
+            gdd = snap.gdd_accumulated;
+        }
+    }
+
+    #[test]
+    fn test_growth_rate_drops_but_height_stays() {
+        // growth_rate (metabolic) should drop during fruiting,
+        // but height (structural) should remain stable.
+        let g = tomato_genetics();
+        let env = summer_env();
+        let snap_veg = simulate_plant(&g, 50, &env, 700.0);
+        let snap_fruit = simulate_plant(&g, 70, &env, 1100.0);
+        // growth_rate drops (carbon to fruit)
+        assert!(snap_fruit.growth_rate < snap_veg.growth_rate,
+            "Metabolic rate should drop during fruiting: veg={:.2}, fruit={:.2}",
+            snap_veg.growth_rate, snap_fruit.growth_rate);
+        // height stays or increases
+        assert!(snap_fruit.height_cm >= snap_veg.height_cm * 0.95,
+            "Height should not drop: veg={:.1}, fruit={:.1}",
+            snap_veg.height_cm, snap_fruit.height_cm);
     }
 
 }
