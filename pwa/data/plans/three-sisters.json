@@ -1,0 +1,31 @@
+{
+  "plan_name": "Three Sisters",
+  "management_mode": "managed",
+  "plantings": [
+    {
+      "plant_id": "corn",
+      "role": "primary",
+      "planting_day_offset": 0,
+      "seed_treatments": []
+    },
+    {
+      "plant_id": "squash",
+      "role": "ground_cover",
+      "planting_day_offset": 7,
+      "seed_treatments": []
+    },
+    {
+      "plant_id": "beans",
+      "role": "support",
+      "planting_day_offset": 14,
+      "seed_treatments": [
+        {
+          "id": "rhizobium-inoculant",
+          "modifiers": {
+            "nitrogen_fixation_boost": 1.2
+          }
+        }
+      ]
+    }
+  ]
+}

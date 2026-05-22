@@ -9,7 +9,7 @@ mod model;
 mod timeline;
 
 pub use graph::CompanionGraph;
-pub use growth::{Environment, PlantGenetics, Snapshot, simulate_plant, genetics_from_json, PhotoPath};
+pub use growth::{Environment, PlantGenetics, Snapshot, simulate_plant, genetics_from_json, PhotoPath, PlantingPlan, Planting, SeedTreatment, ManagementMode, apply_treatments};
 pub use model::{Edge, Plant, RelationType, TemporalDep};
 pub use timeline::{compute_window, PlantTiming, PlantingWindow};
 
@@ -216,4 +216,121 @@ pub fn simulate_bed(plants_json: &str, day: u16, env_json: &str) -> Result<Strin
     }
 
     serde_json::to_string(&snapshots).map_err(|e| JsError::new(&e.to_string()))
+}
+
+/// Simulate a planting plan over a full season.
+/// Each planting starts at its day offset. Returns JSON array of per-plant results.
+///
+/// Input: plan_json (PlantingPlan), plants_json (plant database array),
+///        num_days (season length), env_json (base Environment)
+///
+/// Output: [{ plant_id, role, planting_day_offset, snapshots: [Snapshot...] }]
+#[wasm_bindgen]
+pub fn simulate_plan(
+    plan_json: &str,
+    plants_json: &str,
+    num_days: u16,
+    env_json: &str,
+) -> Result<String, JsError> {
+    let plan: growth::PlantingPlan =
+        serde_json::from_str(plan_json).map_err(|e| JsError::new(&e.to_string()))?;
+    let all_plants: Vec<serde_json::Value> =
+        serde_json::from_str(plants_json).map_err(|e| JsError::new(&e.to_string()))?;
+    let base_env: growth::Environment =
+        serde_json::from_str(env_json).map_err(|e| JsError::new(&e.to_string()))?;
+
+    let mut results = Vec::with_capacity(plan.plantings.len());
+
+    for planting in &plan.plantings {
+        // Look up genetics from plant database by id
+        let plant_val = all_plants.iter().find(|p| {
+            p.get("id").and_then(|v| v.as_str()) == Some(&planting.plant_id)
+        });
+        let base_genetics = match plant_val.and_then(|p| growth::genetics_from_json(p)) {
+            Some(g) => g,
+            None => continue, // skip unknown plants
+        };
+
+        // Apply seed treatments to modify genetics before simulation
+        let genetics = if planting.seed_treatments.is_empty() {
+            base_genetics
+        } else {
+            growth::apply_treatments(base_genetics, &planting.seed_treatments)
+        };
+
+        // Run season simulation with planting offset
+        let mut snapshots = Vec::new();
+        let mut gdd = 0.0_f32;
+        let mut soil_moisture = base_env.soil_moisture_mm;
+        let mut peak_height = 0.0_f32;
+        let mut peak_spread = 0.0_f32;
+        let mut peak_root = 0.0_f32;
+        let mut cumulative_yield = 0.0_f32;
+        let mut peak_daily_yield = 0.0_f32;
+        let mut flush_count = 0_u16;
+        let mut was_producing = false;
+
+        let offset = planting.planting_day_offset;
+
+        for calendar_day in 0..num_days {
+            // Plant not in ground yet
+            if calendar_day < offset {
+                continue;
+            }
+
+            let plant_day = calendar_day - offset;
+
+            let mut env = base_env.clone();
+            env.day_of_year = ((base_env.day_of_year as u32 + calendar_day as u32) % 365) as u16;
+            if env.day_of_year == 0 { env.day_of_year = 1; }
+            if soil_moisture > 0.0 {
+                env.soil_moisture_mm = soil_moisture;
+            }
+
+            let mut snap = growth::simulate_plant(&genetics, plant_day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            soil_moisture = snap.soil_moisture_mm;
+
+            // Enforce monotonic structural dimensions
+            peak_height = peak_height.max(snap.height_cm);
+            peak_spread = peak_spread.max(snap.spread_cm);
+            peak_root = peak_root.max(snap.root_depth_cm);
+            snap.height_cm = peak_height;
+            snap.spread_cm = peak_spread;
+            snap.root_depth_cm = peak_root;
+
+            // Accumulate yield over the season
+            cumulative_yield += snap.daily_yield_rate;
+            snap.cumulative_yield_kg = cumulative_yield;
+
+            // Track harvest flushes
+            if snap.is_producing && !was_producing {
+                flush_count += 1;
+            }
+            was_producing = snap.is_producing;
+            snap.harvest_flush_count = flush_count;
+
+            // Yield trend
+            peak_daily_yield = peak_daily_yield.max(snap.daily_yield_rate);
+            snap.yield_trend = if peak_daily_yield > 0.001 {
+                snap.daily_yield_rate / peak_daily_yield
+            } else {
+                0.0
+            };
+
+            // Tag snapshot with calendar day for timeline alignment
+            snap.day = calendar_day;
+
+            snapshots.push(snap);
+        }
+
+        results.push(serde_json::json!({
+            "plant_id": planting.plant_id,
+            "role": planting.role,
+            "planting_day_offset": planting.planting_day_offset,
+            "snapshots": snapshots,
+        }));
+    }
+
+    serde_json::to_string(&results).map_err(|e| JsError::new(&e.to_string()))
 }

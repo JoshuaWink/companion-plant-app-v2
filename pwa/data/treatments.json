@@ -1,0 +1,45 @@
+[
+  {
+    "id": "clay-coat",
+    "name": "Clay Seed Coating",
+    "description": "Encases seed in clay to delay germination until conditions are right. Used in seed balls and staggered planting.",
+    "modifiers": {
+      "germination_delay_days": 7.0,
+      "moisture_retention": 1.1
+    }
+  },
+  {
+    "id": "pre-soak",
+    "name": "Pre-Soak / Scarification",
+    "description": "Soaking or nicking hard seed coats to accelerate germination. Common for beans, peas, morning glory.",
+    "modifiers": {
+      "germination_accel_days": 3.0
+    }
+  },
+  {
+    "id": "rhizobium-inoculant",
+    "name": "Rhizobium Inoculant",
+    "description": "Bacterial inoculant for legumes that enhances nitrogen fixation nodule formation.",
+    "modifiers": {
+      "nitrogen_fixation_boost": 1.3
+    }
+  },
+  {
+    "id": "mycorrhizal-inoculant",
+    "name": "Mycorrhizal Inoculant",
+    "description": "Fungal spore coating that establishes mycorrhizal networks for enhanced root reach and nutrient uptake.",
+    "modifiers": {
+      "root_growth_boost": 1.25,
+      "moisture_retention": 1.15
+    }
+  },
+  {
+    "id": "kelp-soak",
+    "name": "Kelp / Seaweed Soak",
+    "description": "Soaking seeds in dilute kelp extract to boost seedling vigor and stress tolerance.",
+    "modifiers": {
+      "vigor_boost": 1.1,
+      "germination_accel_days": 1.0
+    }
+  }
+]

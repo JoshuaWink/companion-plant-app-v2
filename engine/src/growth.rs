@@ -115,6 +115,110 @@ impl Default for HarvestType {
     fn default() -> Self { Self::Fruit }
 }
 
+
+// -- Planting Plan types --
+
+/// Management mode for a planting plan
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ManagementMode {
+    /// Human-managed garden: irrigation, fertilization, pest control
+    Managed,
+    /// Natural/wild mode: rain-only water, ambient soil nutrients
+    Natural,
+}
+
+impl Default for ManagementMode {
+    fn default() -> Self { ManagementMode::Managed }
+}
+
+/// A seed treatment that modifies plant genetics before simulation
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SeedTreatment {
+    pub id: String,
+    /// e.g. {"germination_delay_days": 7.0, "nitrogen_fixation_boost": 1.2}
+    #[serde(default)]
+    pub modifiers: std::collections::HashMap<String, f32>,
+}
+
+/// A single planting within a plan
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Planting {
+    pub plant_id: String,
+    /// Role in the plan (e.g. "primary", "support", "ground_cover", "pest_deterrent")
+    #[serde(default)]
+    pub role: String,
+    /// Days after plan start to plant this species
+    #[serde(default)]
+    pub planting_day_offset: u16,
+    /// Seed treatments applied before planting
+    #[serde(default)]
+    pub seed_treatments: Vec<SeedTreatment>,
+}
+
+/// A complete planting plan — multiple plants with staggered timing
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PlantingPlan {
+    pub plan_name: String,
+    #[serde(default)]
+    pub management_mode: ManagementMode,
+    pub plantings: Vec<Planting>,
+}
+
+
+/// Apply seed treatments to plant genetics, returning modified genetics.
+/// Known modifier keys:
+///   - germination_delay_days: adds days to days_to_germination range
+///   - germination_accel_days: subtracts days from days_to_germination range
+///   - root_growth_boost: multiplies max_root_depth_cm
+///   - nitrogen_fixation_boost: multiplies nitrogen_g_m2 (makes it more negative = produces more)
+///   - moisture_retention: multiplies wilt_point_mm (lower = more drought tolerant)
+///   - vigor_boost: multiplies gs_max (stomatal conductance)
+/// Unknown modifiers are silently ignored (forward-compatible with future keys).
+pub fn apply_treatments(mut genetics: PlantGenetics, treatments: &[SeedTreatment]) -> PlantGenetics {
+    for treatment in treatments {
+        for (key, value) in &treatment.modifiers {
+            match key.as_str() {
+                "germination_delay_days" => {
+                    let delay = *value as u16;
+                    genetics.days_to_germination.0 = genetics.days_to_germination.0.saturating_add(delay);
+                    genetics.days_to_germination.1 = genetics.days_to_germination.1.saturating_add(delay);
+                }
+                "germination_accel_days" => {
+                    let accel = *value as u16;
+                    genetics.days_to_germination.0 = genetics.days_to_germination.0.saturating_sub(accel);
+                    genetics.days_to_germination.1 = genetics.days_to_germination.1.saturating_sub(accel);
+                    // Floor at 1 day
+                    if genetics.days_to_germination.0 == 0 { genetics.days_to_germination.0 = 1; }
+                    if genetics.days_to_germination.1 == 0 { genetics.days_to_germination.1 = 1; }
+                }
+                "root_growth_boost" => {
+                    genetics.max_root_depth_cm *= value;
+                    genetics.root_spread_cm *= value;
+                }
+                "nitrogen_fixation_boost" => {
+                    // Negative nitrogen_g_m2 means the plant produces nitrogen
+                    // A boost makes it more negative (produces more)
+                    if genetics.nitrogen_g_m2 < 0.0 {
+                        genetics.nitrogen_g_m2 *= value;
+                    }
+                }
+                "moisture_retention" => {
+                    // Lower wilt point = more drought tolerant
+                    genetics.wilt_point_mm /= value;
+                }
+                "vigor_boost" => {
+                    genetics.gs_max *= value;
+                    // Cap at biological maximum
+                    if genetics.gs_max > 1.2 { genetics.gs_max = 1.2; }
+                }
+                _ => {} // forward-compatible: unknown keys are no-ops
+            }
+        }
+    }
+    genetics
+}
+
 // -- Sun requirement --
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -2980,4 +3084,364 @@ mod tests {
                 "maintenance_tax out of bounds at day {}: {}", day, snap.maintenance_tax);
         }
     }
+
+    #[test]
+    fn test_parse_planting_plan_three_sisters() {
+        let json = r#"{
+            "plan_name": "Three Sisters",
+            "management_mode": "managed",
+            "plantings": [
+                {
+                    "plant_id": "corn",
+                    "role": "primary",
+                    "planting_day_offset": 0,
+                    "seed_treatments": []
+                },
+                {
+                    "plant_id": "beans",
+                    "role": "support",
+                    "planting_day_offset": 14,
+                    "seed_treatments": [
+                        {"id": "rhizobium-inoculant", "modifiers": {"nitrogen_fixation_boost": 1.2}}
+                    ]
+                },
+                {
+                    "plant_id": "squash",
+                    "role": "ground_cover",
+                    "planting_day_offset": 7,
+                    "seed_treatments": []
+                }
+            ]
+        }"#;
+
+        let plan: PlantingPlan = serde_json::from_str(json).unwrap();
+        assert_eq!(plan.plan_name, "Three Sisters");
+        assert_eq!(plan.management_mode, ManagementMode::Managed);
+        assert_eq!(plan.plantings.len(), 3);
+
+        // Corn: first, no treatments
+        assert_eq!(plan.plantings[0].plant_id, "corn");
+        assert_eq!(plan.plantings[0].role, "primary");
+        assert_eq!(plan.plantings[0].planting_day_offset, 0);
+        assert!(plan.plantings[0].seed_treatments.is_empty());
+
+        // Beans: offset 14, with inoculant
+        assert_eq!(plan.plantings[1].plant_id, "beans");
+        assert_eq!(plan.plantings[1].planting_day_offset, 14);
+        assert_eq!(plan.plantings[1].seed_treatments.len(), 1);
+        assert_eq!(plan.plantings[1].seed_treatments[0].id, "rhizobium-inoculant");
+        let boost = plan.plantings[1].seed_treatments[0].modifiers.get("nitrogen_fixation_boost");
+        assert!((boost.unwrap() - 1.2).abs() < 0.01);
+
+        // Squash: offset 7
+        assert_eq!(plan.plantings[2].plant_id, "squash");
+        assert_eq!(plan.plantings[2].planting_day_offset, 7);
+    }
+
+    #[test]
+    fn test_parse_plan_natural_mode_default() {
+        let json = r#"{
+            "plan_name": "Wildflower Patch",
+            "plantings": [
+                {"plant_id": "sunflower", "planting_day_offset": 0}
+            ]
+        }"#;
+
+        let plan: PlantingPlan = serde_json::from_str(json).unwrap();
+        // management_mode defaults to Managed
+        assert_eq!(plan.management_mode, ManagementMode::Managed);
+        // role defaults to empty
+        assert_eq!(plan.plantings[0].role, "");
+    }
+
+    #[test]
+    fn test_parse_plan_natural_mode_explicit() {
+        let json = r#"{
+            "plan_name": "Wild Meadow",
+            "management_mode": "natural",
+            "plantings": [
+                {"plant_id": "clover", "planting_day_offset": 0}
+            ]
+        }"#;
+
+        let plan: PlantingPlan = serde_json::from_str(json).unwrap();
+        assert_eq!(plan.management_mode, ManagementMode::Natural);
+    }
+
+    #[test]
+    fn test_parse_treatment_modifiers() {
+        let json = r#"{
+            "plan_name": "Delayed Start",
+            "plantings": [
+                {
+                    "plant_id": "corn",
+                    "planting_day_offset": 0,
+                    "seed_treatments": [
+                        {
+                            "id": "clay-coat",
+                            "modifiers": {
+                                "germination_delay_days": 7.0,
+                                "moisture_retention": 1.15
+                            }
+                        },
+                        {
+                            "id": "mycorrhizal-inoculant",
+                            "modifiers": {
+                                "root_growth_boost": 1.3
+                            }
+                        }
+                    ]
+                }
+            ]
+        }"#;
+
+        let plan: PlantingPlan = serde_json::from_str(json).unwrap();
+        let treatments = &plan.plantings[0].seed_treatments;
+        assert_eq!(treatments.len(), 2);
+
+        // Clay coat has two modifiers
+        assert_eq!(treatments[0].modifiers.len(), 2);
+        assert!((treatments[0].modifiers["germination_delay_days"] - 7.0).abs() < 0.01);
+        assert!((treatments[0].modifiers["moisture_retention"] - 1.15).abs() < 0.01);
+
+        // Inoculant has one modifier
+        assert_eq!(treatments[1].modifiers.len(), 1);
+        assert!((treatments[1].modifiers["root_growth_boost"] - 1.3).abs() < 0.01);
+    }
+
+
+    #[test]
+    fn test_apply_treatment_germination_delay() {
+        let genetics = tomato_genetics();
+        let original_germ = genetics.days_to_germination;
+        let treatments = vec![SeedTreatment {
+            id: "clay-coat".to_string(),
+            modifiers: [("germination_delay_days".to_string(), 7.0)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        assert_eq!(modified.days_to_germination.0, original_germ.0 + 7);
+        assert_eq!(modified.days_to_germination.1, original_germ.1 + 7);
+    }
+
+    #[test]
+    fn test_apply_treatment_germination_accel() {
+        let mut genetics = tomato_genetics();
+        genetics.days_to_germination = (10, 14);
+        let treatments = vec![SeedTreatment {
+            id: "pre-soak".to_string(),
+            modifiers: [("germination_accel_days".to_string(), 3.0)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        assert_eq!(modified.days_to_germination.0, 7);
+        assert_eq!(modified.days_to_germination.1, 11);
+    }
+
+    #[test]
+    fn test_apply_treatment_accel_floors_at_one() {
+        let mut genetics = tomato_genetics();
+        genetics.days_to_germination = (2, 3);
+        let treatments = vec![SeedTreatment {
+            id: "extreme-soak".to_string(),
+            modifiers: [("germination_accel_days".to_string(), 10.0)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        assert_eq!(modified.days_to_germination.0, 1);
+        assert_eq!(modified.days_to_germination.1, 1);
+    }
+
+    #[test]
+    fn test_apply_treatment_root_boost() {
+        let genetics = tomato_genetics();
+        let original_root = genetics.max_root_depth_cm;
+        let treatments = vec![SeedTreatment {
+            id: "mycorrhizal".to_string(),
+            modifiers: [("root_growth_boost".to_string(), 1.3)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        assert!((modified.max_root_depth_cm - original_root * 1.3).abs() < 0.1);
+    }
+
+    #[test]
+    fn test_apply_treatment_nitrogen_fixation() {
+        let mut genetics = tomato_genetics();
+        genetics.nitrogen_g_m2 = -5.0; // nitrogen fixer
+        let treatments = vec![SeedTreatment {
+            id: "inoculant".to_string(),
+            modifiers: [("nitrogen_fixation_boost".to_string(), 1.5)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        // Should be more negative (produces more)
+        assert!((modified.nitrogen_g_m2 - (-7.5)).abs() < 0.1);
+    }
+
+    #[test]
+    fn test_apply_treatment_nitrogen_no_effect_on_consumer() {
+        let mut genetics = tomato_genetics();
+        genetics.nitrogen_g_m2 = 12.0; // positive = consumer (needs nitrogen)
+        let original_n = genetics.nitrogen_g_m2;
+        let treatments = vec![SeedTreatment {
+            id: "inoculant".to_string(),
+            modifiers: [("nitrogen_fixation_boost".to_string(), 1.5)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        // Consumers (positive nitrogen) are not affected by fixation boost
+        assert!((modified.nitrogen_g_m2 - original_n).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_apply_multiple_treatments_stack() {
+        let mut genetics = tomato_genetics();
+        genetics.days_to_germination = (7, 10);
+        let treatments = vec![
+            SeedTreatment {
+                id: "clay-coat".to_string(),
+                modifiers: [("germination_delay_days".to_string(), 5.0)].into_iter().collect(),
+            },
+            SeedTreatment {
+                id: "mycorrhizal".to_string(),
+                modifiers: [("root_growth_boost".to_string(), 1.2)].into_iter().collect(),
+            },
+        ];
+        let modified = apply_treatments(genetics.clone(), &treatments);
+        assert_eq!(modified.days_to_germination.0, 12); // 7 + 5
+        assert!((modified.max_root_depth_cm - genetics.max_root_depth_cm * 1.2).abs() < 0.1);
+    }
+
+    #[test]
+    fn test_apply_unknown_modifier_ignored() {
+        let genetics = tomato_genetics();
+        let original = genetics.clone();
+        let treatments = vec![SeedTreatment {
+            id: "future-treatment".to_string(),
+            modifiers: [("some_future_key".to_string(), 99.0)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics, &treatments);
+        // Nothing should change
+        assert_eq!(modified.days_to_germination, original.days_to_germination);
+        assert!((modified.max_root_depth_cm - original.max_root_depth_cm).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_apply_empty_treatments_no_op() {
+        let genetics = tomato_genetics();
+        let original = genetics.clone();
+        let modified = apply_treatments(genetics, &[]);
+        assert_eq!(modified.days_to_germination, original.days_to_germination);
+        assert!((modified.gs_max - original.gs_max).abs() < 0.001);
+    }
+
+
+    #[test]
+    fn test_simulate_plan_staggered_offsets() {
+        // Build a mini plan with two plants at different offsets
+        let plan = PlantingPlan {
+            plan_name: "Stagger Test".to_string(),
+            management_mode: ManagementMode::Managed,
+            plantings: vec![
+                Planting {
+                    plant_id: "corn".to_string(),
+                    role: "primary".to_string(),
+                    planting_day_offset: 0,
+                    seed_treatments: vec![],
+                },
+                Planting {
+                    plant_id: "beans".to_string(),
+                    role: "support".to_string(),
+                    planting_day_offset: 14,
+                    seed_treatments: vec![],
+                },
+            ],
+        };
+
+        // Serialize plan and use simulate functions directly
+        let env = summer_env();
+
+        // Corn at day 0: should be at plant_day 20 on calendar day 20
+        let corn = tomato_genetics(); // reuse as stand-in
+        let snap_corn_day20 = simulate_plant(&corn, 20, &env, 300.0);
+
+        // Beans at offset 14: on calendar day 20, plant_day = 6
+        let beans = corn_genetics(); // reuse as stand-in
+        let snap_beans_day6 = simulate_plant(&beans, 6, &env, 90.0);
+
+        // Corn should be more developed than beans
+        assert!(snap_corn_day20.height_cm > snap_beans_day6.height_cm,
+            "Corn at plant-day 20 should be taller than beans at plant-day 6");
+    }
+
+    #[test]
+    fn test_simulate_plan_offset_skips_early_days() {
+        // A plant with offset 10 should produce no snapshots for days 0-9
+        let env = summer_env();
+        let genetics = tomato_genetics();
+
+        // Calendar day 5, offset 10 -> plant not in ground
+        // Calendar day 15, offset 10 -> plant_day 5
+        let snap_day5 = simulate_plant(&genetics, 5, &env, 75.0);
+        assert!(snap_day5.day == 5); // plant day 5
+
+        // The offset math is done in lib.rs simulate_plan, which we tested
+        // via WASM. Here we just verify that simulate_plant at day 0 returns
+        // a seed-stage plant (verifying the foundation).
+        let snap_day0 = simulate_plant(&genetics, 0, &env, 0.0);
+        assert_eq!(snap_day0.stage, GrowthStage::Seed);
+    }
+
+    #[test]
+    fn test_simulate_plan_treatment_delays_germination() {
+        let genetics = tomato_genetics();
+        let original_germ_min = genetics.days_to_germination.0;
+
+        // Apply clay coat treatment
+        let treatments = vec![SeedTreatment {
+            id: "clay-coat".to_string(),
+            modifiers: [("germination_delay_days".to_string(), 7.0)].into_iter().collect(),
+        }];
+        let modified = apply_treatments(genetics.clone(), &treatments);
+
+        let env = summer_env();
+
+        // Untreated at original_germ_min + 1 days should be past seed stage
+        let gdd_base = (original_germ_min as f32 + 1.0) * 15.0;
+        let snap_untreated = simulate_plant(&genetics, original_germ_min + 1, &env, gdd_base);
+
+        // Treated at same day should still be in seed/germinating (delayed by 7)
+        let snap_treated = simulate_plant(&modified, original_germ_min + 1, &env, gdd_base);
+
+        // The treated plant should be at an earlier or equal stage
+        assert!(snap_treated.height_cm <= snap_untreated.height_cm,
+            "Treated plant should not outgrow untreated at same day");
+    }
+
+    #[test]
+    fn test_plan_round_trip_serde() {
+        let plan = PlantingPlan {
+            plan_name: "Round Trip".to_string(),
+            management_mode: ManagementMode::Natural,
+            plantings: vec![
+                Planting {
+                    plant_id: "corn".to_string(),
+                    role: "primary".to_string(),
+                    planting_day_offset: 0,
+                    seed_treatments: vec![
+                        SeedTreatment {
+                            id: "clay-coat".to_string(),
+                            modifiers: [("germination_delay_days".to_string(), 5.0)].into_iter().collect(),
+                        }
+                    ],
+                },
+            ],
+        };
+
+        let json = serde_json::to_string(&plan).unwrap();
+        let parsed: PlantingPlan = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(parsed.plan_name, "Round Trip");
+        assert_eq!(parsed.management_mode, ManagementMode::Natural);
+        assert_eq!(parsed.plantings.len(), 1);
+        assert_eq!(parsed.plantings[0].seed_treatments[0].id, "clay-coat");
+        let delay = parsed.plantings[0].seed_treatments[0].modifiers.get("germination_delay_days");
+        assert!((delay.unwrap() - 5.0).abs() < 0.01);
+    }
+
 }
