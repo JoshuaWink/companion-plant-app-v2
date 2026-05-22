@@ -2384,3 +2384,320 @@ select.bed-action {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+
+/* Stress chart clarity */
+.growth-stress-help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0.45rem;
+  font-size: 0.72rem;
+  color: #77889a;
+}
+
+.growth-stress-help-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.growth-stress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.growth-stress-dot--mild {
+  background: rgba(255, 193, 7, 0.85);
+}
+
+.growth-stress-dot--moderate {
+  background: rgba(255, 112, 67, 0.9);
+}
+
+.growth-stress-dot--severe {
+  background: rgba(239, 83, 80, 0.95);
+}
+
+.growth-stress-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.growth-stress-tag--mild {
+  box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.35) inset;
+}
+
+.growth-stress-tag--moderate {
+  box-shadow: 0 0 0 1px rgba(255, 112, 67, 0.4) inset;
+}
+
+.growth-stress-tag--severe {
+  box-shadow: 0 0 0 1px rgba(239, 83, 80, 0.45) inset;
+}
+
+.growth-stress-tooltip {
+  position: fixed;
+  z-index: 120;
+  max-width: min(92vw, 300px);
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(16, 20, 28, 0.96);
+  color: #e7edf5;
+  font-size: 0.72rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.growth-stress-tooltip-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.growth-stress-tooltip-sub {
+  color: #aebcd0;
+  margin-bottom: 0.35rem;
+}
+
+.growth-stress-tooltip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.28rem;
+}
+
+.growth-stress-tooltip-text {
+  min-width: 0;
+}
+
+.growth-stress-tooltip-head {
+  font-weight: 600;
+  color: #f1f5fa;
+}
+
+.growth-stress-tooltip-desc {
+  color: #c9d4e3;
+}
+
+.growth-stress-tooltip-detail {
+  color: #9eb0c8;
+  margin-top: 0.1rem;
+}
+
+.growth-stress-tooltip-empty {
+  color: #c9d4e3;
+}
+
+
+.growth-metrics-tooltip {
+  max-width: 300px;
+}
+
+.growth-metric-tooltip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.28rem;
+}
+
+.growth-metric-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.growth-metric-dot--height {
+  background: #43a047;
+}
+
+.growth-metric-dot--spread {
+  background: #1e88e5;
+}
+
+.growth-metric-dot--root {
+  background: #8d6e63;
+}
+
+
+.growth-metric-dot--leaves {
+  background: #7cb342;
+}
+
+.growth-metric-dot--dli {
+  background: #fbc02d;
+}
+
+.growth-metric-dot--gdd {
+  background: #fb8c00;
+}
+
+.growth-metric-dot--yield {
+  background: #26a69a;
+}
+
+@media (max-width: 700px) {
+  .growth-chart-hint {
+    display: block;
+    margin-left: 0;
+    margin-top: 0.18rem;
+  }
+
+  .growth-stress-tooltip,
+  .growth-metrics-tooltip {
+    max-width: calc(100vw - 16px);
+    font-size: 0.76rem;
+  }
+}
+
+
+.growth-advisor {
+  margin-top: 0.9rem;
+  border: 1px solid rgba(170, 187, 204, 0.25);
+  border-radius: 10px;
+  background: rgba(24, 30, 40, 0.25);
+  padding: 0.8rem;
+}
+
+.growth-advisor-head {
+  margin-bottom: 0.65rem;
+}
+
+.growth-advisor-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #c8d5e8;
+}
+
+.growth-advisor-intro {
+  margin: 0.22rem 0 0;
+  font-size: 0.76rem;
+  color: #97a8be;
+  line-height: 1.4;
+}
+
+.growth-advisor-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.growth-advisor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
+}
+
+.growth-advisor-summary {
+  margin-bottom: 0.55rem;
+}
+
+.growth-advisor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.55rem;
+}
+
+.growth-advisor-card {
+  border: 1px solid rgba(170, 187, 204, 0.22);
+  border-radius: 8px;
+  background: rgba(12, 18, 28, 0.45);
+  padding: 0.55rem;
+}
+
+.growth-advisor-card-label {
+  font-size: 0.68rem;
+  color: #90a4ba;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.growth-advisor-card-value {
+  font-size: 0.82rem;
+  color: #dce6f5;
+  font-weight: 600;
+  margin-top: 0.16rem;
+}
+
+.growth-advisor-card-note {
+  font-size: 0.72rem;
+  color: #a8b8cc;
+  margin-top: 0.16rem;
+}
+
+.growth-advisor-status {
+  margin-top: 0.5rem;
+  border-radius: 7px;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.74rem;
+}
+
+.growth-advisor-status--good {
+  background: rgba(46, 125, 50, 0.22);
+  color: #b8e5ba;
+}
+
+.growth-advisor-status--warn {
+  background: rgba(251, 140, 0, 0.2);
+  color: #ffd8aa;
+}
+
+.growth-advisor-math {
+  margin: 0.45rem 0 0.55rem;
+  border: 1px dashed rgba(170, 187, 204, 0.25);
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: rgba(8, 12, 20, 0.45);
+}
+
+.growth-advisor-math-line {
+  font-size: 0.72rem;
+  color: #b5c3d7;
+  margin: 0.2rem 0;
+  line-height: 1.4;
+}
+
+#growth-chart-transplant,
+#growth-chart-hardening {
+  width: 100%;
+  background: var(--cup-color-surface-alt, #1e1e2e);
+  border-radius: 8px;
+}
+
+.growth-hardening-steps {
+  margin: 0.55rem 0 0;
+  padding-left: 1.2rem;
+  color: #b5c3d7;
+}
+
+.growth-hardening-steps li {
+  margin: 0.34rem 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+  .growth-advisor {
+    padding: 0.68rem;
+  }
+
+  .growth-advisor-controls,
+  .growth-advisor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #growth-chart-transplant,
+  #growth-chart-hardening {
+    height: 180px;
+  }
+}

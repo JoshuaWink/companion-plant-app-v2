@@ -63,6 +63,69 @@ const STAGE_DESC = {
   senescence:   'Growth slowing down, leaves yellowing — the natural end of the season',
 };
 
+
+const STRESS_META = {
+  frost_damage: {
+    label: 'Frost Damage',
+    description: 'Night temperature dropped below this crop\'s tolerance.',
+  },
+  heat_stress: {
+    label: 'Heat Stress',
+    description: 'Heat is above optimal range and slows normal growth.',
+  },
+  drought_stress: {
+    label: 'Drought Stress',
+    description: 'Water is below plant demand, reducing growth performance.',
+  },
+  root_rot_risk: {
+    label: 'Root Rot Risk',
+    description: 'Soil is too wet and roots may have low oxygen.',
+  },
+  nutrient_burn: {
+    label: 'Nutrient Burn',
+    description: 'Nutrient concentration is too high and can damage roots.',
+  },
+  nitrogen_deficiency: {
+    label: 'Nitrogen Deficiency',
+    description: 'Not enough available nitrogen for healthy vegetative growth.',
+  },
+};
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getStressMeta(kind) {
+  return STRESS_META[kind] || {
+    label: kind.replace(/_/g, ' '),
+    description: 'Environmental stress reducing ideal growth.',
+  };
+}
+
+function getStressBand(severity) {
+  if (severity >= 0.67) return 'severe';
+  if (severity >= 0.34) return 'moderate';
+  return 'mild';
+}
+
+function clamp(value, min = 0, max = 1) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getStressSeverity(snap, kind) {
+  if (!snap || !Array.isArray(snap.stress_events)) return 0;
+
+  return snap.stress_events.reduce((maxSev, event) => {
+    if (event.kind !== kind) return maxSev;
+    return Math.max(maxSev, event.severity || 0);
+  }, 0);
+}
+
 // ── Zone → latitude mapping (approximate center of each zone band) ──
 const ZONE_LAT = {
   '1a': 65, '1b': 63, '2a': 60, '2b': 58,
@@ -117,25 +180,55 @@ const CITIES = [
 
 let plants = [];
 let seasonData = null;
+let transplantAdvisorCache = null;
 
-function setDayFromChartClientX(canvas, clientX) {
-  if (!seasonData || seasonData.length < 2 || !canvas._chartParams) return;
-
-  const slider = document.getElementById('growth-day-slider');
-  if (!slider) return;
+function getChartDayFromClientX(canvas, clientX) {
+  if (!seasonData || seasonData.length < 2 || !canvas._chartParams) return null;
 
   const rect = canvas.getBoundingClientRect();
   const { pad, cw } = canvas._chartParams;
   const rawX = clientX - rect.left;
   const clampedX = Math.max(pad.left, Math.min(pad.left + cw, rawX));
   const ratio = cw > 0 ? (clampedX - pad.left) / cw : 0;
-  const day = Math.round(ratio * (seasonData.length - 1));
+  return Math.round(ratio * (seasonData.length - 1));
+}
+
+function positionChartTooltip(tooltip, event, tooltipWidth = 300, tooltipHeight = 220) {
+  const margin = 8;
+  const isTouchLike = event.pointerType === 'touch' || event.pointerType === 'pen';
+
+  if (isTouchLike || window.innerWidth <= 720) {
+    const x = Math.max(margin, Math.min((window.innerWidth - tooltipWidth) / 2, window.innerWidth - tooltipWidth - margin));
+    const y = Math.max(margin, window.innerHeight - tooltipHeight - margin);
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    return;
+  }
+
+  const x = Math.min(window.innerWidth - tooltipWidth - margin, event.clientX + 14);
+  const y = Math.min(window.innerHeight - tooltipHeight - margin, event.clientY + 14);
+  tooltip.style.left = `${Math.max(margin, x)}px`;
+  tooltip.style.top = `${Math.max(margin, y)}px`;
+}
+
+function setDayFromChartClientX(canvas, clientX) {
+  const day = getChartDayFromClientX(canvas, clientX);
+  if (day === null) return;
+
+  const slider = document.getElementById('growth-day-slider');
+  if (!slider) return;
 
   const nextValue = String(day);
   if (slider.value !== nextValue) {
     slider.value = nextValue;
     onDaySlider();
   }
+}
+
+function getCurrentSliderDay() {
+  const slider = document.getElementById('growth-day-slider');
+  if (!slider) return 0;
+  return parseInt(slider.value, 10) || 0;
 }
 
 function bindChartScrubber(canvasId) {
@@ -318,6 +411,12 @@ export function initGrowthSim(plantList) {
   bindChartScrubber('growth-chart-height');
   bindChartScrubber('growth-chart-stress');
 
+  // Hover tooltip for growth curve metric explanations.
+  initGrowthMetricsTooltip();
+
+  // Hover tooltip for stress chart explanations.
+  initStressTooltip();
+
   // Planting date picker → DOY sync
   const dateInput = document.getElementById('growth-planting-date');
   const doyHidden = document.getElementById('growth-planting-doy');
@@ -351,6 +450,25 @@ export function initGrowthSim(plantList) {
   }
   waterInput.addEventListener('input', updateWaterEquiv);
   updateWaterEquiv();
+
+  const advisorInputIds = [
+    'growth-indoor-dli',
+    'growth-indoor-temp',
+    'growth-hardening-days',
+    'growth-hardening-start-hours',
+  ];
+
+  advisorInputIds.forEach((id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    const handler = () => {
+      updateTransplantAdvisor(getCurrentSliderDay(), true);
+    };
+
+    input.addEventListener('input', handler);
+    input.addEventListener('change', handler);
+  });
 }
 
 export function setGrowthPlant(plantId, runAfterSelect = false) {
@@ -427,6 +545,9 @@ function runSimulation() {
 
   // Show snapshot for current slider position
   onDaySlider();
+
+  transplantAdvisorCache = null;
+  updateTransplantAdvisor(getCurrentSliderDay(), true);
 }
 
 // ── Day slider handler ──
@@ -454,10 +575,14 @@ function onDaySlider() {
   // Snapshot card with dual units and context
   const card = document.getElementById('growth-snapshot');
   const stressHtml = snap.stress_events.length > 0
-    ? snap.stress_events.map(s =>
-        `<span class="growth-stress-tag growth-stress--${s.severity > 0.5 ? 'high' : 'low'}">${s.kind.replace(/_/g, ' ')}</span>`
-      ).join(' ')
-    : '<span class="growth-no-stress">No stress detected</span>';
+    ? snap.stress_events.map((s) => {
+        const meta = getStressMeta(s.kind);
+        const sevPct = Math.round((s.severity || 0) * 100);
+        const band = getStressBand(s.severity || 0);
+        const title = `${meta.label} (${sevPct}%): ${meta.description}${s.detail ? ' Detail: ' + s.detail : ''}`;
+        return `<span class="growth-stress-tag growth-stress--${s.severity > 0.5 ? 'high' : 'low'} growth-stress-tag--${band}" title="${escapeHtml(title)}">${meta.label} ${sevPct}%</span>`;
+      }).join(' ')
+    : '<span class="growth-no-stress" title="No stress events detected for this day">No stress detected</span>';
 
   card.innerHTML = `
     <div class="growth-snap-grid">
@@ -503,6 +628,8 @@ function onDaySlider() {
   // Update raw JSON
   document.getElementById('growth-raw-json').textContent =
     JSON.stringify(snap, null, 2);
+
+  updateTransplantAdvisor(day);
 }
 
 // ── Height/Spread/Root chart ──
@@ -670,16 +797,19 @@ function drawStressChart() {
   ctx.fill();
 
   // Stress event markers
+  const markers = [];
   seasonData.forEach((snap, i) => {
     if (snap.stress_events.length > 0) {
       const x = pad.left + (i / (seasonData.length - 1)) * cw;
       const maxSev = Math.max(...snap.stress_events.map(s => s.severity));
+      const y = pad.top + ch - maxSev * ch;
       ctx.fillStyle = maxSev > 0.5
         ? 'rgba(239, 83, 80, 0.8)'
         : 'rgba(255, 167, 38, 0.6)';
       ctx.beginPath();
-      ctx.arc(x, pad.top + ch - maxSev * ch, 3, 0, Math.PI * 2);
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
       ctx.fill();
+      markers.push({ day: i, x, y, maxSev, events: snap.stress_events });
     }
   });
 
@@ -691,4 +821,624 @@ function drawStressChart() {
 
   // Store chart params for drag scrubbing.
   canvas._chartParams = { pad, cw, ch };
+  canvas._stressMarkers = markers;
+}
+
+function initGrowthMetricsTooltip() {
+  const canvas = document.getElementById('growth-chart-height');
+  const tooltip = document.getElementById('growth-metrics-tooltip');
+  if (!canvas || !tooltip || canvas._growthTooltipBound) return;
+
+  canvas._growthTooltipBound = true;
+
+  const hideTooltip = () => {
+    tooltip.hidden = true;
+  };
+
+  canvas.addEventListener('mouseleave', hideTooltip);
+  canvas.addEventListener('pointercancel', hideTooltip);
+
+  const showTooltipForEvent = (event) => {
+    if (!seasonData || !canvas._chartParams) {
+      hideTooltip();
+      return;
+    }
+
+    const day = getChartDayFromClientX(canvas, event.clientX);
+    if (day === null) {
+      hideTooltip();
+      return;
+    }
+
+    const snap = seasonData[day];
+    if (!snap) {
+      hideTooltip();
+      return;
+    }
+
+    const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
+    const calDate = doyToDate(plantDoy + day);
+    const stageLabel = (snap.stage || 'seed').replace(/_/g, ' ');
+    const growthRatePct = Math.round((snap.growth_rate || 0) * 100);
+
+    tooltip.innerHTML = `<div class="growth-stress-tooltip-title">Day ${day} - ${escapeHtml(calDate)}</div>`
+      + `<div class="growth-stress-tooltip-sub">Stage: ${escapeHtml(stageLabel)} | Growth rate: ${growthRatePct}%</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--height"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">Height</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.height_cm.toFixed(1)} cm (${cmToIn(snap.height_cm)} in)</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--spread"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">Spread</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.spread_cm.toFixed(1)} cm (${cmToIn(snap.spread_cm)} in)</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--root"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">Root Depth</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.root_depth_cm.toFixed(1)} cm (${cmToIn(snap.root_depth_cm)} in)</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--leaves"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">Leaves</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.leaf_count} leaves</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--dli"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">DLI</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.dli.toFixed(1)} mol/m2/day</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--gdd"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">GDD</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.gdd_accumulated.toFixed(0)} heat units</div>`
+      + `</div>`
+      + `</div>`
+      + `<div class="growth-metric-tooltip-item">`
+      + `<span class="growth-metric-dot growth-metric-dot--yield"></span>`
+      + `<div class="growth-stress-tooltip-text">`
+      + `<div class="growth-stress-tooltip-head">Projected Yield</div>`
+      + `<div class="growth-stress-tooltip-desc">${snap.yield_projected_kg.toFixed(2)} kg/m2 (${kgM2ToLbFt2(snap.yield_projected_kg)} lb/ft2)</div>`
+      + `</div>`
+      + `</div>`;
+
+    positionChartTooltip(tooltip, event, 312, 300);
+    tooltip.hidden = false;
+  };
+
+  canvas.addEventListener('mousemove', showTooltipForEvent);
+  canvas.addEventListener('pointerdown', showTooltipForEvent);
+  canvas.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+      showTooltipForEvent(event);
+    }
+  });
+  canvas.addEventListener('pointerup', (event) => {
+    if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+      window.setTimeout(() => { tooltip.hidden = true; }, 1200);
+    }
+  });
+}
+function initStressTooltip() {
+  const canvas = document.getElementById('growth-chart-stress');
+  const tooltip = document.getElementById('growth-stress-tooltip');
+  if (!canvas || !tooltip || canvas._stressTooltipBound) return;
+
+  canvas._stressTooltipBound = true;
+
+  const hideTooltip = () => {
+    tooltip.hidden = true;
+  };
+
+  canvas.addEventListener('mouseleave', hideTooltip);
+  canvas.addEventListener('pointercancel', hideTooltip);
+
+  const showTooltipForEvent = (event) => {
+    if (!seasonData || !canvas._chartParams) {
+      hideTooltip();
+      return;
+    }
+
+    const day = getChartDayFromClientX(canvas, event.clientX);
+    if (day === null) {
+      hideTooltip();
+      return;
+    }
+
+    const snap = seasonData[day];
+    if (!snap) {
+      hideTooltip();
+      return;
+    }
+
+    const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
+    const calDate = doyToDate(plantDoy + day);
+    const stressPct = Math.round(Math.max(0, 1 - snap.growth_rate) * 100);
+
+    let bodyHtml = '';
+    if (snap.stress_events.length > 0) {
+      bodyHtml = snap.stress_events.map((s) => {
+        const meta = getStressMeta(s.kind);
+        const sevPct = Math.round((s.severity || 0) * 100);
+        const band = getStressBand(s.severity || 0);
+        return `<div class="growth-stress-tooltip-item">`
+          + `<span class="growth-stress-dot growth-stress-dot--${band}"></span>`
+          + `<div class="growth-stress-tooltip-text">`
+          + `<div class="growth-stress-tooltip-head">${escapeHtml(meta.label)} (${sevPct}%)</div>`
+          + `<div class="growth-stress-tooltip-desc">${escapeHtml(meta.description)}</div>`
+          + (s.detail ? `<div class="growth-stress-tooltip-detail">${escapeHtml(s.detail)}</div>` : '')
+          + `</div>`
+          + `</div>`;
+      }).join('');
+    } else {
+      bodyHtml = '<div class="growth-stress-tooltip-empty">No stress events detected on this day.</div>';
+    }
+
+    tooltip.innerHTML = `<div class="growth-stress-tooltip-title">Day ${day} - ${escapeHtml(calDate)}</div>`
+      + `<div class="growth-stress-tooltip-sub">Overall stress: ${stressPct}%</div>`
+      + bodyHtml;
+
+    positionChartTooltip(tooltip, event, 280, 210);
+    tooltip.hidden = false;
+  };
+
+  canvas.addEventListener('mousemove', showTooltipForEvent);
+  canvas.addEventListener('pointerdown', showTooltipForEvent);
+  canvas.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+      showTooltipForEvent(event);
+    }
+  });
+  canvas.addEventListener('pointerup', (event) => {
+    if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+      window.setTimeout(() => { tooltip.hidden = true; }, 1200);
+    }
+  });
+}
+
+
+function readAdvisorInputs() {
+  const indoorDli = clamp(parseFloat(document.getElementById('growth-indoor-dli')?.value) || 8, 2, 30);
+  const indoorTemp = clamp(parseFloat(document.getElementById('growth-indoor-temp')?.value) || 22, -5, 40);
+  const hardeningDays = Math.round(clamp(parseInt(document.getElementById('growth-hardening-days')?.value, 10) || 7, 3, 14));
+  const startHours = clamp(parseFloat(document.getElementById('growth-hardening-start-hours')?.value) || 1.5, 0.5, 8);
+
+  return {
+    indoorDli,
+    indoorTemp,
+    hardeningDays,
+    startHours,
+  };
+}
+
+function getStageReadiness(stage) {
+  const stageScores = {
+    seed: 0.2,
+    germinating: 0.45,
+    seedling: 0.92,
+    vegetative: 1.0,
+    flowering: 0.45,
+    fruiting: 0.3,
+    senescence: 0.2,
+  };
+
+  return stageScores[stage] || 0.3;
+}
+
+function buildTransplantAdvisorData() {
+  if (!seasonData || seasonData.length < 2) return null;
+
+  const inputs = readAdvisorInputs();
+  const tempHigh = parseFloat(document.getElementById('growth-temp-high')?.value) || 28;
+  const tempLow = parseFloat(document.getElementById('growth-temp-low')?.value) || 16;
+  const nighttimeScore = clamp((tempLow - 7) / 10, 0, 1);
+
+  const rows = seasonData.map((snap, day) => {
+    const rootRot = getStressSeverity(snap, 'root_rot_risk');
+    const frost = getStressSeverity(snap, 'frost_damage');
+    const heat = getStressSeverity(snap, 'heat_stress');
+    const drought = getStressSeverity(snap, 'drought_stress');
+
+    const rootScore = clamp((snap.root_depth_cm || 0) / 8.0, 0, 1);
+    const leafScore = clamp((snap.leaf_count || 0) / 6.0, 0, 1);
+    const growthScore = clamp(snap.growth_rate || 0, 0, 1);
+    const stageScore = getStageReadiness(snap.stage);
+
+    const stressPenalty = clamp(
+      rootRot * 0.55
+      + frost * 0.45
+      + heat * 0.25
+      + drought * 0.20,
+      0,
+      1,
+    );
+
+    const baseReadiness = (
+      rootScore * 0.34
+      + leafScore * 0.20
+      + growthScore * 0.19
+      + nighttimeScore * 0.13
+      + stageScore * 0.14
+    );
+
+    const readiness = Math.round(clamp(baseReadiness * (1 - 0.62 * stressPenalty), 0, 1) * 100);
+    const stageCandidate = snap.stage === 'seedling' || snap.stage === 'vegetative';
+
+    return {
+      day,
+      readiness,
+      rootScore,
+      leafScore,
+      growthScore,
+      stageScore,
+      stressPenalty,
+      rootRot,
+      frost,
+      heat,
+      drought,
+      stageCandidate,
+      snap,
+    };
+  });
+
+  let best = null;
+  rows.forEach((row) => {
+    const stageBias = row.stageCandidate ? 1 : 0.72;
+    const score = row.readiness * stageBias;
+    if (!best || score > best.score) {
+      best = { row, score };
+    }
+  });
+
+  if (!best) return null;
+
+  const recommended = best.row;
+  const recommendedDay = recommended.day;
+  const hardeningStartDay = Math.max(0, recommendedDay - inputs.hardeningDays + 1);
+
+  const hardeningPlan = [];
+  const tempMid = (tempHigh + tempLow) / 2;
+
+  for (let i = 0; i < inputs.hardeningDays; i += 1) {
+    const dayIndex = Math.min(hardeningStartDay + i, seasonData.length - 1);
+    const dayRow = rows[dayIndex];
+    const snap = dayRow.snap;
+    const acclimation = (i + 1) / inputs.hardeningDays;
+
+    const targetHours = 10.5;
+    const exposureHours = Math.min(
+      12,
+      inputs.startHours + (targetHours - inputs.startHours) * (i / Math.max(1, inputs.hardeningDays - 1)),
+    );
+
+    const outdoorDose = (snap.dli || 0) * (exposureHours / 12);
+    const lightGap = Math.max(0, outdoorDose - inputs.indoorDli);
+    const tempGap = Math.abs(tempMid - inputs.indoorTemp);
+
+    const shock = clamp(
+      (lightGap / 12) * (1 - 0.45 * acclimation)
+      + Math.max(0, tempGap - (3 + 5 * acclimation)) / 14
+      + dayRow.rootRot * 0.20,
+      0,
+      1,
+    );
+
+    const confidence = Math.round(clamp((dayRow.readiness / 100) * (1 - shock), 0, 1) * 100);
+
+    hardeningPlan.push({
+      step: i + 1,
+      dayIndex,
+      exposureHours,
+      shock,
+      confidence,
+      rootRot: dayRow.rootRot,
+      dli: snap.dli || 0,
+    });
+  }
+
+  const avgShock = hardeningPlan.length
+    ? hardeningPlan.reduce((sum, step) => sum + step.shock, 0) / hardeningPlan.length
+    : 0;
+
+  const transplantConfidence = Math.round(clamp((recommended.readiness / 100) * (1 - avgShock), 0, 1) * 100);
+
+  return {
+    inputs,
+    rows,
+    recommendedDay,
+    hardeningStartDay,
+    hardeningPlan,
+    avgShock,
+    transplantConfidence,
+    recommended,
+  };
+}
+
+function drawTransplantReadinessChart(advisor, activeDay) {
+  const canvas = document.getElementById('growth-chart-transplant');
+  if (!canvas || !advisor || !advisor.rows.length) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = { top: 16, right: 14, bottom: 24, left: 36 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+
+  const dayCount = Math.max(1, advisor.rows.length - 1);
+
+  const yFromPct = (pct) => pad.top + ch - (clamp(pct / 100, 0, 1) * ch);
+  const xFromDay = (day) => pad.left + (day / dayCount) * cw;
+
+  ctx.strokeStyle = '#334';
+  ctx.lineWidth = 0.5;
+  [0, 25, 50, 75, 100].forEach((pct) => {
+    const y = yFromPct(pct);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + cw, y);
+    ctx.stroke();
+  });
+
+  ctx.strokeStyle = '#66bb6a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  advisor.rows.forEach((row, i) => {
+    const x = xFromDay(row.day);
+    const y = yFromPct(row.readiness);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  ctx.strokeStyle = '#ef5350';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  advisor.rows.forEach((row, i) => {
+    const x = xFromDay(row.day);
+    const y = yFromPct((row.rootRot || 0) * 100);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  const rx = xFromDay(advisor.recommendedDay);
+  ctx.strokeStyle = '#2e7d32';
+  ctx.lineWidth = 1.4;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(rx, pad.top);
+  ctx.lineTo(rx, pad.top + ch);
+  ctx.stroke();
+
+  if (typeof activeDay === 'number' && activeDay >= 0) {
+    const ax = xFromDay(Math.min(activeDay, advisor.rows.length - 1));
+    ctx.strokeStyle = '#000';
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ax, pad.top);
+    ctx.lineTo(ax, pad.top + ch);
+    ctx.stroke();
+  }
+
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#8899aa';
+  ctx.font = '11px system-ui';
+  ctx.textAlign = 'right';
+  ctx.fillText('0', pad.left - 6, yFromPct(0) + 4);
+  ctx.fillText('50', pad.left - 6, yFromPct(50) + 4);
+  ctx.fillText('100', pad.left - 6, yFromPct(100) + 4);
+
+  const plantDoy = parseInt(document.getElementById('growth-planting-doy')?.value, 10) || 120;
+  const step = Math.max(1, Math.floor(advisor.rows.length / 5));
+  ctx.textAlign = 'center';
+  for (let d = 0; d < advisor.rows.length; d += step) {
+    const x = xFromDay(d);
+    ctx.fillText(doyToDate(plantDoy + d), x, h - 5);
+  }
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#66bb6a';
+  ctx.fillRect(pad.left, 8, 12, 3);
+  ctx.fillStyle = '#aabbcc';
+  ctx.fillText('Readiness', pad.left + 16, 12);
+
+  ctx.fillStyle = '#ef5350';
+  ctx.fillRect(pad.left + 88, 8, 12, 3);
+  ctx.fillStyle = '#aabbcc';
+  ctx.fillText('Root rot risk', pad.left + 104, 12);
+}
+
+function drawHardeningPlanChart(advisor) {
+  const canvas = document.getElementById('growth-chart-hardening');
+  if (!canvas || !advisor || !advisor.hardeningPlan.length) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = { top: 16, right: 14, bottom: 24, left: 36 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+  const count = Math.max(1, advisor.hardeningPlan.length - 1);
+
+  const xFromIdx = (idx) => pad.left + (idx / count) * cw;
+  const yFromPct = (pct) => pad.top + ch - (clamp(pct / 100, 0, 1) * ch);
+
+  ctx.strokeStyle = '#334';
+  ctx.lineWidth = 0.5;
+  [0, 25, 50, 75, 100].forEach((pct) => {
+    const y = yFromPct(pct);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + cw, y);
+    ctx.stroke();
+  });
+
+  ctx.strokeStyle = '#26a69a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  advisor.hardeningPlan.forEach((step, idx) => {
+    const x = xFromIdx(idx);
+    const y = yFromPct((step.exposureHours / 12) * 100);
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  ctx.strokeStyle = '#ff7043';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  advisor.hardeningPlan.forEach((step, idx) => {
+    const x = xFromIdx(idx);
+    const y = yFromPct(step.shock * 100);
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  ctx.strokeStyle = 'rgba(255, 167, 38, 0.9)';
+  ctx.setLineDash([4, 4]);
+  const thresholdY = yFromPct(35);
+  ctx.beginPath();
+  ctx.moveTo(pad.left, thresholdY);
+  ctx.lineTo(pad.left + cw, thresholdY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#8899aa';
+  ctx.font = '11px system-ui';
+  ctx.textAlign = 'right';
+  ctx.fillText('0', pad.left - 6, yFromPct(0) + 4);
+  ctx.fillText('50', pad.left - 6, yFromPct(50) + 4);
+  ctx.fillText('100', pad.left - 6, yFromPct(100) + 4);
+
+  ctx.textAlign = 'center';
+  advisor.hardeningPlan.forEach((step, idx) => {
+    ctx.fillText(`D${step.step}`, xFromIdx(idx), h - 5);
+  });
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#26a69a';
+  ctx.fillRect(pad.left, 8, 12, 3);
+  ctx.fillStyle = '#aabbcc';
+  ctx.fillText('Exposure hours', pad.left + 16, 12);
+
+  ctx.fillStyle = '#ff7043';
+  ctx.fillRect(pad.left + 118, 8, 12, 3);
+  ctx.fillStyle = '#aabbcc';
+  ctx.fillText('Shock risk', pad.left + 134, 12);
+}
+
+function renderTransplantAdvisor(advisor, activeDay) {
+  const wrap = document.getElementById('growth-transplant-advisor');
+  const summary = document.getElementById('growth-advisor-summary');
+  const math = document.getElementById('growth-advisor-math');
+  const steps = document.getElementById('growth-hardening-steps');
+  if (!wrap || !summary || !math || !steps) return;
+
+  wrap.hidden = false;
+
+  const plantDoy = parseInt(document.getElementById('growth-planting-doy')?.value, 10) || 120;
+  const recDate = doyToDate(plantDoy + advisor.recommendedDay);
+  const recSnap = advisor.recommended.snap;
+  const recRootRotPct = Math.round(advisor.recommended.rootRot * 100);
+
+  const currentDay = typeof activeDay === 'number' ? activeDay : getCurrentSliderDay();
+  const clampedCurrent = Math.max(0, Math.min(currentDay, advisor.rows.length - 1));
+  const currentRow = advisor.rows[clampedCurrent];
+
+  let timingMsg = 'You are at the recommended transplant window.';
+  let timingClass = 'growth-advisor-status--good';
+  if (clampedCurrent < advisor.recommendedDay - 2) {
+    timingMsg = `Current day ${clampedCurrent} is early. Keep building roots and run hardening steps first.`;
+    timingClass = 'growth-advisor-status--warn';
+  } else if (clampedCurrent > advisor.recommendedDay + 5) {
+    timingMsg = `Current day ${clampedCurrent} is late. Risk of stress creep rises if root rot pressure keeps climbing.`;
+    timingClass = 'growth-advisor-status--warn';
+  }
+
+  summary.innerHTML = `
+    <div class="growth-advisor-grid">
+      <div class="growth-advisor-card">
+        <div class="growth-advisor-card-label">Recommended Transplant</div>
+        <div class="growth-advisor-card-value">Day ${advisor.recommendedDay} (${escapeHtml(recDate)})</div>
+        <div class="growth-advisor-card-note">Readiness ${advisor.recommended.readiness}% | confidence ${advisor.transplantConfidence}%</div>
+      </div>
+      <div class="growth-advisor-card">
+        <div class="growth-advisor-card-label">Why This Day</div>
+        <div class="growth-advisor-card-value">Root ${recSnap.root_depth_cm.toFixed(1)} cm, Leaves ${recSnap.leaf_count}</div>
+        <div class="growth-advisor-card-note">Root rot threat ${recRootRotPct}% | stage ${escapeHtml((recSnap.stage || '').replace(/_/g, ' '))}</div>
+      </div>
+      <div class="growth-advisor-card">
+        <div class="growth-advisor-card-label">If You Transplant Today</div>
+        <div class="growth-advisor-card-value">Day ${clampedCurrent} readiness ${currentRow.readiness}%</div>
+        <div class="growth-advisor-card-note">Estimated root-rot pressure ${Math.round(currentRow.rootRot * 100)}%</div>
+      </div>
+    </div>
+    <div class="growth-advisor-status ${timingClass}">${escapeHtml(timingMsg)}</div>
+  `;
+
+  math.innerHTML = `
+    <div class="growth-advisor-math-line"><strong>Readiness score</strong> = 100 x (0.34*Root + 0.20*Leaves + 0.19*Growth + 0.13*NightTemp + 0.14*Stage) x (1 - 0.62*StressPenalty)</div>
+    <div class="growth-advisor-math-line"><strong>StressPenalty</strong> = 0.55*RootRot + 0.45*Frost + 0.25*Heat + 0.20*Drought</div>
+    <div class="growth-advisor-math-line"><strong>Hardening shock</strong> = clamp((LightGap/12) x (1 - 0.45*Acclimation) + max(0, TempGap - (3 + 5*Acclimation))/14 + 0.20*RootRot, 0, 1)</div>
+  `;
+
+  steps.innerHTML = advisor.hardeningPlan.map((step) => {
+    const date = doyToDate(plantDoy + step.dayIndex);
+    const shockPct = Math.round(step.shock * 100);
+    const rootRotPct = Math.round(step.rootRot * 100);
+
+    let note = 'Good progression day.';
+    if (shockPct >= 55) note = 'High shock day: hold longer in shade.';
+    else if (rootRotPct >= 45) note = 'Watch overwatering/root oxygen today.';
+
+    return `<li><strong>Day ${step.step} (${escapeHtml(date)})</strong>: ${step.exposureHours.toFixed(1)}h outside, shock ${shockPct}%, confidence ${step.confidence}% — ${escapeHtml(note)}</li>`;
+  }).join('');
+}
+
+function updateTransplantAdvisor(activeDay = null, forceRebuild = false) {
+  const wrap = document.getElementById('growth-transplant-advisor');
+  if (!seasonData || seasonData.length < 2) {
+    transplantAdvisorCache = null;
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+
+  if (forceRebuild || !transplantAdvisorCache) {
+    transplantAdvisorCache = buildTransplantAdvisorData();
+  }
+
+  if (!transplantAdvisorCache) {
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+
+  const day = typeof activeDay === 'number' ? activeDay : getCurrentSliderDay();
+  renderTransplantAdvisor(transplantAdvisorCache, day);
+  drawTransplantReadinessChart(transplantAdvisorCache, day);
+  drawHardeningPlanChart(transplantAdvisorCache);
 }

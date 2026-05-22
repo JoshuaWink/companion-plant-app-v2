@@ -334,10 +334,52 @@
           </div>
         </div>
         <div class="growth-charts">
-          <div class="growth-chart-label">📈 Growth Curves — height, spread, and root depth over the season (cm) <span class="growth-chart-hint">Click and drag either chart to scrub the timeline</span></div>
+          <div class="growth-chart-label">📈 Growth Curves — height, spread, and root depth over the season (cm) <span class="growth-chart-hint">Drag to scrub timeline. Hover or tap for exact values.</span></div>
           <canvas id="growth-chart-height" width="600" height="220"></canvas>
-          <div class="growth-chart-label">⚠️ Stress Timeline — when conditions hurt growth (frost, heat, drought, etc.)</div>
+          <div id="growth-metrics-tooltip" class="growth-stress-tooltip growth-metrics-tooltip" hidden></div>
+          <div class="growth-chart-label">⚠️ Stress Timeline — when conditions hurt growth (frost, heat, drought, etc.) <span class="growth-chart-hint">Hover or tap chart for explanations.</span></div>
           <canvas id="growth-chart-stress" width="600" height="120"></canvas>
+          <div class="growth-stress-help" aria-label="Stress severity legend">
+            <span class="growth-stress-help-item"><span class="growth-stress-dot growth-stress-dot--mild"></span>Mild (&lt;34%)</span>
+            <span class="growth-stress-help-item"><span class="growth-stress-dot growth-stress-dot--moderate"></span>Moderate (34–66%)</span>
+            <span class="growth-stress-help-item"><span class="growth-stress-dot growth-stress-dot--severe"></span>Severe (&ge;67%)</span>
+          </div>
+          <div id="growth-stress-tooltip" class="growth-stress-tooltip" hidden></div>
+        </div>
+        <div id="growth-transplant-advisor" class="growth-advisor" hidden>
+          <div class="growth-advisor-head">
+            <div class="growth-advisor-title">🪴 Transplant + Hardening-Off Coach</div>
+            <p class="growth-advisor-intro">Simulate when to transplant and why. The model blends root depth, stage, stress threats, and hardening math so you can build intuition.</p>
+          </div>
+          <div class="growth-advisor-controls">
+            <label class="growth-advisor-field">
+              <span class="field-label">Indoor DLI Baseline</span>
+              <input id="growth-indoor-dli" type="number" class="field-input" value="8" min="2" max="30" step="0.5">
+              <span class="growth-hint">Typical indoor light before moving outside</span>
+            </label>
+            <label class="growth-advisor-field">
+              <span class="field-label">Indoor Avg Temp (C)</span>
+              <input id="growth-indoor-temp" type="number" class="field-input" value="22" min="-5" max="40" step="0.5">
+              <span class="growth-hint">Average indoor tray/room temperature</span>
+            </label>
+            <label class="growth-advisor-field">
+              <span class="field-label">Hardening Days</span>
+              <input id="growth-hardening-days" type="number" class="field-input" value="7" min="3" max="14" step="1">
+              <span class="growth-hint">How many days you phase in outdoor exposure</span>
+            </label>
+            <label class="growth-advisor-field">
+              <span class="field-label">Start Exposure (hours)</span>
+              <input id="growth-hardening-start-hours" type="number" class="field-input" value="1.5" min="0.5" max="8" step="0.5">
+              <span class="growth-hint">Day 1 outside time before stepping up</span>
+            </label>
+          </div>
+          <div id="growth-advisor-summary" class="growth-advisor-summary"></div>
+          <div id="growth-advisor-math" class="growth-advisor-math"></div>
+          <div class="growth-chart-label">🧮 Transplant Readiness — green line = readiness score, red line = root rot threat</div>
+          <canvas id="growth-chart-transplant" width="600" height="170"></canvas>
+          <div class="growth-chart-label">☀️ Hardening Plan — teal = exposure ramp, orange = shock risk</div>
+          <canvas id="growth-chart-hardening" width="600" height="170"></canvas>
+          <ol id="growth-hardening-steps" class="growth-hardening-steps"></ol>
         </div>
         <details class="growth-data-details">
           <summary>Raw Data (JSON)</summary>
