@@ -144,6 +144,175 @@ All calculations in metric. `displayLength(cm, pref)` → `"24 in"` or `"60 cm"`
 
 ---
 
+### 🌿 M7: Growth Simulation Engine
+
+The feature that transforms the planner from *static layout* → **living, breathing physiological model**. Plants grow, respond to weather, compete for resources, and produce yield over time — all simulated day-by-day in Rust/WASM.
+
+**Philosophy**: A garden planner that doesn't model growth is a coloring book. Real planning requires understanding *what happens after you plant*. How tall does the corn get before the beans need to climb it? When does the tomato start fruiting? What happens if there's a late frost? The growth engine answers these questions with real physiology, not lookup tables.
+
+**Architecture**: Stateless per-day simulation via `simulate_plant(genetics, day, env, gdd)` → `Snapshot`. Season simulation carries soil moisture, structural peaks, and cumulative yield between days. All computed in Rust, compiled to WASM, called from JS.
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| 1 | Core growth model — 6 growth stages, GDD accumulation, sigmoid height/spread/root curves | ✅ Done |
+| 2 | Atmospheric physics — VPD, stomatal conductance, transpiration, DLI, photoperiod | ✅ Done |
+| 3 | Soil physics — moisture tracking, mulch effects, soil temperature, waterlogging | ✅ Done |
+| 4 | Carbon physiology — CO2 assimilation, respiration, carbon partitioning (veg vs fruit) | ✅ Done |
+| 5 | Stress model — wind, nutrient limitation, water stress, lodging resistance | ✅ Done |
+| 6 | Yield model — GrowthHabit (determinate/indeterminate/cut-and-come), HarvestType (fruit/leaf/root/grain/pod/whole), daily yield rate, cumulative yield, harvest flush tracking | ✅ Done |
+| 7 | Environment termination — frost kill (kill_temp_c), heat ceiling, env_terminated flag | ✅ Done |
+| 8 | Node architecture — branching model, productive vs spent nodes, maintenance biomass tax, productive_fraction decline over season | ✅ Done |
+| 9 | Weather integration — real NOAA/Open-Meteo weather data driving day-by-day simulation | ✅ Done |
+| 10 | Growth chart UI — interactive multi-metric chart with weather overlay | ✅ Done |
+
+**Current stats**: 110 tests, ~2900 lines Rust, 10 physiology functions, 6 growth stages, 3 growth habits, 6 harvest types.
+
+**Remaining physiology gaps** (each is a future phase):
+- Canopy energy balance (radiation interception, leaf energy budget)
+- Root water uptake model (depth-dependent extraction)
+- Mycorrhizal network effects (see symbiotic-network.md)
+- Pest/disease pressure model
+- Vernalization requirements (cold hours for perennials)
+- Allelopathy (chemical plant-plant interactions)
+- Rubisco kinetics (C3 vs C4 vs CAM photosynthesis detail)
+
+---
+
+### 🌍 M8: Ecology & Wildlife Simulation
+
+The feature that transforms the tool from *garden planner* → **ecological research instrument**. Model plants in wild/natural environments without human intervention. Predict food availability for wildlife. Assess climate change impact on plant communities.
+
+**The Vision**: A muscadine vine grows wild in Zone 7b. No irrigation, no fertilizer, no pruning. How many kg of fruit does it produce? When does the fruit ripen? How long is it available? Now multiply by the vine density in a forest edge habitat — that's the food budget for the birds, deer, and raccoons that depend on it. Shift the temperature +2°C and re-run. Does the vine still fruit? Does it fruit earlier? Does the heat ceiling kill the flowers? This is the question conservation biologists need answered, and it's the same engine we already built for garden planning.
+
+**Natural/Wild Simulation Mode**:
+- Water = precipitation only (no irrigation supplement)
+- Nutrients = ambient soil baseline (no fertilizer input)
+- No pruning — maintenance biomass accumulates unchecked, productive_fraction declines naturally
+- No pest management — full pest/disease pressure applied
+- The yield curve under these constraints = **what wildlife actually gets to eat**
+
+**Ecological Questions This Enables**:
+
+| Question | How the Engine Answers It |
+|----------|--------------------------|
+| When does wild fruit become available? | Simulate season under local weather → first `is_producing = true` day |
+| How much food does a habitat patch produce? | `cumulative_yield_kg × plant_density × patch_area` |
+| What happens under climate change? | Re-run with +2°C offset → compare yield, timing, frost/heat kill |
+| Which keystone species are most vulnerable? | Simulate multiple species → find those where small temp shifts cause `env_terminated` |
+| Does a late frost destroy the berry crop? | Simulate with actual weather data including frost events → check `env_terminated` flag |
+| How does food web timing shift? | Compare `is_producing` windows across species under different climate scenarios |
+
+**Implementation Phases**:
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| E1 | Natural mode flag — disables irrigation/fertilizer/pruning assumptions | Planned |
+| E2 | Precipitation-only water model — rain from weather data, no supplement | Planned |
+| E3 | Ambient soil nutrient baseline — region-specific defaults, no fertilizer | Planned |
+| E4 | Multi-species habitat simulation — run N species on same weather/soil | Planned |
+| E5 | Food availability timeline — when and how much food is available per species | Planned |
+| E6 | Climate scenario modeling — temperature/precipitation offsets | Planned |
+| E7 | Carrying capacity estimation — food production vs wildlife population needs | Planned |
+| E8 | Perennial/tree growth — multi-year simulation for orchard and forest species | Planned |
+
+**Data Needs**:
+- Wild plant genetics (native species, not just cultivars)
+- Regional soil baselines (ambient NPK by soil type)
+- Wildlife food consumption rates (kg/day per species)
+- Historical weather data for climate comparison
+
+---
+
+### 🚜 M9: Sustainable Agriculture & Input Modeling
+
+The feature that transforms the tool from *garden/ecology simulator* → **agricultural decision-support system**. Model the full input stack — fertilizer, lime, herbicide, cover crops, mycorrhizal inoculants — and compare conventional vs regenerative approaches on real economics.
+
+**The Core Question**: "I'm farming 50 acres of corn. I'm spending money on lime, nitrogen side-dressing, and glyphosate. What if instead I intercropped with squash for ground cover, inoculated with mycorrhizae, and rotated with nitrogen fixers? Would I spend less? Would I yield the same? Would my soil improve over time?"
+
+This isn't theoretical — it's the question every farmer transitioning to sustainable practices needs answered. The growth engine already models plant physiology. Now we model the *inputs* and their *costs*.
+
+**Input Tracking Model**:
+
+| Input Category | What We Track | Unit |
+|----------------|---------------|------|
+| **Lime** | Application rate, soil pH response, frequency | kg/acre, pH delta |
+| **Nitrogen** | Source (urea, ammonium nitrate, manure, legume fixation), timing (pre-plant, side-dress), amount | kg N/acre |
+| **Phosphorus** | Source, timing, amount | kg P/acre |
+| **Potassium** | Source, timing, amount | kg K/acre |
+| **Herbicide** | Product (glyphosate, atrazine, etc.), application count, timing | L/acre, applications/season |
+| **Fungicide** | Product, application count, timing | L/acre, applications/season |
+| **Seed** | Variety, seeding rate, inoculant treatment | kg/acre |
+| **Mycorrhizal inoculant** | Species, application rate, colonization timeline | spores/g, establishment_days |
+| **Cover crop** | Species, seeding rate, termination method | kg/acre |
+| **Water/Irrigation** | Source, volume, energy cost | L/acre/season |
+| **Fuel/Passes** | Number of field operations (tillage, spraying, harvesting) | passes/season |
+
+**Comparison Framework** — The farmer needs to see two columns side by side:
+
+```
+                        CONVENTIONAL          REGENERATIVE
+Lime                    700 lb/acre           300 lb/acre (soil recovering)
+Nitrogen (purchased)    150 lb N/acre         40 lb N/acre
+Nitrogen (from fixers)  0                     80 lb N/acre (clover rotation)
+Herbicide passes        3×/season             0 (cover crop suppression)
+Cover crop seed         0                     15 lb/acre
+Mycorrhizal inoculant   0                     2 lb/acre
+Field passes            8/season              4/season
+Projected yield         180 bu/acre           165 bu/acre (year 1-2)
+                                              185 bu/acre (year 3+)
+Soil organic matter     2.1% (declining)      3.4% (building)
+```
+
+**Key Modeling Challenges**:
+
+1. **Mycorrhizal Establishment Time**: Fungal networks take 2-4 weeks to colonize roots. If you inoculate at planting, the benefit doesn't appear until mid-season. The model needs a colonization curve, not an instant buff. And the fungi need living roots to persist — fallow periods kill them.
+
+2. **Cover Crop Competition vs Benefit**: Squash between corn rows provides ground cover (moisture retention, weed suppression) but also competes for light and nutrients. The model must balance: `ground_cover_benefit - light_competition_cost - nutrient_competition_cost`. The Three Sisters teach us this balance works — corn provides structure, beans fix nitrogen, squash covers ground.
+
+3. **Sabbatical Year (Fallow)**: "Every 7th year, let the field rest." This isn't just spiritual wisdom — it's soil science. Fallow years allow:
+   - Organic matter decomposition and nutrient cycling
+   - Mycorrhizal network recovery
+   - Weed seed bank depletion (no crop = no host for some weeds)
+   - Soil structure recovery from compaction
+   - The model should show: soil_health_index improving during fallow, then sustaining higher yields in subsequent years
+
+4. **Multi-Year Soil Health Trajectory**: Conventional farming depletes soil organic matter. Regenerative practices build it. The difference shows up in years 3-5, not year 1. The model needs multi-year simulation with soil state carrying between seasons: organic_matter_pct, microbial_biomass, aggregate_stability, water_holding_capacity.
+
+5. **Input → Yield Response Curves**: Adding nitrogen doesn't linearly increase yield. There's a diminishing returns curve (Mitscherlich response). At some point, more N costs money but doesn't grow more corn. The model needs to capture these plateaus.
+
+**Implementation Phases**:
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| A1 | Input tracking data model — what was applied, when, how much | Planned |
+| A2 | Fertilizer response curves — N/P/K application → yield impact (Mitscherlich) | Planned |
+| A3 | Lime/pH model — application rate → soil pH response over time | Planned |
+| A4 | Herbicide model — weed pressure without chemical control, cover crop alternative | Planned |
+| A5 | Cover crop simulation — ground cover effect on moisture, weed suppression, N fixation | Planned |
+| A6 | Mycorrhizal colonization model — establishment curve, root colonization %, nutrient transfer | Planned |
+| A7 | Multi-year soil health — organic matter, microbial biomass, aggregate stability tracking | Planned |
+| A8 | Sabbatical/fallow year model — soil recovery during rest periods | Planned |
+| A9 | Input cost calculator — quantities × unit prices = total input cost per acre | Planned |
+| A10 | Side-by-side comparison UI — conventional vs regenerative scenarios | Planned |
+| A11 | Break-even analysis — at what year does regenerative become more profitable? | Planned |
+| A12 | Multi-field farm planning — different rotations for different fields | Planned |
+
+**The Three Sisters as Proof of Concept**: Corn + beans + squash is the canonical example. The engine should be able to simulate:
+- Corn alone + full conventional inputs → yield X, cost Y
+- Three Sisters polyculture + minimal inputs → yield X', cost Y'
+- And show that X' ≈ X (total food value) while Y' << Y (total cost)
+
+This validates the model against 10,000 years of indigenous agricultural knowledge.
+
+**Data Needs**:
+- Fertilizer response curves by crop (university extension data)
+- Regional soil type baselines (USDA Web Soil Survey integration)
+- Input cost databases (USDA ERS, extension budgets)
+- Cover crop performance data (SARE cover crop database)
+- Mycorrhizal colonization rates by species (research literature)
+
+---
+
 ## Future Ideas
 
 ### 🐝 Bumblebee Cursor
