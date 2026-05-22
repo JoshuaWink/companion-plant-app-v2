@@ -75,6 +75,46 @@ impl Default for PhotoPath {
     fn default() -> Self { Self::C3 }
 }
 
+// -- Growth habit (determinate vs indeterminate lifecycle) --
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GrowthHabit {
+    /// One growth → one harvest → senescence (bush tomato, corn, carrot, lettuce)
+    Determinate,
+    /// Continuous flowering + fruiting until killed by environment (vine tomato, pepper, cucumber)
+    Indeterminate,
+    /// Repeated non-destructive harvests stimulate regrowth (basil, kale, chard)
+    CutAndCome,
+}
+
+impl Default for GrowthHabit {
+    fn default() -> Self { Self::Determinate }
+}
+
+// -- Harvest type (what part of the plant IS the yield) --
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HarvestType {
+    /// Fruit (tomato, pepper, squash, cucumber)
+    Fruit,
+    /// Whole plant or head (lettuce, cabbage) — single destructive harvest
+    WholePlant,
+    /// Leaf harvest, plant continues (basil, kale, chard)
+    Leaf,
+    /// Root (carrot, beet, radish) — single destructive harvest
+    Root,
+    /// Grain or seed (corn, wheat, dry beans) — single harvest at maturity
+    Grain,
+    /// Pod (snap beans, peas) — multiple picks as pods form
+    Pod,
+}
+
+impl Default for HarvestType {
+    fn default() -> Self { Self::Fruit }
+}
+
 // -- Sun requirement --
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -161,6 +201,20 @@ pub struct PlantGenetics {
     /// Fraction of assimilate directed to fruit when fruiting (0-1). Default 0.5
     #[serde(default = "default_fruit_sink")]
     pub fruit_sink_strength: f32,
+
+    // -- Lifecycle traits --
+    /// Determinate (fixed lifecycle) vs Indeterminate (continuous until env kills)
+    #[serde(default)]
+    pub growth_habit_type: GrowthHabit,
+    /// What part of the plant is harvested
+    #[serde(default)]
+    pub harvest_type: HarvestType,
+    /// Minimum temperature (°C) at which the plant dies (frost kill). Default -2.0
+    #[serde(default = "default_kill_temp")]
+    pub kill_temp_c: f32,
+    /// Maximum temperature (°C) above which the plant stops fruiting. Default 40.0
+    #[serde(default = "default_heat_ceiling")]
+    pub heat_ceiling_c: f32,
 }
 
 fn default_gs_max() -> f32 { 0.4 }
@@ -170,6 +224,8 @@ fn default_lai_max() -> f32 { 3.5 }
 fn default_wilt_mm() -> f32 { 15.0 }
 fn default_lodging_resist() -> f32 { 0.7 }
 fn default_fruit_sink() -> f32 { 0.5 }
+fn default_kill_temp() -> f32 { -2.0 }
+fn default_heat_ceiling() -> f32 { 40.0 }
 
 // -- Environment state (per-day inputs) --
 
@@ -282,6 +338,22 @@ pub struct Snapshot {
     pub light_interception: f32,
     /// CO2 assimilation multiplier (relative to 420 ppm baseline)
     pub co2_factor: f32,
+
+    // -- Yield & Harvest --
+    /// What part of the plant is harvested
+    pub harvest_type: HarvestType,
+    /// Daily yield rate (kg/m2/day) — how much harvestable product TODAY
+    pub daily_yield_rate: f32,
+    /// Cumulative yield (kg) — total harvested so far (filled by simulate_season)
+    pub cumulative_yield_kg: f32,
+    /// Harvest flush count — how many distinct harvest periods so far (filled by simulate_season)
+    pub harvest_flush_count: u16,
+    /// Is the plant actively producing harvestable product right now?
+    pub is_producing: bool,
+    /// Yield trend: ratio of current daily yield to peak daily yield (0-1, declining = plant tiring)
+    pub yield_trend: f32,
+    /// True if the plant was killed by environment (frost/heat), not calendar
+    pub env_terminated: bool,
 }
 
 // ==============================================================================
@@ -766,26 +838,69 @@ fn sigmoid_params(germ: (u16, u16), mat: (u16, u16)) -> (f32, f32) {
 
 // -- Growth stage classification --
 
-fn classify_stage(day: u16, germ: (u16, u16), mat: (u16, u16)) -> GrowthStage {
+/// Classify growth stage considering lifecycle type and environment.
+/// Indeterminate plants stay in Fruiting until environment kills them.
+/// Determinate plants follow fixed day-count progression.
+/// All plants enter Senescence if temp drops below kill threshold.
+fn classify_stage(
+    day: u16,
+    germ: (u16, u16),
+    mat: (u16, u16),
+    habit: GrowthHabit,
+    temp_low_c: f32,
+    kill_temp_c: f32,
+) -> GrowthStage {
     let germ_start = germ.0;
     let germ_end = germ.1;
     let mat_start = mat.0;
     let mat_end = mat.1;
 
+    // Early stages are universal regardless of habit
     if day < germ_start {
-        GrowthStage::Seed
-    } else if day <= germ_end {
-        GrowthStage::Germinating
-    } else if day <= germ_end + 14 {
-        GrowthStage::Seedling
-    } else if day <= (mat_start * 7 / 10) {
-        GrowthStage::Vegetative
-    } else if day <= mat_start {
-        GrowthStage::Flowering
-    } else if day <= mat_end + 14 {
-        GrowthStage::Fruiting
-    } else {
-        GrowthStage::Senescence
+        return GrowthStage::Seed;
+    }
+    if day <= germ_end {
+        return GrowthStage::Germinating;
+    }
+
+    // Frost/freeze kill — any established plant dies if temp < kill threshold.
+    // Only applies after germination (seeds in ground survive winter).
+    if temp_low_c < kill_temp_c {
+        return GrowthStage::Senescence;
+    }
+
+    if day <= germ_end + 14 {
+        return GrowthStage::Seedling;
+    }
+    if day <= (mat_start * 7 / 10) {
+        return GrowthStage::Vegetative;
+    }
+    if day <= mat_start {
+        return GrowthStage::Flowering;
+    }
+
+    // Post-maturity: lifecycle type determines what happens
+    match habit {
+        GrowthHabit::Indeterminate => {
+            // Indeterminate plants stay in Fruiting indefinitely.
+            // They flower + fruit simultaneously, producing until killed by
+            // environment (frost, extreme heat, disease). No calendar-based
+            // senescence. The frost check above handles termination.
+            GrowthStage::Fruiting
+        }
+        GrowthHabit::CutAndCome => {
+            // Cut-and-come plants stay vegetative/harvestable indefinitely.
+            // Each cutting stimulates new growth. They produce until frost.
+            GrowthStage::Vegetative
+        }
+        GrowthHabit::Determinate => {
+            // Determinate plants follow fixed schedule
+            if day <= mat_end + 14 {
+                GrowthStage::Fruiting
+            } else {
+                GrowthStage::Senescence
+            }
+        }
     }
 }
 
@@ -1098,7 +1213,10 @@ pub fn simulate_plant(
     let gdd_accumulated = gdd_so_far + gdd_today;
 
     // -- Growth stage & progress --
-    let stage = classify_stage(day, genetics.days_to_germination, genetics.days_to_maturity);
+    let stage = classify_stage(
+        day, genetics.days_to_germination, genetics.days_to_maturity,
+        genetics.growth_habit_type, env.temp_low_c, genetics.kill_temp_c,
+    );
     let mat_avg = (genetics.days_to_maturity.0 + genetics.days_to_maturity.1) as f32 / 2.0;
     let growth_progress = (day as f32 / mat_avg).min(1.0);
 
@@ -1220,8 +1338,69 @@ pub fn simulate_plant(
     let leaf_count = estimate_leaf_count(spread_cm, genetics.max_spread_cm, &genetics.growth_habit);
     let leaf_span_cm = spread_cm * 0.8;
 
-    // -- Yield (driven by fruit sink strength) --
-    let yield_factor = match stage {
+    // -- Yield (driven by fruit sink strength + harvest type) --
+    // Daily yield rate = how much harvestable product this plant generates TODAY.
+    // For fruit crops: driven by fruit sink, photosynthesis, nutrients.
+    // For leaf/cut-and-come: driven by vegetative growth rate.
+    // For root/grain: accumulates until single harvest event.
+    let daily_yield_rate = match genetics.harvest_type {
+        HarvestType::Fruit | HarvestType::Pod => {
+            match stage {
+                GrowthStage::Fruiting => {
+                    let photo_eff = net_photo * nutrient_factor * co2_factor;
+                    let photo_clamped = if photoperiod_met { photo_eff } else { photo_eff * 0.3 };
+                    // Heat ceiling: fruiting efficiency drops as temp approaches ceiling
+                    let heat_penalty = if env.temp_high_c > genetics.heat_ceiling_c - 5.0 {
+                        let excess = (env.temp_high_c - (genetics.heat_ceiling_c - 5.0)) / 5.0;
+                        (1.0 - excess).clamp(0.0, 1.0)
+                    } else {
+                        1.0
+                    };
+                    genetics.yield_kg_m2 / 90.0 * photo_clamped * fruit_fraction * heat_penalty
+                }
+                GrowthStage::Flowering => {
+                    let photo_eff = net_photo * nutrient_factor * co2_factor;
+                    genetics.yield_kg_m2 / 90.0 * photo_eff * fruit_fraction * 0.3
+                }
+                _ => 0.0,
+            }
+        }
+        HarvestType::Leaf => {
+            // Cut-and-come: yield from vegetative growth, available once established
+            match stage {
+                GrowthStage::Vegetative | GrowthStage::Flowering | GrowthStage::Fruiting => {
+                    let photo_eff = net_photo * nutrient_factor * co2_factor;
+                    genetics.yield_kg_m2 / 120.0 * photo_eff * veg_fraction
+                }
+                _ => 0.0,
+            }
+        }
+        HarvestType::WholePlant | HarvestType::Root | HarvestType::Grain => {
+            // Single-harvest crops: yield accumulates until harvest day
+            // daily_yield_rate represents growth towards final harvest weight
+            match stage {
+                GrowthStage::Vegetative | GrowthStage::Flowering | GrowthStage::Fruiting => {
+                    let photo_eff = net_photo * nutrient_factor * co2_factor;
+                    genetics.yield_kg_m2 / (mat_avg.max(30.0)) * photo_eff
+                }
+                _ => 0.0,
+            }
+        }
+    };
+
+    // is_producing: can you harvest RIGHT NOW?
+    let is_producing = daily_yield_rate > 0.001 && match genetics.harvest_type {
+        HarvestType::Fruit | HarvestType::Pod => stage == GrowthStage::Fruiting,
+        HarvestType::Leaf => matches!(stage, GrowthStage::Vegetative | GrowthStage::Flowering | GrowthStage::Fruiting),
+        HarvestType::WholePlant | HarvestType::Root => matches!(stage, GrowthStage::Fruiting | GrowthStage::Senescence),
+        HarvestType::Grain => stage == GrowthStage::Senescence,
+    };
+
+    // env_terminated: did environment kill the plant?
+    let env_terminated = stage == GrowthStage::Senescence && env.temp_low_c < genetics.kill_temp_c;
+
+    // Legacy compatibility
+    let yield_projected_kg = genetics.yield_kg_m2 * match stage {
         GrowthStage::Fruiting | GrowthStage::Senescence => {
             let photo_effective = net_photo * nutrient_factor * co2_factor;
             photo_effective * fruit_fraction * (if photoperiod_met { 1.0 } else { 0.3 })
@@ -1232,7 +1411,6 @@ pub fn simulate_plant(
         }
         _ => 0.0,
     };
-    let yield_projected_kg = genetics.yield_kg_m2 * yield_factor;
 
     // -- Resource consumption --
     let water_consumed = transpiration.min(env.water_ml + env.precip_mm * 100.0);
@@ -1276,6 +1454,13 @@ pub fn simulate_plant(
         fruit_allocation: fruit_fraction,
         light_interception: light_intercept,
         co2_factor,
+        harvest_type: genetics.harvest_type,
+        daily_yield_rate,
+        cumulative_yield_kg: 0.0,   // filled by simulate_season
+        harvest_flush_count: 0,      // filled by simulate_season
+        is_producing,
+        yield_trend: 0.0,           // filled by simulate_season
+        env_terminated,
     }
 }
 
@@ -1430,6 +1615,42 @@ pub fn genetics_from_json(plant: &serde_json::Value) -> Option<PlantGenetics> {
         _ => 0.4,
     };
 
+    // Derive lifecycle traits — prefer explicit JSON, fall back to family-based defaults
+    let lt = props.get("lifecycle_traits");
+    let growth_habit_type = lt.and_then(|l| l.get("growth_habit_type"))
+        .and_then(|v| v.as_str())
+        .map(|s| match s {
+            "indeterminate" => GrowthHabit::Indeterminate,
+            "cut_and_come" => GrowthHabit::CutAndCome,
+            _ => GrowthHabit::Determinate,
+        })
+        .unwrap_or_else(|| growth_habit_type_from_props(&growth_habit, &family));
+    let harvest_type = lt.and_then(|l| l.get("harvest_type"))
+        .and_then(|v| v.as_str())
+        .map(|s| match s {
+            "fruit" => HarvestType::Fruit,
+            "leaf" => HarvestType::Leaf,
+            "root" => HarvestType::Root,
+            "grain" => HarvestType::Grain,
+            "pod" => HarvestType::Pod,
+            "whole_plant" => HarvestType::WholePlant,
+            _ => HarvestType::WholePlant,
+        })
+        .unwrap_or_else(|| harvest_type_from_family(&family));
+    let kill_temp_c = lt.and_then(|l| l.get("kill_temp_c"))
+        .and_then(|v| v.as_f64())
+        .map(|v| v as f32)
+        .unwrap_or_else(|| frost_tol.min(0.0));
+    let heat_ceiling_c = lt.and_then(|l| l.get("heat_ceiling_c"))
+        .and_then(|v| v.as_f64())
+        .map(|v| v as f32)
+        .unwrap_or_else(|| match family.as_str() {
+            "solanaceae" => 35.0,
+            "cucurbitaceae" => 38.0,
+            "poaceae" => 40.0,
+            _ => 38.0,
+        });
+
     Some(PlantGenetics {
         id,
         name,
@@ -1459,7 +1680,52 @@ pub fn genetics_from_json(plant: &serde_json::Value) -> Option<PlantGenetics> {
         potassium_g_m2,
         lodging_resistance,
         fruit_sink_strength,
+        growth_habit_type,
+        harvest_type,
+        kill_temp_c,
+        heat_ceiling_c,
     })
+}
+
+/// Derive growth habit type from growth_habit string and family.
+fn growth_habit_type_from_props(habit: &str, family: &str) -> GrowthHabit {
+    match habit {
+        "climbing" | "tall" => {
+            // Tall/climbing solanaceae and cucurbitaceae are typically indeterminate
+            match family {
+                "solanaceae" | "cucurbitaceae" => GrowthHabit::Indeterminate,
+                "fabaceae" => GrowthHabit::Indeterminate, // pole beans
+                _ => GrowthHabit::Determinate,
+            }
+        }
+        "low" | "ground-cover" => {
+            // Herbs like basil, mint are cut-and-come
+            match family {
+                "lamiaceae" => GrowthHabit::CutAndCome,      // basil, mint
+                "amaranthaceae" => GrowthHabit::CutAndCome,  // chard, spinach for baby leaf
+                "brassicaceae" => GrowthHabit::CutAndCome,   // kale
+                _ => GrowthHabit::Determinate,
+            }
+        }
+        _ => GrowthHabit::Determinate,
+    }
+}
+
+/// Derive harvest type from plant family.
+fn harvest_type_from_family(family: &str) -> HarvestType {
+    match family {
+        "solanaceae" => HarvestType::Fruit,      // tomatoes, peppers
+        "cucurbitaceae" => HarvestType::Fruit,    // squash, cucumber
+        "poaceae" => HarvestType::Grain,          // corn
+        "fabaceae" => HarvestType::Pod,           // beans, peas
+        "apiaceae" => HarvestType::Root,          // carrots
+        "amaryllidaceae" => HarvestType::Root,    // garlic, onion
+        "chenopodiaceae" | "amaranthaceae" => HarvestType::Leaf, // beets→root, but chard/spinach→leaf
+        "lamiaceae" => HarvestType::Leaf,         // basil, mint
+        "brassicaceae" => HarvestType::WholePlant, // cabbage, broccoli
+        "asteraceae" => HarvestType::Leaf,        // lettuce
+        _ => HarvestType::WholePlant,
+    }
 }
 
 // ==============================================================================
@@ -1500,6 +1766,10 @@ mod tests {
             potassium_g_m2: -4.0,
             lodging_resistance: 0.5,
             fruit_sink_strength: 0.65,
+            growth_habit_type: GrowthHabit::Indeterminate,
+            harvest_type: HarvestType::Fruit,
+            kill_temp_c: 0.0,       // tomatoes die at first frost
+            heat_ceiling_c: 35.0,   // fruit set drops above 35°C
         }
     }
 
@@ -1533,6 +1803,10 @@ mod tests {
             potassium_g_m2: -3.0,
             lodging_resistance: 0.5,
             fruit_sink_strength: 0.6,
+            growth_habit_type: GrowthHabit::Determinate,
+            harvest_type: HarvestType::Grain,
+            kill_temp_c: -1.0,
+            heat_ceiling_c: 40.0,
         }
     }
 
@@ -2239,6 +2513,154 @@ mod tests {
 
         // Peak height should reach at least 50cm for tomato in 100 days
         assert!(peak_h > 50.0, "Peak height {} should exceed 50cm", peak_h);
+    }
+
+    // ── Indeterminate lifecycle tests ──
+
+    #[test]
+    fn test_indeterminate_tomato_keeps_fruiting() {
+        // An indeterminate tomato should stay in Fruiting stage beyond
+        // the normal maturity window, as long as temps stay above kill_temp.
+        let g = tomato_genetics();
+        assert_eq!(g.growth_habit_type, GrowthHabit::Indeterminate);
+        let env = summer_env(); // warm — no frost
+
+        // Day 120 is well past maturity (60-90 days) but still warm
+        let snap = simulate_plant(&g, 120, &env, 2000.0);
+        assert_eq!(snap.stage, GrowthStage::Fruiting,
+            "Indeterminate tomato at day 120 should still be fruiting, got {:?}", snap.stage);
+
+        // Day 150 — still going
+        let snap = simulate_plant(&g, 150, &env, 3000.0);
+        assert_eq!(snap.stage, GrowthStage::Fruiting,
+            "Indeterminate tomato at day 150 should still be fruiting");
+    }
+
+    #[test]
+    fn test_frost_kills_indeterminate() {
+        // Even indeterminate plants die when temp drops below kill_temp
+        let g = tomato_genetics();
+        let mut env = summer_env();
+        env.temp_low_c = -2.0; // below kill_temp (0.0 for tomatoes)
+
+        let snap = simulate_plant(&g, 80, &env, 1500.0);
+        assert_eq!(snap.stage, GrowthStage::Senescence,
+            "Tomato should enter senescence when frost hits");
+        assert!(snap.env_terminated, "Should be marked as env_terminated");
+    }
+
+    #[test]
+    fn test_determinate_corn_enters_senescence() {
+        // Determinate corn should enter senescence after maturity window
+        let g = corn_genetics();
+        assert_eq!(g.growth_habit_type, GrowthHabit::Determinate);
+        let env = summer_env();
+
+        // Day 120 = well past maturity (60-100 + 14 buffer = 114)
+        let snap = simulate_plant(&g, 120, &env, 2500.0);
+        assert_eq!(snap.stage, GrowthStage::Senescence,
+            "Determinate corn at day 120 should be senescent, got {:?}", snap.stage);
+    }
+
+    // ── Harvest type + yield tests ──
+
+    #[test]
+    fn test_tomato_harvest_type_is_fruit() {
+        let g = tomato_genetics();
+        assert_eq!(g.harvest_type, HarvestType::Fruit);
+    }
+
+    #[test]
+    fn test_corn_harvest_type_is_grain() {
+        let g = corn_genetics();
+        assert_eq!(g.harvest_type, HarvestType::Grain);
+    }
+
+    #[test]
+    fn test_daily_yield_rate_nonzero_when_fruiting() {
+        let g = tomato_genetics();
+        let env = summer_env();
+        // Day 70 should be in fruiting for tomato (maturity 60-90)
+        let snap = simulate_plant(&g, 70, &env, 1200.0);
+        assert_eq!(snap.stage, GrowthStage::Fruiting);
+        assert!(snap.daily_yield_rate > 0.0,
+            "Fruiting tomato should have positive daily yield, got {}", snap.daily_yield_rate);
+        assert!(snap.is_producing, "Fruiting tomato should be producing");
+    }
+
+    #[test]
+    fn test_daily_yield_zero_before_fruiting() {
+        let g = tomato_genetics();
+        let env = summer_env();
+        // Day 15 should be seedling — no yield yet
+        let snap = simulate_plant(&g, 15, &env, 200.0);
+        assert!(snap.daily_yield_rate < 0.001,
+            "Seedling should have zero daily yield, got {}", snap.daily_yield_rate);
+        assert!(!snap.is_producing, "Seedling should not be producing");
+    }
+
+    #[test]
+    fn test_heat_ceiling_reduces_yield() {
+        let g = tomato_genetics();
+        let mut hot_env = summer_env();
+        hot_env.temp_high_c = 38.0; // above tomato heat ceiling (35°C)
+
+        let mut normal_env = summer_env();
+        normal_env.temp_high_c = 28.0;
+
+        let snap_hot = simulate_plant(&g, 70, &hot_env, 1200.0);
+        let snap_normal = simulate_plant(&g, 70, &normal_env, 1200.0);
+
+        assert!(snap_hot.daily_yield_rate < snap_normal.daily_yield_rate,
+            "Hot day yield ({:.4}) should be less than normal ({:.4})",
+            snap_hot.daily_yield_rate, snap_normal.daily_yield_rate);
+    }
+
+    #[test]
+    fn test_indeterminate_yields_longer_than_determinate() {
+        // Run two 150-day simulations: indeterminate tomato vs determinate corn
+        // Indeterminate should still be producing at day 130+
+        let g_tomato = tomato_genetics();
+        let g_corn = corn_genetics();
+        let env = summer_env();
+
+        let snap_tomato = simulate_plant(&g_tomato, 130, &env, 2500.0);
+        let snap_corn = simulate_plant(&g_corn, 130, &env, 2500.0);
+
+        assert!(snap_tomato.is_producing,
+            "Indeterminate tomato should still be producing at day 130");
+        assert!(!snap_corn.is_producing,
+            "Determinate corn should NOT be producing at day 130 (senescent)");
+    }
+
+    #[test]
+    fn test_genetics_from_json_lifecycle_fields() {
+        // Verify that genetics_from_json derives correct lifecycle traits
+        let val = serde_json::json!({
+            "id": "tomatoes", "name": "Tomatoes",
+            "family": "solanaceae",
+            "properties": {
+                "growth_habit": "tall", "water_need": "medium", "sun_need": "full",
+                "metric": {
+                    "mature_height_cm": 150, "spread_cm": 60,
+                    "root_depth_cm": 60, "water_ml_per_day": 800,
+                    "nitrogen_g_per_m2": -12, "yield_kg_per_m2": 5.0, "spacing_cm": 60
+                }
+            },
+            "timing": {
+                "days_to_germination": [5, 10],
+                "days_to_maturity": [60, 90],
+                "frost_tolerance": "none"
+            }
+        });
+
+        let g = genetics_from_json(&val).expect("Should parse");
+        assert_eq!(g.growth_habit_type, GrowthHabit::Indeterminate,
+            "Tall solanaceae should be Indeterminate");
+        assert_eq!(g.harvest_type, HarvestType::Fruit,
+            "Solanaceae should be Fruit harvest");
+        assert!(g.heat_ceiling_c < 40.0,
+            "Solanaceae heat ceiling should be 35°C, got {}", g.heat_ceiling_c);
     }
 
 }

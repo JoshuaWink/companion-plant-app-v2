@@ -141,6 +141,11 @@ pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Resul
     let mut peak_height = 0.0_f32;
     let mut peak_spread = 0.0_f32;
     let mut peak_root = 0.0_f32;
+    // Track cumulative yield, harvest flushes, and yield trend
+    let mut cumulative_yield = 0.0_f32;
+    let mut peak_daily_yield = 0.0_f32;
+    let mut flush_count = 0_u16;
+    let mut was_producing = false;
 
     for day in 0..num_days {
         let mut env = base_env.clone();
@@ -156,14 +161,31 @@ pub fn simulate_season(plant_json: &str, num_days: u16, env_json: &str) -> Resul
         soil_moisture = snap.soil_moisture_mm;
 
         // Enforce monotonic structural dimensions — plants can't un-grow.
-        // Daily weather variation affects metabolic rate (growth_rate field)
-        // but not achieved structure.
         peak_height = peak_height.max(snap.height_cm);
         peak_spread = peak_spread.max(snap.spread_cm);
         peak_root = peak_root.max(snap.root_depth_cm);
         snap.height_cm = peak_height;
         snap.spread_cm = peak_spread;
         snap.root_depth_cm = peak_root;
+
+        // Accumulate yield over the season
+        cumulative_yield += snap.daily_yield_rate;
+        snap.cumulative_yield_kg = cumulative_yield;
+
+        // Track harvest flushes (a new producing period after a gap)
+        if snap.is_producing && !was_producing {
+            flush_count += 1;
+        }
+        was_producing = snap.is_producing;
+        snap.harvest_flush_count = flush_count;
+
+        // Yield trend: ratio of today's yield to peak yield so far
+        peak_daily_yield = peak_daily_yield.max(snap.daily_yield_rate);
+        snap.yield_trend = if peak_daily_yield > 0.001 {
+            snap.daily_yield_rate / peak_daily_yield
+        } else {
+            0.0
+        };
 
         snapshots.push(snap);
     }

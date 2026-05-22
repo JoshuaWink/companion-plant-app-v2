@@ -638,6 +638,8 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
   let soilMoisture = 0; // 0 = let engine auto-init from field capacity
   // Track peak structural dimensions — plants don't shrink
   let peakHeight = 0, peakSpread = 0, peakRoot = 0;
+  // Track cumulative yield, flushes, trend
+  let cumulativeYield = 0, peakDailyYield = 0, flushCount = 0, wasProducing = false;
 
   for (let day = 0; day < numDays; day++) {
     const w = weather[day];
@@ -672,6 +674,21 @@ function runWithWeather(plant, numDays, baseEnv, weather) {
     snap.height_cm = peakHeight;
     snap.spread_cm = peakSpread;
     snap.root_depth_cm = peakRoot;
+
+    // Accumulate yield over the season
+    cumulativeYield += (snap.daily_yield_rate || 0);
+    snap.cumulative_yield_kg = cumulativeYield;
+
+    // Track harvest flushes
+    const producing = snap.is_producing || false;
+    if (producing && !wasProducing) flushCount++;
+    wasProducing = producing;
+    snap.harvest_flush_count = flushCount;
+
+    // Yield trend
+    peakDailyYield = Math.max(peakDailyYield, snap.daily_yield_rate || 0);
+    snap.yield_trend = peakDailyYield > 0.001
+      ? (snap.daily_yield_rate || 0) / peakDailyYield : 0;
 
     snapshots.push(snap);
   }

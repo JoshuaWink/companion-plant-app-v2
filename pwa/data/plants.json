@@ -27,6 +27,12 @@
         "nitrogen_g_per_m2": -3,
         "yield_kg_per_m2": 1.5,
         "root_spread_cm": 20
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "lamiaceae",
@@ -71,6 +77,12 @@
         "nitrogen_g_per_m2": -8,
         "yield_kg_per_m2": 3.0,
         "root_spread_cm": 45
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "solanaceae",
@@ -115,6 +127,12 @@
         "nitrogen_g_per_m2": -12,
         "yield_kg_per_m2": 1.8,
         "root_spread_cm": 50
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "whole_plant",
+        "kill_temp_c": -5.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "brassicaceae",
@@ -203,6 +221,12 @@
         "nitrogen_g_per_m2": -10,
         "yield_kg_per_m2": 3.5,
         "root_spread_cm": 45
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "whole_plant",
+        "kill_temp_c": -8.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "brassicaceae",
@@ -249,6 +273,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 4.0,
         "root_spread_cm": 19
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "root",
+        "kill_temp_c": -5.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "apiaceae",
@@ -386,6 +416,12 @@
         "nitrogen_g_per_m2": -1,
         "yield_kg_per_m2": 1.0,
         "root_spread_cm": 16
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -10.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "amaryllidaceae",
@@ -433,6 +469,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 1.0,
         "root_spread_cm": 12
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -2.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "apiaceae",
@@ -477,6 +519,12 @@
         "nitrogen_g_per_m2": -15,
         "yield_kg_per_m2": 2.5,
         "root_spread_cm": 60
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "grain",
+        "kill_temp_c": -1.0,
+        "heat_ceiling_c": 40.0
       }
     },
     "family": "poaceae",
@@ -521,6 +569,12 @@
         "nitrogen_g_per_m2": -8,
         "yield_kg_per_m2": 5.0,
         "root_spread_cm": 100
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "cucurbitaceae",
@@ -569,6 +623,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 0.8,
         "root_spread_cm": 22
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -3.0,
+        "heat_ceiling_c": 30.0
       }
     },
     "family": "apiaceae",
@@ -705,6 +765,12 @@
         "nitrogen_g_per_m2": -5,
         "yield_kg_per_m2": 3.0,
         "root_spread_cm": 20
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "whole_plant",
+        "kill_temp_c": -3.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "asteraceae",
@@ -796,6 +862,12 @@
         "nitrogen_g_per_m2": -1,
         "yield_kg_per_m2": 0.5,
         "root_spread_cm": 32
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -15.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "lamiaceae",
@@ -842,6 +914,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 1.2,
         "root_spread_cm": 16
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -8.0,
+        "heat_ceiling_c": 32.0
       }
     },
     "family": "apiaceae",
@@ -886,6 +964,12 @@
         "nitrogen_g_per_m2": 12,
         "yield_kg_per_m2": 2.0,
         "root_spread_cm": 40
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "pod",
+        "kill_temp_c": -3.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "fabaceae",
@@ -1022,6 +1106,12 @@
         "nitrogen_g_per_m2": -1,
         "yield_kg_per_m2": 0.3,
         "root_spread_cm": 70
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -8.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "lamiaceae",
@@ -1070,6 +1160,12 @@
         "nitrogen_g_per_m2": -1,
         "yield_kg_per_m2": 0.3,
         "root_spread_cm": 40
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -12.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "lamiaceae",
@@ -1160,6 +1256,12 @@
         "nitrogen_g_per_m2": -5,
         "yield_kg_per_m2": 2.5,
         "root_spread_cm": 20
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -8.0,
+        "heat_ceiling_c": 25.0
       }
     },
     "family": "amaranthaceae",
@@ -1296,6 +1398,12 @@
         "nitrogen_g_per_m2": -1,
         "yield_kg_per_m2": 0.3,
         "root_spread_cm": 34
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -15.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "lamiaceae",
@@ -1340,6 +1448,12 @@
         "nitrogen_g_per_m2": -12,
         "yield_kg_per_m2": 5.0,
         "root_spread_cm": 80
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "solanaceae",
@@ -1528,6 +1642,12 @@
         "nitrogen_g_per_m2": 15,
         "yield_kg_per_m2": 2.5,
         "root_spread_cm": 35
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "pod",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "fabaceae",
@@ -1572,6 +1692,12 @@
         "nitrogen_g_per_m2": -4,
         "yield_kg_per_m2": 3.5,
         "root_spread_cm": 18
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "root",
+        "kill_temp_c": -5.0,
+        "heat_ceiling_c": 32.0
       }
     },
     "family": "amaranthaceae",
@@ -2074,6 +2200,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 2.0,
         "root_spread_cm": 13
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "root",
+        "kill_temp_c": -15.0,
+        "heat_ceiling_c": 32.0
       }
     },
     "family": "amaryllidaceae",
@@ -2164,7 +2296,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 38.0
+      }
     }
   },
   {
@@ -2182,7 +2320,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -10.0,
+        "heat_ceiling_c": 30.0
+      }
     }
   },
   {
@@ -2372,6 +2516,12 @@
         "nitrogen_g_per_m2": 0,
         "yield_kg_per_m2": 0.0,
         "root_spread_cm": 14
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "asteraceae",
@@ -2470,6 +2620,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 0.5,
         "root_spread_cm": 90
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -15.0,
+        "heat_ceiling_c": 35.0
       }
     },
     "family": "lamiaceae",
@@ -2542,7 +2698,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "indeterminate",
+        "harvest_type": "leaf",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 35.0
+      }
     }
   },
   {
@@ -2578,7 +2740,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "root",
+        "kill_temp_c": -8.0,
+        "heat_ceiling_c": 35.0
+      }
     }
   },
   {
@@ -2784,6 +2952,12 @@
         "nitrogen_g_per_m2": -2,
         "yield_kg_per_m2": 3.0,
         "root_spread_cm": 16
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "root",
+        "kill_temp_c": -3.0,
+        "heat_ceiling_c": 28.0
       }
     },
     "family": "brassicaceae",
@@ -3044,6 +3218,12 @@
         "nitrogen_g_per_m2": -8,
         "yield_kg_per_m2": 5.0,
         "root_spread_cm": 150
+      },
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "fruit",
+        "kill_temp_c": 0.0,
+        "heat_ceiling_c": 38.0
       }
     },
     "family": "cucurbitaceae",
@@ -3134,7 +3314,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "determinate",
+        "harvest_type": "grain",
+        "kill_temp_c": -2.0,
+        "heat_ceiling_c": 40.0
+      }
     }
   },
   {
@@ -3206,7 +3392,13 @@
       "nutrient_gives": null,
       "pest_deters": [],
       "pest_attracts": [],
-      "allelopathic_emits": []
+      "allelopathic_emits": [],
+      "lifecycle_traits": {
+        "growth_habit_type": "cut_and_come",
+        "harvest_type": "leaf",
+        "kill_temp_c": -5.0,
+        "heat_ceiling_c": 32.0
+      }
     }
   },
   {
