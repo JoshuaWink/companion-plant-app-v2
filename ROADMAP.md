@@ -313,6 +313,127 @@ This validates the model against 10,000 years of indigenous agricultural knowled
 
 ---
 
+### 🌾 M10: Planting Plans & Simulation Configs
+
+The feature that separates **what to simulate** from **how to simulate it**. A planting plan is a saved configuration — which plants, when they go in, what treatments are applied, what management strategy is used. The engine loads the plan and runs the physics. Plans are portable, shareable, and versionable.
+
+**Core Principle**: The engine is generic. It knows physics and biology. It does NOT know strategy. Strategy lives in config files authored by humans or LLMs. New techniques, new treatments, new timing strategies = new config entries, never new code.
+
+**Planting Plan Schema** (YAML — human-authored config):
+
+```yaml
+plan_name: "Three Sisters - Block A"
+sowing_date: 2026-04-15
+zone: "6b"
+field_acres: 50
+management_mode: regenerative  # conventional | regenerative | natural
+
+plantings:
+  - plant_id: corn
+    role: primary              # primary | companion | cover
+    position: row
+    planting_day_offset: 0     # days after sowing_date
+    seed_treatments: []
+    
+  - plant_id: peas
+    role: companion
+    position: intercrop
+    planting_day_offset: 0     # sown same day as corn
+    seed_treatments:
+      - treatment_id: germination-delay-light
+    notes: "Delayed ~7 days so corn scaffolds first"
+    
+  - plant_id: squash
+    role: cover
+    position: intercrop
+    planting_day_offset: 0
+    seed_treatments:
+      - treatment_id: germination-delay-heavy
+    notes: "Delayed ~14 days, emerges after corn establishes"
+```
+
+**Seed Treatment Catalog** (YAML — extensible config, not code):
+
+```yaml
+# treatments/seed-treatments.yaml
+treatments:
+  - id: germination-delay-light
+    name: "Light germination delay (~7 days)"
+    description: "Any technique that delays germination by ~7 days"
+    modifiers:
+      germination_delay_days: 7
+      germination_variability_days: 2
+
+  - id: germination-delay-heavy
+    name: "Heavy germination delay (~14 days)"
+    modifiers:
+      germination_delay_days: 14
+      germination_variability_days: 3
+
+  - id: germination-accelerate
+    name: "Seed scarification / priming"
+    modifiers:
+      germination_delay_days: -3
+
+  - id: mycorrhizal-inoculant
+    name: "Endo mycorrhizal spore inoculant"
+    modifiers:
+      germination_delay_days: 0
+      colonization_start_day: 14
+      colonization_full_day: 35
+      nutrient_uptake_boost: 0.15
+
+  - id: rhizobium-inoculant
+    name: "Rhizobium nitrogen-fixing inoculant"
+    modifiers:
+      nitrogen_fixation_boost: 0.25
+      colonization_start_day: 7
+```
+
+**Design Rules**:
+- Treatments are **generic modifiers**, not named techniques. "germination-delay-heavy" not "clay-powder-coating" — the engine doesn't care HOW, only the effect
+- New techniques = new YAML entries, zero code changes
+- Plans reference treatments by ID from the catalog
+- Plans are saved/loaded as files — import/export for sharing between users
+- YAML for configs and schemas (human-readable, comments allowed)
+- JSON for data interchange (API responses, WASM calls, localStorage)
+- The engine computes: `effective_germination = base_days + planting_day_offset + Σ treatment.germination_delay_days`
+
+**Staggered Simulation**:
+- Each planting in a plan has its own timeline offset
+- `simulate_season` runs all plantings against the same weather data
+- On calendar day N, corn is at day N, peas are at day N-7 (effective), squash at day N-14 (effective)
+- Competition model (future): co-located plants interact — shading, moisture sharing, nutrient competition
+
+**Implementation Phases**:
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| P1 | Planting plan YAML schema + loader | Planned |
+| P2 | Seed treatment catalog + modifier application to genetics | Planned |
+| P3 | Multi-plant staggered simulation (same weather, offset timelines) | Planned |
+| P4 | Plan save/load in PWA (localStorage + JSON export/import) | Planned |
+| P5 | Plan comparison — run two plans against same conditions, compare yields | Planned |
+| P6 | LLM plan advisor — describe goals, get a suggested plan to review | Planned |
+| P7 | Competition model — co-located plants affect each other's light/water/nutrients | Planned |
+
+**Config Directory Structure**:
+```
+configs/
+  treatments/
+    seed-treatments.yaml      # germination modifiers
+    inoculants.yaml           # biological amendments
+    soil-amendments.yaml      # lime, gypsum, comite
+  plans/
+    three-sisters-50ac.yaml   # saved farm plans
+    home-garden-4x8.yaml
+  soil-baselines/
+    clay-loam-6b.yaml         # regional soil defaults
+    sandy-7a.yaml
+```
+
+---
+
 ## Future Ideas
 
 ### 🐝 Bumblebee Cursor
