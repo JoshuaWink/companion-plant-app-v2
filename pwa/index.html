@@ -320,8 +320,73 @@
             </select>
           </div>
         </div>
-        <button id="growth-run-btn" class="btn btn--primary">▶ Run Simulation</button>
+
+        <!-- Weather data toggle -->
+        <div class="growth-control-row growth-weather-row">
+          <div class="growth-field growth-weather-field">
+            <label class="field-label growth-weather-label">
+              <input type="checkbox" id="growth-weather-toggle" class="growth-weather-check">
+              Use Real Weather
+              <span class="growth-hint">Actual daily temps from Open-Meteo</span>
+            </label>
+          </div>
+          <div class="growth-field growth-weather-field" id="growth-weather-year-field" hidden>
+            <label for="growth-weather-year" class="field-label">Weather Year</label>
+            <select id="growth-weather-year" class="field-input"></select>
+          </div>
+          <span id="growth-weather-badge" class="growth-weather-badge" hidden></span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="growth-action-row">
+          <button id="growth-run-btn" class="btn btn--primary">▶ Run Simulation</button>
+          <button id="growth-optimize-btn" class="btn btn--accent" title="Find the best planting date, water, and nitrogen for maximum yield">🔬 Optimize</button>
+        </div>
       </div>
+
+      <!-- Optimizer results panel -->
+      <div id="growth-optimizer-panel" class="optimizer-panel" hidden>
+        <div class="optimizer-header">
+          <h3 class="optimizer-title">🔬 Growth Optimizer</h3>
+          <button id="optimizer-close-btn" class="btn btn--ghost optimizer-close" aria-label="Close optimizer">✕</button>
+        </div>
+        <div id="optimizer-progress" class="optimizer-progress" hidden>
+          <div class="optimizer-progress-bar"><div class="optimizer-progress-fill" id="optimizer-progress-fill"></div></div>
+          <span class="optimizer-progress-label" id="optimizer-progress-label">Sweeping…</span>
+        </div>
+        <div id="optimizer-results" hidden>
+          <div class="optimizer-comparison">
+            <div class="optimizer-card optimizer-current">
+              <h4>Your Settings</h4>
+              <div class="optimizer-score" id="opt-current-score">—</div>
+              <div class="optimizer-details" id="opt-current-details"></div>
+            </div>
+            <div class="optimizer-arrow">→</div>
+            <div class="optimizer-card optimizer-best">
+              <h4>Optimal</h4>
+              <div class="optimizer-score" id="opt-best-score">—</div>
+              <div class="optimizer-details" id="opt-best-details"></div>
+            </div>
+          </div>
+          <div class="optimizer-recommendations" id="opt-recommendations"></div>
+          <div class="optimizer-charts">
+            <h4>Sensitivity Analysis</h4>
+            <p class="growth-hint">How each variable affects your score — isolate, control, optimize.</p>
+            <div class="optimizer-chart-row">
+              <canvas id="opt-chart-date" width="280" height="160"></canvas>
+              <canvas id="opt-chart-water" width="280" height="160"></canvas>
+              <canvas id="opt-chart-nitrogen" width="280" height="160"></canvas>
+            </div>
+          </div>
+          <div class="optimizer-landscape">
+            <h4>Planting Date Landscape</h4>
+            <p class="growth-hint">Best achievable score at each planting date — find your peak window.</p>
+            <canvas id="opt-chart-landscape" width="860" height="180"></canvas>
+          </div>
+          <button id="opt-apply-btn" class="btn btn--primary">✓ Apply Optimal Settings</button>
+        </div>
+      </div>
+
       <div id="growth-empty" class="empty-state center-text">Select a plant and click <strong>Run</strong> to simulate its full growing season day by day</div>
       <div id="growth-results" hidden>
         <div class="growth-snapshot-card" id="growth-snapshot"></div>

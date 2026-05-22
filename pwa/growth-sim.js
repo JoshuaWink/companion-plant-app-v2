@@ -5,7 +5,9 @@
  * renders height/spread/root curves on canvas, shows snapshot cards,
  * and lets the user scrub through days with a slider.
  */
-import { simulate_season } from './pkg/companion_graph.js';
+import { simulate_season, simulate_growth } from './pkg/companion_graph.js';
+import { fetchDailyWeather, doyToDate as doyToIsoDate, defaultWeatherYear } from './weather.js';
+import { optimizeGrowth, compareWithCurrent, sensitivityAnalysis, doyLabel } from './optimizer.js';
 
 // ── Soil presets (mirrors planner.js) ──
 const SOIL_TYPES = {
@@ -136,51 +138,53 @@ const ZONE_LAT = {
   '11a': 25, '11b': 24, '12a': 22, '12b': 20, '13a': 18, '13b': 16,
 };
 
-// ── US cities with lat + typical temps + zone ──
+// ── US cities with lat, lon + typical temps + zone ──
 const CITIES = [
-  { name: 'Anchorage, AK',      lat: 61.2, zone: '4b', tempH: 18, tempL: 8 },
-  { name: 'Minneapolis, MN',    lat: 44.9, zone: '4b', tempH: 27, tempL: 16 },
-  { name: 'Denver, CO',         lat: 39.7, zone: '5b', tempH: 30, tempL: 14 },
-  { name: 'Chicago, IL',        lat: 41.9, zone: '5b', tempH: 28, tempL: 17 },
-  { name: 'Boston, MA',         lat: 42.4, zone: '6a', tempH: 27, tempL: 17 },
-  { name: 'Seattle, WA',        lat: 47.6, zone: '8b', tempH: 24, tempL: 13 },
-  { name: 'Portland, OR',       lat: 45.5, zone: '8b', tempH: 26, tempL: 13 },
-  { name: 'Kansas City, MO',    lat: 39.1, zone: '6a', tempH: 31, tempL: 19 },
-  { name: 'Nashville, TN',      lat: 36.2, zone: '7a', tempH: 31, tempL: 19 },
-  { name: 'Charlotte, NC',      lat: 35.2, zone: '7b', tempH: 32, tempL: 20 },
-  { name: 'Atlanta, GA',        lat: 33.7, zone: '7b', tempH: 32, tempL: 21 },
-  { name: 'Dallas, TX',         lat: 32.8, zone: '8a', tempH: 35, tempL: 23 },
-  { name: 'Austin, TX',         lat: 30.3, zone: '8b', tempH: 35, tempL: 22 },
-  { name: 'Phoenix, AZ',        lat: 33.4, zone: '9b', tempH: 41, tempL: 25 },
-  { name: 'Los Angeles, CA',    lat: 34.1, zone: '10a', tempH: 28, tempL: 16 },
-  { name: 'San Francisco, CA',  lat: 37.8, zone: '10a', tempH: 21, tempL: 12 },
-  { name: 'San Diego, CA',      lat: 32.7, zone: '10b', tempH: 25, tempL: 16 },
-  { name: 'Miami, FL',          lat: 25.8, zone: '10b', tempH: 33, tempL: 24 },
-  { name: 'Honolulu, HI',       lat: 21.3, zone: '12a', tempH: 31, tempL: 23 },
-  { name: 'New York, NY',       lat: 40.7, zone: '7a', tempH: 28, tempL: 18 },
-  { name: 'Philadelphia, PA',   lat: 40.0, zone: '7a', tempH: 29, tempL: 18 },
-  { name: 'Washington, DC',     lat: 38.9, zone: '7a', tempH: 30, tempL: 19 },
-  { name: 'Detroit, MI',        lat: 42.3, zone: '6a', tempH: 27, tempL: 16 },
-  { name: 'St. Louis, MO',      lat: 38.6, zone: '6b', tempH: 31, tempL: 19 },
-  { name: 'Salt Lake City, UT', lat: 40.8, zone: '6b', tempH: 32, tempL: 15 },
-  { name: 'Boise, ID',          lat: 43.6, zone: '6b', tempH: 32, tempL: 13 },
-  { name: 'Albuquerque, NM',    lat: 35.1, zone: '7a', tempH: 33, tempL: 15 },
-  { name: 'Raleigh, NC',        lat: 35.8, zone: '7b', tempH: 31, tempL: 19 },
-  { name: 'Pittsburgh, PA',     lat: 40.4, zone: '6b', tempH: 27, tempL: 16 },
-  { name: 'Columbus, OH',       lat: 40.0, zone: '6a', tempH: 28, tempL: 16 },
-  { name: 'Indianapolis, IN',   lat: 39.8, zone: '5b', tempH: 28, tempL: 17 },
-  { name: 'Milwaukee, WI',      lat: 43.0, zone: '5b', tempH: 26, tempL: 15 },
-  { name: 'Omaha, NE',          lat: 41.3, zone: '5b', tempH: 29, tempL: 16 },
-  { name: 'Tucson, AZ',         lat: 32.2, zone: '9a', tempH: 38, tempL: 21 },
-  { name: 'Tampa, FL',          lat: 28.0, zone: '9b', tempH: 33, tempL: 22 },
-  { name: 'Sacramento, CA',     lat: 38.6, zone: '9b', tempH: 34, tempL: 14 },
-  { name: 'Des Moines, IA',     lat: 41.6, zone: '5a', tempH: 28, tempL: 16 },
-  { name: 'Dubuque, IA',        lat: 42.5, zone: '5a', tempH: 27, tempL: 14 },
+  { name: 'Anchorage, AK',      lat: 61.2, lon: -149.9, zone: '4b', tempH: 18, tempL: 8 },
+  { name: 'Minneapolis, MN',    lat: 44.9, lon: -93.3,  zone: '4b', tempH: 27, tempL: 16 },
+  { name: 'Denver, CO',         lat: 39.7, lon: -105.0, zone: '5b', tempH: 30, tempL: 14 },
+  { name: 'Chicago, IL',        lat: 41.9, lon: -87.6,  zone: '5b', tempH: 28, tempL: 17 },
+  { name: 'Boston, MA',         lat: 42.4, lon: -71.1,  zone: '6a', tempH: 27, tempL: 17 },
+  { name: 'Seattle, WA',        lat: 47.6, lon: -122.3, zone: '8b', tempH: 24, tempL: 13 },
+  { name: 'Portland, OR',       lat: 45.5, lon: -122.7, zone: '8b', tempH: 26, tempL: 13 },
+  { name: 'Kansas City, MO',    lat: 39.1, lon: -94.6,  zone: '6a', tempH: 31, tempL: 19 },
+  { name: 'Nashville, TN',      lat: 36.2, lon: -86.8,  zone: '7a', tempH: 31, tempL: 19 },
+  { name: 'Charlotte, NC',      lat: 35.2, lon: -80.8,  zone: '7b', tempH: 32, tempL: 20 },
+  { name: 'Atlanta, GA',        lat: 33.7, lon: -84.4,  zone: '7b', tempH: 32, tempL: 21 },
+  { name: 'Dallas, TX',         lat: 32.8, lon: -96.8,  zone: '8a', tempH: 35, tempL: 23 },
+  { name: 'Austin, TX',         lat: 30.3, lon: -97.7,  zone: '8b', tempH: 35, tempL: 22 },
+  { name: 'Phoenix, AZ',        lat: 33.4, lon: -112.1, zone: '9b', tempH: 41, tempL: 25 },
+  { name: 'Los Angeles, CA',    lat: 34.1, lon: -118.2, zone: '10a', tempH: 28, tempL: 16 },
+  { name: 'San Francisco, CA',  lat: 37.8, lon: -122.4, zone: '10a', tempH: 21, tempL: 12 },
+  { name: 'San Diego, CA',      lat: 32.7, lon: -117.2, zone: '10b', tempH: 25, tempL: 16 },
+  { name: 'Miami, FL',          lat: 25.8, lon: -80.2,  zone: '10b', tempH: 33, tempL: 24 },
+  { name: 'Honolulu, HI',       lat: 21.3, lon: -157.9, zone: '12a', tempH: 31, tempL: 23 },
+  { name: 'New York, NY',       lat: 40.7, lon: -74.0,  zone: '7a', tempH: 28, tempL: 18 },
+  { name: 'Philadelphia, PA',   lat: 40.0, lon: -75.2,  zone: '7a', tempH: 29, tempL: 18 },
+  { name: 'Washington, DC',     lat: 38.9, lon: -77.0,  zone: '7a', tempH: 30, tempL: 19 },
+  { name: 'Detroit, MI',        lat: 42.3, lon: -83.0,  zone: '6a', tempH: 27, tempL: 16 },
+  { name: 'St. Louis, MO',      lat: 38.6, lon: -90.2,  zone: '6b', tempH: 31, tempL: 19 },
+  { name: 'Salt Lake City, UT', lat: 40.8, lon: -111.9, zone: '6b', tempH: 32, tempL: 15 },
+  { name: 'Boise, ID',          lat: 43.6, lon: -116.2, zone: '6b', tempH: 32, tempL: 13 },
+  { name: 'Albuquerque, NM',    lat: 35.1, lon: -106.6, zone: '7a', tempH: 33, tempL: 15 },
+  { name: 'Raleigh, NC',        lat: 35.8, lon: -78.6,  zone: '7b', tempH: 31, tempL: 19 },
+  { name: 'Pittsburgh, PA',     lat: 40.4, lon: -80.0,  zone: '6b', tempH: 27, tempL: 16 },
+  { name: 'Columbus, OH',       lat: 40.0, lon: -83.0,  zone: '6a', tempH: 28, tempL: 16 },
+  { name: 'Indianapolis, IN',   lat: 39.8, lon: -86.2,  zone: '5b', tempH: 28, tempL: 17 },
+  { name: 'Milwaukee, WI',      lat: 43.0, lon: -87.9,  zone: '5b', tempH: 26, tempL: 15 },
+  { name: 'Omaha, NE',          lat: 41.3, lon: -96.0,  zone: '5b', tempH: 29, tempL: 16 },
+  { name: 'Tucson, AZ',         lat: 32.2, lon: -110.9, zone: '9a', tempH: 38, tempL: 21 },
+  { name: 'Tampa, FL',          lat: 28.0, lon: -82.5,  zone: '9b', tempH: 33, tempL: 22 },
+  { name: 'Sacramento, CA',     lat: 38.6, lon: -121.5, zone: '9b', tempH: 34, tempL: 14 },
+  { name: 'Des Moines, IA',     lat: 41.6, lon: -93.6,  zone: '5a', tempH: 28, tempL: 16 },
+  { name: 'Dubuque, IA',        lat: 42.5, lon: -90.7,  zone: '5a', tempH: 27, tempL: 14 },
 ];
 
 let plants = [];
 let seasonData = null;
 let transplantAdvisorCache = null;
+let weatherData = null; // per-day weather from Open-Meteo
+let currentLocation = { lat: 42, lon: -71.1, label: '' };
 
 function getChartDayFromClientX(canvas, clientX) {
   if (!seasonData || seasonData.length < 2 || !canvas._chartParams) return null;
@@ -271,12 +275,12 @@ function bindChartScrubber(canvasId) {
   canvas.addEventListener('lostpointercapture', () => { dragging = false; });
 }
 
-function setLatitude(lat, label) {
+function setLocation(lat, lon, label) {
   document.getElementById('growth-latitude').value = lat.toFixed(1);
   const el = document.getElementById('growth-loc-label');
   if (el) el.textContent = label || '';
-  // Save preference
-  try { localStorage.setItem('growth-location', JSON.stringify({ lat, label })); } catch(e) {}
+  currentLocation = { lat, lon, label };
+  try { localStorage.setItem('growth-location', JSON.stringify({ lat, lon, label })); } catch(e) {}
 }
 
 function initLocationPicker() {
@@ -327,7 +331,7 @@ function initLocationPicker() {
   function onZoneChange() {
     const z = zoneSelect.value;
     const lat = ZONE_LAT[z] || 42;
-    setLatitude(lat, `Zone ${z} (~${lat}°N)`);
+    setLocation(lat, 0, `Zone ${z} (~${lat}°N)`);
   }
 
   // City change
@@ -336,7 +340,7 @@ function initLocationPicker() {
     const idx = parseInt(citySelect.value);
     const city = citySelect._cities[idx];
     if (!city) return;
-    setLatitude(city.lat, `${city.name}`);
+    setLocation(city.lat, city.lon, `${city.name}`);
     // Also set temp defaults from city data
     document.getElementById('growth-temp-high').value = city.tempH;
     document.getElementById('growth-temp-low').value = city.tempL;
@@ -345,14 +349,14 @@ function initLocationPicker() {
   // Manual lat change
   latInput.addEventListener('change', () => {
     const lat = parseFloat(latInput.value) || 42;
-    setLatitude(lat, `${lat.toFixed(1)}°`);
+    setLocation(lat, currentLocation.lon, `${lat.toFixed(1)}°`);
   });
 
   // Restore saved preference
   try {
     const saved = JSON.parse(localStorage.getItem('growth-location'));
     if (saved) {
-      setLatitude(saved.lat, saved.label || '');
+      setLocation(saved.lat, saved.lon || 0, saved.label || '');
     }
   } catch(e) {}
 
@@ -370,7 +374,8 @@ function requestGeolocation() {
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const lat = pos.coords.latitude;
-      setLatitude(lat, `📍 ${lat.toFixed(2)}°N`);
+      const lon = pos.coords.longitude;
+      setLocation(lat, lon, `📍 ${lat.toFixed(2)}°N`);
     },
     (err) => {
       if (label) label.textContent = 'Location denied — using default';
@@ -469,6 +474,12 @@ export function initGrowthSim(plantList) {
     input.addEventListener('input', handler);
     input.addEventListener('change', handler);
   });
+
+  // Weather controls
+  initWeatherControls();
+
+  // Optimizer
+  initOptimizerControls();
 }
 
 export function setGrowthPlant(plantId, runAfterSelect = false) {
@@ -486,7 +497,7 @@ export function setGrowthPlant(plantId, runAfterSelect = false) {
 }
 
 // ── Run simulation ──
-function runSimulation() {
+async function runSimulation() {
   const plantId = document.getElementById('growth-plant-select').value;
   const plant = plants.find(p => p.id === plantId);
   if (!plant) return;
@@ -503,7 +514,47 @@ function runSimulation() {
   const matMax = plant.timing.days_to_maturity[1] || 90;
   const numDays = Math.min(matMax + 30, 365);
 
-  const env = {
+  const useWeather = document.getElementById('growth-weather-toggle')?.checked || false;
+  const weatherYear = parseInt(document.getElementById('growth-weather-year')?.value) || defaultWeatherYear();
+  const weatherBadge = document.getElementById('growth-weather-badge');
+
+  // Fetch real weather if enabled
+  weatherData = null;
+  if (useWeather && currentLocation.lon !== 0) {
+    try {
+      const btn = document.getElementById('growth-run-btn');
+      btn.textContent = '☁️ Fetching weather…';
+      btn.disabled = true;
+
+      const startDate = doyToIsoDate(plantDoy, weatherYear);
+      const endDate = doyToIsoDate(Math.min(plantDoy + numDays - 1, 365), weatherYear);
+      const result = await fetchDailyWeather(
+        currentLocation.lat, currentLocation.lon, startDate, endDate
+      );
+      weatherData = result.days;
+
+      btn.textContent = '▶ Run Simulation';
+      btn.disabled = false;
+    } catch (err) {
+      console.warn('Weather fetch failed, falling back to manual:', err);
+      const btn = document.getElementById('growth-run-btn');
+      btn.textContent = '▶ Run Simulation';
+      btn.disabled = false;
+      weatherData = null;
+    }
+  }
+
+  if (weatherBadge) {
+    if (weatherData && weatherData.length > 0) {
+      weatherBadge.textContent = `☁️ Open-Meteo · ${weatherYear}`;
+      weatherBadge.hidden = false;
+    } else {
+      weatherBadge.textContent = '';
+      weatherBadge.hidden = true;
+    }
+  }
+
+  const baseEnv = {
     day_of_year: plantDoy,
     latitude,
     altitude_m: 200,
@@ -517,12 +568,18 @@ function runSimulation() {
   };
 
   try {
-    const resultJson = simulate_season(
-      JSON.stringify(plant),
-      numDays,
-      JSON.stringify(env)
-    );
-    seasonData = JSON.parse(resultJson);
+    if (weatherData && weatherData.length > 0) {
+      // Per-day simulation with real weather
+      seasonData = runWithWeather(plant, numDays, baseEnv, weatherData);
+    } else {
+      // Original: fixed-temp season simulation
+      const resultJson = simulate_season(
+        JSON.stringify(plant),
+        numDays,
+        JSON.stringify(baseEnv)
+      );
+      seasonData = JSON.parse(resultJson);
+    }
   } catch (err) {
     console.error('Growth simulation error:', err);
     document.getElementById('growth-empty').textContent =
@@ -548,6 +605,34 @@ function runSimulation() {
 
   transplantAdvisorCache = null;
   updateTransplantAdvisor(getCurrentSliderDay(), true);
+}
+
+/** Run simulation day-by-day with per-day weather data from Open-Meteo. */
+function runWithWeather(plant, numDays, baseEnv, weather) {
+  const plantJson = JSON.stringify(plant);
+  const snapshots = [];
+  let gdd = 0;
+
+  for (let day = 0; day < numDays; day++) {
+    const w = weather[day];
+    const dayEnv = {
+      ...baseEnv,
+      day_of_year: ((baseEnv.day_of_year + day - 1) % 365) + 1,
+    };
+
+    // Override temps from real weather when available
+    if (w) {
+      if (w.temp_high_c != null) dayEnv.temp_high_c = w.temp_high_c;
+      if (w.temp_low_c != null) dayEnv.temp_low_c = w.temp_low_c;
+    }
+
+    const snapJson = simulate_growth(plantJson, day, JSON.stringify(dayEnv), gdd);
+    const snap = JSON.parse(snapJson);
+    gdd = snap.gdd_accumulated;
+    snapshots.push(snap);
+  }
+
+  return snapshots;
 }
 
 // ── Day slider handler ──
@@ -1441,4 +1526,450 @@ function updateTransplantAdvisor(activeDay = null, forceRebuild = false) {
   renderTransplantAdvisor(transplantAdvisorCache, day);
   drawTransplantReadinessChart(transplantAdvisorCache, day);
   drawHardeningPlanChart(transplantAdvisorCache);
+}
+
+// ── Weather controls ──
+
+function initWeatherControls() {
+  const toggle = document.getElementById('growth-weather-toggle');
+  const yearField = document.getElementById('growth-weather-year-field');
+  const yearSelect = document.getElementById('growth-weather-year');
+  if (!toggle || !yearSelect) return;
+
+  // Populate year picker: 2020 → last full year
+  const thisYear = new Date().getFullYear();
+  for (let y = thisYear - 1; y >= 2020; y--) {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearSelect.appendChild(opt);
+  }
+  yearSelect.value = defaultWeatherYear();
+
+  // Toggle behavior: show year picker, dim manual temp fields
+  toggle.addEventListener('change', () => {
+    const on = toggle.checked;
+    if (yearField) yearField.hidden = !on;
+
+    const tempH = document.getElementById('growth-temp-high');
+    const tempL = document.getElementById('growth-temp-low');
+    if (tempH) tempH.closest('.growth-field').style.opacity = on ? '0.4' : '1';
+    if (tempL) tempL.closest('.growth-field').style.opacity = on ? '0.4' : '1';
+  });
+}
+
+/** Draw real weather temperature overlay on the growth height chart. */
+function drawTempOverlay(ctx, pad, cw, ch, numDays) {
+  if (!weatherData || weatherData.length === 0) return;
+
+  // Find temp range
+  let tMin = Infinity, tMax = -Infinity;
+  for (const w of weatherData) {
+    if (w.temp_high_c != null && w.temp_high_c > tMax) tMax = w.temp_high_c;
+    if (w.temp_low_c != null && w.temp_low_c < tMin) tMin = w.temp_low_c;
+  }
+  if (tMin === Infinity) return;
+
+  // Add margin
+  tMin = Math.floor(tMin - 2);
+  tMax = Math.ceil(tMax + 2);
+  const tRange = tMax - tMin || 1;
+
+  const plotW = cw - pad.left - pad.right;
+  const plotH = ch - pad.top - pad.bottom;
+
+  function x(day) { return pad.left + (day / (numDays - 1)) * plotW; }
+  function y(temp) { return pad.top + plotH - ((temp - tMin) / tRange) * plotH; }
+
+  // Draw high temps (dashed red)
+  ctx.save();
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = '#e07050';
+  ctx.beginPath();
+  for (let i = 0; i < Math.min(weatherData.length, numDays); i++) {
+    const w = weatherData[i];
+    if (w.temp_high_c == null) continue;
+    if (i === 0) ctx.moveTo(x(i), y(w.temp_high_c));
+    else ctx.lineTo(x(i), y(w.temp_high_c));
+  }
+  ctx.stroke();
+
+  // Draw low temps (dashed blue)
+  ctx.strokeStyle = '#5080c0';
+  ctx.beginPath();
+  for (let i = 0; i < Math.min(weatherData.length, numDays); i++) {
+    const w = weatherData[i];
+    if (w.temp_low_c == null) continue;
+    if (i === 0) ctx.moveTo(x(i), y(w.temp_low_c));
+    else ctx.lineTo(x(i), y(w.temp_low_c));
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Right axis labels
+  ctx.fillStyle = '#8a7060';
+  ctx.font = '10px system-ui';
+  ctx.textAlign = 'left';
+  const steps = 5;
+  for (let i = 0; i <= steps; i++) {
+    const t = tMin + (tRange * i / steps);
+    ctx.fillText(Math.round(t) + '°', cw - pad.right + 4, y(t) + 3);
+  }
+  ctx.restore();
+}
+
+// ── Optimizer controls ──
+
+function initOptimizerControls() {
+  const btn = document.getElementById('growth-optimize-btn');
+  const closeBtn = document.getElementById('optimizer-close-btn');
+  const applyBtn = document.getElementById('opt-apply-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', runOptimizer);
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      document.getElementById('growth-optimizer-panel').hidden = true;
+    });
+  }
+
+  if (applyBtn) {
+    applyBtn.addEventListener('click', applyOptimalSettings);
+  }
+}
+
+let lastOptimizerResult = null;
+
+async function runOptimizer() {
+  const plantId = document.getElementById('growth-plant-select').value;
+  const plant = plants.find(p => p.id === plantId);
+  if (!plant) return;
+
+  const latitude = parseFloat(document.getElementById('growth-latitude').value) || 42;
+  const tempHigh = parseFloat(document.getElementById('growth-temp-high').value) || 28;
+  const tempLow = parseFloat(document.getElementById('growth-temp-low').value) || 16;
+  const soilKey = document.getElementById('growth-soil-select').value;
+  const soil = SOIL_TYPES[soilKey] || SOIL_TYPES.loam;
+  const currentDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
+  const currentWater = parseFloat(document.getElementById('growth-water').value) || 600;
+  const currentN = 10; // default N
+
+  const panel = document.getElementById('growth-optimizer-panel');
+  const progress = document.getElementById('optimizer-progress');
+  const progressFill = document.getElementById('optimizer-progress-fill');
+  const progressLabel = document.getElementById('optimizer-progress-label');
+  const resultsDiv = document.getElementById('optimizer-results');
+
+  // Show panel, progress
+  panel.hidden = false;
+  progress.hidden = false;
+  resultsDiv.hidden = true;
+
+  const btn = document.getElementById('growth-optimize-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Optimizing…';
+
+  // Use requestAnimationFrame to keep UI responsive
+  await new Promise(resolve => requestAnimationFrame(resolve));
+
+  // Run the sweep
+  const result = optimizeGrowth(plant, latitude, soil, tempHigh, tempLow, (pct) => {
+    progressFill.style.width = (pct * 100) + '%';
+    progressLabel.textContent = `Sweeping… ${Math.round(pct * 100)}%`;
+  });
+
+  // Get current settings score
+  const current = compareWithCurrent(plant, latitude, soil, currentDoy, currentWater, currentN, tempHigh, tempLow);
+
+  // Get sensitivity at optimal point
+  const sensitivity = sensitivityAnalysis(
+    plant, latitude, soil,
+    result.best.doy, result.best.waterMl, result.best.nAvail,
+    tempHigh, tempLow
+  );
+
+  lastOptimizerResult = { ...result, current, sensitivity, soilKey };
+
+  // Render results
+  progress.hidden = true;
+  resultsDiv.hidden = false;
+  btn.disabled = false;
+  btn.textContent = '🔬 Optimize';
+
+  renderOptimizerResults(result, current, sensitivity, plant, soilKey);
+}
+
+function renderOptimizerResults(result, current, sensitivity, plant, soilKey) {
+  const best = result.best;
+
+  // Current vs Optimal scores
+  const curScoreEl = document.getElementById('opt-current-score');
+  const bestScoreEl = document.getElementById('opt-best-score');
+
+  curScoreEl.textContent = (current.score * 100).toFixed(1) + '%';
+  bestScoreEl.textContent = (best.score * 100).toFixed(1) + '%';
+
+  // Color the scores
+  curScoreEl.style.color = scoreColor(current.score);
+  bestScoreEl.style.color = scoreColor(best.score);
+
+  // Breakdown details
+  document.getElementById('opt-current-details').innerHTML = breakdownHtml(current);
+  document.getElementById('opt-best-details').innerHTML = breakdownHtml(best);
+
+  // Recommendations
+  const recs = document.getElementById('opt-recommendations');
+  const improvement = ((best.score - current.score) / current.score * 100);
+  const impStr = improvement > 0 ? `+${improvement.toFixed(0)}%` : `${improvement.toFixed(0)}%`;
+
+  let html = `<div class="opt-rec-summary">`;
+  html += `<strong>${plant.name}</strong> in <strong>${soilKey}</strong> soil — `;
+  if (improvement > 10) {
+    html += `<span class="opt-gain">${impStr} potential gain</span>`;
+  } else if (improvement > 0) {
+    html += `<span class="opt-minor">${impStr} marginal gain — your settings are close</span>`;
+  } else {
+    html += `<span class="opt-optimal">Your current settings are near optimal!</span>`;
+  }
+  html += `</div>`;
+
+  html += `<ul class="opt-rec-list">`;
+  html += `<li><strong>Plant:</strong> ${doyLabel(best.doy)} (DOY ${best.doy})</li>`;
+  html += `<li><strong>Water:</strong> ${best.waterMl} mL/day</li>`;
+  html += `<li><strong>Nitrogen:</strong> ${best.nAvail} g/m²</li>`;
+  if (best.raw) {
+    html += `<li><strong>Peak yield:</strong> ${best.raw.peakYield.toFixed(2)} kg/m²</li>`;
+    html += `<li><strong>Avg growth rate:</strong> ${(best.raw.avgGrowthRate * 100).toFixed(0)}%</li>`;
+    html += `<li><strong>Stress-free days:</strong> ${(best.raw.stressFreePct * 100).toFixed(0)}%</li>`;
+  }
+  html += `</ul>`;
+
+  recs.innerHTML = html;
+
+  // Draw sensitivity charts
+  drawSensitivityChart('opt-chart-date', sensitivity.dateSweep, 'delta', 'Planting Date Δ days', best.doy);
+  drawSensitivityChart('opt-chart-water', sensitivity.waterSweep, 'water', 'Water mL/day', best.waterMl);
+  drawSensitivityChart('opt-chart-nitrogen', sensitivity.nSweep, 'n', 'Nitrogen g/m²', best.nAvail);
+
+  // Draw landscape
+  drawLandscapeChart(result.landscape, best.doy);
+}
+
+function scoreColor(score) {
+  if (score >= 0.8) return 'var(--cup-color-success, #4a7c59)';
+  if (score >= 0.5) return 'var(--cup-color-accent, #dda15e)';
+  return 'var(--cup-color-error, #bc4749)';
+}
+
+function breakdownHtml(scored) {
+  if (!scored.breakdown) return '';
+  const b = scored.breakdown;
+  const rows = [
+    ['Yield', b.peakYield, 35],
+    ['Growth Rate', b.avgGrowthRate, 25],
+    ['Stress-Free', b.stressFreePct, 20],
+    ['Height', b.heightRatio, 10],
+    ['GDD Eff.', b.gddEfficiency, 10],
+  ];
+  return rows.map(([label, val, weight]) => {
+    const pct = ((val || 0) * 100).toFixed(0);
+    const bar = `<div class="opt-bar"><div class="opt-bar-fill" style="width:${pct}%;background:${scoreColor(val)}"></div></div>`;
+    return `<div class="opt-detail-row"><span class="opt-detail-label">${label} (${weight}%)</span>${bar}<span class="opt-detail-val">${pct}%</span></div>`;
+  }).join('');
+}
+
+function drawSensitivityChart(canvasId, data, xKey, xlabel, optVal) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !data || data.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pad = { top: 20, right: 10, bottom: 30, left: 40 };
+  const pw = w - pad.left - pad.right;
+  const ph = h - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Background
+  ctx.fillStyle = 'var(--cup-color-surface-alt, #e8f4fd)';
+  ctx.fillRect(0, 0, w, h);
+
+  const scores = data.map(d => d.score);
+  const sMin = Math.min(...scores) * 0.95;
+  const sMax = Math.max(...scores) * 1.02;
+  const sRange = sMax - sMin || 0.01;
+
+  function xPos(i) { return pad.left + (i / (data.length - 1)) * pw; }
+  function yPos(s) { return pad.top + ph - ((s - sMin) / sRange) * ph; }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ph * i / 4);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
+  }
+
+  // Line
+  ctx.strokeStyle = 'var(--cup-color-primary, #588157)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < data.length; i++) {
+    const x = xPos(i), y = yPos(data[i].score);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Dots
+  for (let i = 0; i < data.length; i++) {
+    ctx.fillStyle = 'var(--cup-color-primary, #588157)';
+    ctx.beginPath();
+    ctx.arc(xPos(i), yPos(data[i].score), 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Highlight optimal
+  const optIdx = data.findIndex(d => {
+    if (xKey === 'delta') return d.delta === 0;
+    if (xKey === 'water') return d.water === optVal;
+    if (xKey === 'n') return d.n === optVal;
+    return false;
+  });
+  if (optIdx >= 0) {
+    ctx.fillStyle = 'var(--cup-color-accent, #dda15e)';
+    ctx.beginPath();
+    ctx.arc(xPos(optIdx), yPos(data[optIdx].score), 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // X labels
+  ctx.fillStyle = 'var(--cup-color-text-muted, #6b705c)';
+  ctx.font = '9px system-ui';
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(data.length / 5));
+  for (let i = 0; i < data.length; i += step) {
+    let label;
+    if (xKey === 'delta') label = (data[i].delta > 0 ? '+' : '') + data[i].delta + 'd';
+    else if (xKey === 'water') label = data[i].water;
+    else label = data[i].n;
+    ctx.fillText(label, xPos(i), h - 5);
+  }
+
+  // Y labels
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const v = sMin + (sRange * (4 - i) / 4);
+    ctx.fillText((v * 100).toFixed(0) + '%', pad.left - 4, pad.top + (ph * i / 4) + 3);
+  }
+
+  // Title
+  ctx.fillStyle = 'var(--cup-color-on-surface, #2d3a2d)';
+  ctx.font = 'bold 10px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText(xlabel, w / 2, h - 16);
+}
+
+function drawLandscapeChart(landscape, optDoy) {
+  const canvas = document.getElementById('opt-chart-landscape');
+  if (!canvas || !landscape || landscape.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pad = { top: 15, right: 15, bottom: 30, left: 45 };
+  const pw = w - pad.left - pad.right;
+  const ph = h - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, h);
+
+  ctx.fillStyle = 'var(--cup-color-surface-alt, #e8f4fd)';
+  ctx.fillRect(0, 0, w, h);
+
+  const scores = landscape.map(d => d.score);
+  const sMin = Math.min(...scores) * 0.9;
+  const sMax = Math.max(...scores) * 1.02;
+  const sRange = sMax - sMin || 0.01;
+
+  function xPos(i) { return pad.left + (i / (landscape.length - 1)) * pw; }
+  function yPos(s) { return pad.top + ph - ((s - sMin) / sRange) * ph; }
+
+  // Filled area
+  ctx.beginPath();
+  ctx.moveTo(xPos(0), pad.top + ph);
+  for (let i = 0; i < landscape.length; i++) {
+    ctx.lineTo(xPos(i), yPos(landscape[i].score));
+  }
+  ctx.lineTo(xPos(landscape.length - 1), pad.top + ph);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(88, 129, 87, 0.15)';
+  ctx.fill();
+
+  // Line
+  ctx.strokeStyle = 'var(--cup-color-primary, #588157)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < landscape.length; i++) {
+    const x = xPos(i), y = yPos(landscape[i].score);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Highlight optimal DOY
+  const optIdx = landscape.findIndex(d => d.doy === optDoy);
+  if (optIdx >= 0) {
+    ctx.fillStyle = 'var(--cup-color-accent, #dda15e)';
+    ctx.beginPath();
+    ctx.arc(xPos(optIdx), yPos(landscape[optIdx].score), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = 'var(--cup-color-on-surface, #2d3a2d)';
+    ctx.font = 'bold 11px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(doyLabel(optDoy), xPos(optIdx), yPos(landscape[optIdx].score) - 10);
+  }
+
+  // Month labels on x axis
+  ctx.fillStyle = 'var(--cup-color-text-muted, #6b705c)';
+  ctx.font = '10px system-ui';
+  ctx.textAlign = 'center';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  for (let m = 0; m < 12; m++) {
+    const midDoy = Math.round(m * 30.44 + 15);
+    const idx = landscape.findIndex(d => d.doy >= midDoy);
+    if (idx >= 0) {
+      ctx.fillText(months[m], xPos(idx), h - 5);
+    }
+  }
+
+  // Y axis
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const v = sMin + (sRange * (4 - i) / 4);
+    ctx.fillText((v * 100).toFixed(0) + '%', pad.left - 4, pad.top + (ph * i / 4) + 3);
+  }
+}
+
+function applyOptimalSettings() {
+  if (!lastOptimizerResult || !lastOptimizerResult.best) return;
+  const best = lastOptimizerResult.best;
+
+  // Apply DOY
+  const doyInput = document.getElementById('growth-planting-doy');
+  const dateInput = document.getElementById('growth-planting-date');
+  if (doyInput) doyInput.value = best.doy;
+  if (dateInput) dateInput.value = doyToIso(best.doy);
+
+  // Apply water
+  const waterInput = document.getElementById('growth-water');
+  if (waterInput) {
+    waterInput.value = best.waterMl;
+    waterInput.dispatchEvent(new Event('input'));
+  }
+
+  // Close panel and run simulation
+  document.getElementById('growth-optimizer-panel').hidden = true;
+  runSimulation();
 }
