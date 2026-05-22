@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>plan-manager tests</title>
+  <style>
+    body { font-family: monospace; background: #111; color: #ccc; padding: 1rem; }
+    .pass { color: #4f4; } .fail { color: #f44; font-weight: bold; }
+    .suite { margin: 1rem 0; border-left: 2px solid #444; padding-left: 0.75rem; }
+    h2 { color: #aaf; margin: 0.5rem 0; }
+    #summary { margin-top: 1.5rem; font-size: 1.2rem; padding: 0.5rem; border-top: 1px solid #444; }
+  </style>
+</head>
+<body>
+<h1>plan-manager.js — Test Suite</h1>
+<div id="results"></div>
+<div id="summary"></div>
+
+<script type="module">
+import init from '../pkg/companion_graph.js';
+import {
+  getAllPlans, getPlan, savePlan, deletePlan, listPlanNames,
+  exportPlan, importPlan, runPlanSimulation, bootstrapExamplePlans
+} from '../plan-manager.js';
+
+// ── Minimal test harness ────────────────────────────
+
+let passed = 0, failed = 0, total = 0;
+const resultsEl = document.getElementById('results');
+const summaryEl = document.getElementById('summary');
+
+function suite(name) {
+  const div = document.createElement('div');
+  div.className = 'suite';
+  div.innerHTML = `<h2>${name}</h2>`;
+  resultsEl.appendChild(div);
+  return div;
+}
+
+function assert(container, desc, condition) {
+  total++;
+  const p = document.createElement('div');
+  if (condition) {
+    passed++;
+    p.className = 'pass';
+    p.textContent = `  ✓ ${desc}`;
+  } else {
+    failed++;
+    p.className = 'fail';
+    p.textContent = `  ✗ ${desc}`;
+    console.error('FAIL:', desc);
+  }
+  container.appendChild(p);
+}
+
+function assertEqual(container, desc, actual, expected) {
+  assert(container, `${desc} (got ${JSON.stringify(actual)}, want ${JSON.stringify(expected)})`,
+    JSON.stringify(actual) === JSON.stringify(expected));
+}
+
+function assertThrows(container, desc, fn) {
+  total++;
+  const p = document.createElement('div');
+  try { fn(); p.className = 'fail'; p.textContent = `  ✗ ${desc} — did not throw`; failed++; }
+  catch { p.className = 'pass'; p.textContent = `  ✓ ${desc}`; passed++; }
+  container.appendChild(p);
+}
+
+async function assertRejects(container, desc, asyncFn) {
+  total++;
+  const p = document.createElement('div');
+  try { await asyncFn(); p.className = 'fail'; p.textContent = `  ✗ ${desc} — did not reject`; failed++; }
+  catch { p.className = 'pass'; p.textContent = `  ✓ ${desc}`; passed++; }
+  container.appendChild(p);
+}
+
+function clearStorage() {
+  localStorage.removeItem('planting-plans');
+}
+
+// ── Test data ───────────────────────────────────────
+
+const threeSisters = {
+  plan_name: 'Three Sisters',
+  management_mode: 'managed',
+  plantings: [
+    { plant_id: 'corn', role: 'primary', planting_day_offset: 0, seed_treatments: [] },
+    { plant_id: 'squash', role: 'ground_cover', planting_day_offset: 7, seed_treatments: [] },
+    { plant_id: 'beans', role: 'support', planting_day_offset: 14,
+      seed_treatments: [{ id: 'rhizobium-inoculant', modifiers: { nitrogen_fixation_boost: 1.2 } }] }
+  ]
+};
+
+const herbSpiral = {
+  plan_name: 'Herb Spiral',
+  plantings: [
+    { plant_id: 'basil', planting_day_offset: 0 },
+    { plant_id: 'cilantro', planting_day_offset: 0 }
+  ]
+};
+
+// ── Run tests ───────────────────────────────────────
+
+await init();
+
+// 1. CRUD — Empty state
+{
+  const s = suite('CRUD — Empty state');
+  clearStorage();
+  assertEqual(s, 'getAllPlans returns {} when empty', getAllPlans(), {});
+  assertEqual(s, 'getPlan returns null for missing', getPlan('nope'), null);
+  assertEqual(s, 'listPlanNames returns [] when empty', listPlanNames(), []);
+}
+
+// 2. CRUD — Save and retrieve
+{
+  const s = suite('CRUD — Save and retrieve');
+  clearStorage();
+  savePlan(threeSisters);
+  assertEqual(s, 'listPlanNames has 1 entry', listPlanNames(), ['Three Sisters']);
+  const loaded = getPlan('Three Sisters');
+  assertEqual(s, 'getPlan returns saved plan name', loaded.plan_name, 'Three Sisters');
+  assertEqual(s, 'plan has 3 plantings', loaded.plantings.length, 3);
+  assertEqual(s, 'first planting is corn', loaded.plantings[0].plant_id, 'corn');
+  assertEqual(s, 'beans treatment preserved', loaded.plantings[2].seed_treatments[0].id, 'rhizobium-inoculant');
+  assert(s, 'treatment modifier preserved',
+    Math.abs(loaded.plantings[2].seed_treatments[0].modifiers.nitrogen_fixation_boost - 1.2) < 0.01);
+}
+
+// 3. CRUD — Multiple plans
+{
+  const s = suite('CRUD — Multiple plans');
+  clearStorage();
+  savePlan(threeSisters);
+  savePlan(herbSpiral);
+  assertEqual(s, 'listPlanNames has 2 entries', listPlanNames().sort(), ['Herb Spiral', 'Three Sisters']);
+  assert(s, 'both retrievable', getPlan('Three Sisters') !== null && getPlan('Herb Spiral') !== null);
+}
+
+// 4. CRUD — Overwrite
+{
+  const s = suite('CRUD — Overwrite existing plan');
+  clearStorage();
+  savePlan(threeSisters);
+  const modified = { ...threeSisters, plantings: [threeSisters.plantings[0]] };
+  savePlan(modified);
+  assertEqual(s, 'still 1 plan', listPlanNames().length, 1);
+  assertEqual(s, 'overwritten plan has 1 planting', getPlan('Three Sisters').plantings.length, 1);
+}
+
+// 5. CRUD — Delete
+{
+  const s = suite('CRUD — Delete');
+  clearStorage();
+  savePlan(threeSisters);
+  savePlan(herbSpiral);
+  deletePlan('Three Sisters');
+  assertEqual(s, 'listPlanNames has 1 after delete', listPlanNames(), ['Herb Spiral']);
+  assertEqual(s, 'deleted plan returns null', getPlan('Three Sisters'), null);
+  assertEqual(s, 'other plan still exists', getPlan('Herb Spiral').plan_name, 'Herb Spiral');
+}
+
+// 6. CRUD — Delete non-existent (no-op, no crash)
+{
+  const s = suite('CRUD — Delete non-existent');
+  clearStorage();
+  savePlan(threeSisters);
+  deletePlan('Does Not Exist');
+  assertEqual(s, 'original plan still exists', listPlanNames(), ['Three Sisters']);
+}
+
+// 7. Validation — savePlan rejects bad input
+{
+  const s = suite('Validation — savePlan rejects bad input');
+  clearStorage();
+  assertThrows(s, 'null plan throws', () => savePlan(null));
+  assertThrows(s, 'plan without plan_name throws', () => savePlan({ plantings: [] }));
+  assertThrows(s, 'empty object throws', () => savePlan({}));
+}
+
+// 8. Validation — importPlan rejects bad JSON
+{
+  const s = suite('Validation — importPlan rejects bad data');
+  clearStorage();
+
+  // Create a mock File from text
+  function mockFile(content, name = 'test.json') {
+    return new File([content], name, { type: 'application/json' });
+  }
+
+  await assertRejects(s, 'rejects non-JSON', () => importPlan(mockFile('not json at all')));
+  await assertRejects(s, 'rejects missing plan_name', () => importPlan(mockFile('{"plantings":[]}')));
+  await assertRejects(s, 'rejects missing plantings', () => importPlan(mockFile('{"plan_name":"X"}')));
+  await assertRejects(s, 'rejects plantings not array', () => importPlan(mockFile('{"plan_name":"X","plantings":"nope"}')));
+}
+
+// 9. Import — valid file saves to storage
+{
+  const s = suite('Import — valid file saves to storage');
+  clearStorage();
+  const validJson = JSON.stringify(threeSisters);
+  const file = new File([validJson], 'plan.json', { type: 'application/json' });
+  const imported = await importPlan(file);
+  assertEqual(s, 'import returns plan object', imported.plan_name, 'Three Sisters');
+  assertEqual(s, 'plan saved to storage', getPlan('Three Sisters').plan_name, 'Three Sisters');
+  assertEqual(s, 'plantings preserved', getPlan('Three Sisters').plantings.length, 3);
+}
+
+// 10. Round-trip — save → export data → import → compare
+{
+  const s = suite('Round-trip — save → serialize → re-import');
+  clearStorage();
+  savePlan(threeSisters);
+  const saved = getPlan('Three Sisters');
+  // Simulate export/import by serializing and re-parsing
+  const exported = JSON.stringify(saved, null, 2);
+  const reimported = JSON.parse(exported);
+  assertEqual(s, 'round-trip preserves plan_name', reimported.plan_name, threeSisters.plan_name);
+  assertEqual(s, 'round-trip preserves plantings count', reimported.plantings.length, threeSisters.plantings.length);
+  assertEqual(s, 'round-trip preserves offsets',
+    reimported.plantings.map(p => p.planting_day_offset),
+    threeSisters.plantings.map(p => p.planting_day_offset));
+  assertEqual(s, 'round-trip preserves treatment ids',
+    reimported.plantings[2].seed_treatments[0].id,
+    'rhizobium-inoculant');
+}
+
+// 11. Corrupted localStorage — graceful fallback
+{
+  const s = suite('Resilience — corrupted localStorage');
+  localStorage.setItem('planting-plans', 'not-valid-json{{{');
+  assertEqual(s, 'getAllPlans returns {} on corrupt data', getAllPlans(), {});
+  assertEqual(s, 'listPlanNames returns [] on corrupt data', listPlanNames(), []);
+  assertEqual(s, 'getPlan returns null on corrupt data', getPlan('anything'), null);
+  clearStorage();
+}
+
+// 12. Bootstrap — seeds example plans when empty
+{
+  const s = suite('Bootstrap — seeds examples when empty');
+  clearStorage();
+  await bootstrapExamplePlans();
+  const names = listPlanNames();
+  assert(s, 'at least 1 plan seeded', names.length >= 1);
+  assert(s, 'Three Sisters seeded', names.includes('Three Sisters'));
+  const plan = getPlan('Three Sisters');
+  assert(s, 'seeded plan has plantings', plan && plan.plantings && plan.plantings.length > 0);
+}
+
+// 13. Bootstrap — does NOT overwrite existing plans
+{
+  const s = suite('Bootstrap — skips when plans exist');
+  clearStorage();
+  savePlan(herbSpiral);
+  await bootstrapExamplePlans();
+  const names = listPlanNames();
+  assertEqual(s, 'only user plan exists', names, ['Herb Spiral']);
+  assertEqual(s, 'Three Sisters NOT force-seeded', getPlan('Three Sisters'), null);
+}
+
+// 14. exportPlan — throws for missing plan
+{
+  const s = suite('Export — throws for missing plan');
+  clearStorage();
+  assertThrows(s, 'exportPlan throws for non-existent', () => exportPlan('Ghost Plan'));
+}
+
+// 15. Simulation — simulate_plan returns correct structure
+{
+  const s = suite('Simulation — runPlanSimulation structure');
+  clearStorage();
+
+  try {
+    // Fetch actual plant data
+    const plantsResp = await fetch('../data/plants.json');
+    if (!plantsResp.ok) throw new Error('Failed to fetch plants.json: ' + plantsResp.status);
+    const plantsDb = await plantsResp.json();
+
+    const env = {
+      day_of_year: 120, latitude: 42.0, altitude_m: 200,
+      temp_high_c: 28, temp_low_c: 15,
+      water_ml: 25, npk_available: [10, 5, 5],
+      soil_water_factor: 1.0, soil_root_factor: 1.0, soil_n2_factor: 1.0,
+      humidity_pct: 60, wind_speed_ms: 2.0, precip_mm: 5,
+      soil_moisture_mm: 50, co2_ppm: 415
+    };
+
+    const results = runPlanSimulation(threeSisters, plantsDb, 60, env);
+
+    assert(s, 'returns array', Array.isArray(results));
+    // May be fewer than 3 if some plants not in DB — check what we got
+    assert(s, 'at least 1 plant result', results.length >= 1);
+
+    if (results.length > 0) {
+      const first = results[0];
+      assert(s, 'result has plant_id', typeof first.plant_id === 'string');
+      assert(s, 'result has role', 'role' in first);
+      assert(s, 'result has planting_day_offset', typeof first.planting_day_offset === 'number');
+      assert(s, 'result has snapshots array', Array.isArray(first.snapshots));
+      assert(s, 'snapshots not empty', first.snapshots.length > 0);
+
+      const snap = first.snapshots[0];
+      assert(s, 'snapshot has day', typeof snap.day === 'number');
+      assert(s, 'snapshot has height_cm', typeof snap.height_cm === 'number');
+      assert(s, 'snapshot has stage', typeof snap.stage === 'string');
+    }
+
+    // Check staggered offsets
+    if (results.length >= 2) {
+      const offsets = results.map(r => r.planting_day_offset);
+      assert(s, 'different offsets present', new Set(offsets).size > 1 || offsets.length === 1);
+
+      // Plant with offset > 0 should have fewer snapshots
+      const noOffset = results.find(r => r.planting_day_offset === 0);
+      const withOffset = results.find(r => r.planting_day_offset > 0);
+      if (noOffset && withOffset) {
+        assert(s, 'offset plant has fewer snapshots',
+          withOffset.snapshots.length < noOffset.snapshots.length);
+        assert(s, 'offset plant first snapshot day >= offset',
+          withOffset.snapshots[0].day >= withOffset.planting_day_offset);
+      }
+    }
+  } catch (e) {
+    assert(s, 'simulation did not throw: ' + e.message, false);
+    console.error('Simulation test error:', e);
+  }
+}
+
+// ── Summary ─────────────────────────────────────────
+
+clearStorage();
+const pct = total > 0 ? Math.round(passed / total * 100) : 0;
+summaryEl.className = failed > 0 ? 'fail' : 'pass';
+summaryEl.textContent = `${passed}/${total} passed (${pct}%) — ${failed} failed`;
+console.log(`plan-manager tests: ${passed}/${total} passed, ${failed} failed`);
+document.title = failed > 0 ? `FAIL (${failed}) — plan-manager tests` : `PASS (${passed}) — plan-manager tests`;
+</script>
+</body>
+</html>

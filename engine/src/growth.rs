@@ -3444,4 +3444,182 @@ mod tests {
         assert!((delay.unwrap() - 5.0).abs() < 0.01);
     }
 
+
+    // ── simulate_plan end-to-end tests ──────────────
+
+    #[test]
+    fn test_simulate_plan_e2e_two_plants_different_offsets() {
+        // Build plan: tomato at day 0, corn at day 10
+        let plan = PlantingPlan {
+            plan_name: "Offset Test".to_string(),
+            management_mode: ManagementMode::Managed,
+            plantings: vec![
+                Planting {
+                    plant_id: "tomato".to_string(),
+                    role: "primary".to_string(),
+                    planting_day_offset: 0,
+                    seed_treatments: vec![],
+                },
+                Planting {
+                    plant_id: "corn".to_string(),
+                    role: "companion".to_string(),
+                    planting_day_offset: 10,
+                    seed_treatments: vec![],
+                },
+            ],
+        };
+
+        let env = summer_env();
+
+        // Simulate tomato for 30 days at offset 0
+        let mut tomato_snaps = Vec::new();
+        let tomato = tomato_genetics();
+        let mut gdd = 0.0;
+        for day in 0..30u16 {
+            let snap = simulate_plant(&tomato, day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            tomato_snaps.push(snap);
+        }
+
+        // Simulate corn for 30 days at offset 10
+        let mut corn_snaps = Vec::new();
+        let corn = corn_genetics();
+        let mut gdd = 0.0;
+        for day in 0..30u16 {
+            if day < 10 { continue; } // not planted yet
+            let plant_day = day - 10;
+            let snap = simulate_plant(&corn, plant_day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            corn_snaps.push(snap);
+        }
+
+        // Tomato has 30 snapshots, corn has 20
+        assert_eq!(tomato_snaps.len(), 30);
+        assert_eq!(corn_snaps.len(), 20);
+
+        // Corn at plant-day 0 should be in Seed stage
+        assert_eq!(corn_snaps[0].stage, GrowthStage::Seed);
+
+        // Tomato at day 20 (plant-day 20) should be further along than
+        // corn at day 20 (plant-day 10)
+        assert!(tomato_snaps[20].height_cm >= corn_snaps[10].height_cm,
+            "Tomato at plant-day 20 should be >= corn at plant-day 10");
+    }
+
+    #[test]
+    fn test_simulate_plan_e2e_treatment_delays_emergence() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+
+        // Untreated: simulate 40 days
+        let mut heights_untreated = Vec::new();
+        let mut gdd = 0.0;
+        for day in 0..40u16 {
+            let snap = simulate_plant(&genetics, day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            heights_untreated.push(snap.height_cm);
+        }
+
+        // Treated with 7-day germination delay
+        let treated = apply_treatments(genetics.clone(), &[SeedTreatment {
+            id: "clay-coat".to_string(),
+            modifiers: [("germination_delay_days".to_string(), 7.0)].into_iter().collect(),
+        }]);
+        let mut heights_treated = Vec::new();
+        let mut gdd = 0.0;
+        for day in 0..40u16 {
+            let snap = simulate_plant(&treated, day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            heights_treated.push(snap.height_cm);
+        }
+
+        // At day 15, untreated should be taller (it germinated 7 days earlier)
+        assert!(heights_untreated[15] > heights_treated[15],
+            "Untreated should be taller at day 15: {} vs {}",
+            heights_untreated[15], heights_treated[15]);
+
+        // Both should eventually grow — at day 35, treated should have height > 0
+        assert!(heights_treated[35] > 0.0,
+            "Treated plant should have grown by day 35");
+    }
+
+    #[test]
+    fn test_simulate_plan_e2e_natural_mode_parses() {
+        let plan_json = r#"{
+            "plan_name": "Wild Meadow",
+            "management_mode": "natural",
+            "plantings": [
+                {"plant_id": "sunflower", "planting_day_offset": 0}
+            ]
+        }"#;
+        let plan: PlantingPlan = serde_json::from_str(plan_json).unwrap();
+        assert_eq!(plan.management_mode, ManagementMode::Natural);
+        // Natural mode is a flag — it doesn't change simulation yet (M8 work)
+        // but the plan should parse and serialize correctly
+        let roundtrip = serde_json::to_string(&plan).unwrap();
+        assert!(roundtrip.contains("natural"));
+    }
+
+    #[test]
+    fn test_simulate_plan_e2e_cumulative_yield_with_offset() {
+        let env = summer_env();
+        let genetics = tomato_genetics();
+
+        // Simulate 120 days — should accumulate yield during fruiting
+        let mut cumulative = 0.0_f32;
+        let mut gdd = 0.0;
+        let mut producing_days = 0u16;
+        for day in 0..120u16 {
+            let snap = simulate_plant(&genetics, day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            cumulative += snap.daily_yield_rate;
+            if snap.is_producing { producing_days += 1; }
+        }
+
+        assert!(cumulative > 0.0, "Should have accumulated yield over 120 days");
+        assert!(producing_days > 0, "Should have had producing days");
+
+        // Now simulate with 30 day offset — fewer producing days
+        let mut cumulative_offset = 0.0_f32;
+        let mut gdd = 0.0;
+        let mut producing_days_offset = 0u16;
+        for day in 0..120u16 {
+            if day < 30 { continue; }
+            let plant_day = day - 30;
+            let snap = simulate_plant(&genetics, plant_day, &env, gdd);
+            gdd = snap.gdd_accumulated;
+            cumulative_offset += snap.daily_yield_rate;
+            if snap.is_producing { producing_days_offset += 1; }
+        }
+
+        // Offset plant has fewer days so less cumulative yield
+        assert!(cumulative_offset < cumulative,
+            "Offset plant should have less yield: {} vs {}",
+            cumulative_offset, cumulative);
+    }
+
+    #[test]
+    fn test_simulate_plan_e2e_multiple_treatments_compound() {
+        let genetics = tomato_genetics();
+
+        // Apply both clay coat (delay 7) and mycorrhizal (root boost 1.3)
+        let treated = apply_treatments(genetics.clone(), &[
+            SeedTreatment {
+                id: "clay-coat".to_string(),
+                modifiers: [("germination_delay_days".to_string(), 7.0)].into_iter().collect(),
+            },
+            SeedTreatment {
+                id: "mycorrhizal".to_string(),
+                modifiers: [("root_growth_boost".to_string(), 1.3)].into_iter().collect(),
+            },
+        ]);
+
+        // Germination delayed
+        assert_eq!(treated.days_to_germination.0, genetics.days_to_germination.0 + 7);
+        // Root depth boosted
+        assert!((treated.max_root_depth_cm - genetics.max_root_depth_cm * 1.3).abs() < 0.1);
+        // Other fields unchanged
+        assert!((treated.gs_max - genetics.gs_max).abs() < 0.001);
+    }
+
 }

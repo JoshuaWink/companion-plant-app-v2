@@ -228,7 +228,7 @@ export async function bootstrapExamplePlans() {
   const examples = ['three-sisters'];
   for (const name of examples) {
     try {
-      const resp = await fetch(`data/plans/${name}.json`);
+      const resp = await fetch(`/data/plans/${name}.json`);
       if (resp.ok) {
         const plan = await resp.json();
         savePlan(plan);
