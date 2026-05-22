@@ -215,6 +215,20 @@ pub struct PlantGenetics {
     /// Maximum temperature (°C) above which the plant stops fruiting. Default 40.0
     #[serde(default = "default_heat_ceiling")]
     pub heat_ceiling_c: f32,
+
+    // -- Node architecture --
+    /// Rate at which new fruiting nodes form per day during active growth (0-5). Default 0.3
+    #[serde(default = "default_node_rate")]
+    pub node_initiation_rate: f32,
+    /// Days a node stays productive after first fruit set. Default 30.0
+    #[serde(default = "default_node_lifespan")]
+    pub node_productive_days: f32,
+    /// Maintenance cost per unit biomass (fraction of daily photosynthate). Default 0.02
+    #[serde(default = "default_maint_cost")]
+    pub maintenance_respiration_frac: f32,
+    /// Whether the plant can be pruned to redirect resources (true for most indeterminates)
+    #[serde(default)]
+    pub prunable: bool,
 }
 
 fn default_gs_max() -> f32 { 0.4 }
@@ -226,6 +240,9 @@ fn default_lodging_resist() -> f32 { 0.7 }
 fn default_fruit_sink() -> f32 { 0.5 }
 fn default_kill_temp() -> f32 { -2.0 }
 fn default_heat_ceiling() -> f32 { 40.0 }
+fn default_node_rate() -> f32 { 0.3 }
+fn default_node_lifespan() -> f32 { 30.0 }
+fn default_maint_cost() -> f32 { 0.02 }
 
 // -- Environment state (per-day inputs) --
 
@@ -354,6 +371,18 @@ pub struct Snapshot {
     pub yield_trend: f32,
     /// True if the plant was killed by environment (frost/heat), not calendar
     pub env_terminated: bool,
+
+    // -- Node Architecture --
+    /// Total nodes (fruiting sites) on the plant
+    pub total_nodes: f32,
+    /// Nodes currently in productive state (flowering or fruiting)
+    pub productive_nodes: f32,
+    /// Nodes that have finished producing (spent — maintenance-only biomass)
+    pub spent_nodes: f32,
+    /// Fraction of total biomass that is productive vs maintenance (0-1, declining = prune needed)
+    pub productive_fraction: f32,
+    /// Maintenance cost: fraction of photosynthate consumed by non-productive biomass
+    pub maintenance_tax: f32,
 }
 
 // ==============================================================================
@@ -1112,6 +1141,101 @@ fn co2_assimilation_factor(co2_ppm: f32, path: PhotoPath) -> f32 {
 // FRUIT SINK STRENGTH + CARBON PARTITIONING
 // =============================================================================
 
+// =============================================================================
+// NODE ARCHITECTURE MODEL
+// =============================================================================
+
+/// Compute node dynamics for a plant at a given day.
+///
+/// Models the branching architecture:
+/// - New nodes form at `node_initiation_rate` per day during active growth
+/// - Each node is productive for `node_productive_days` then becomes "spent"
+/// - Spent nodes are maintenance-only biomass — they consume water/photosynthate
+///   but produce nothing
+/// - maintenance_tax = spent_biomass_fraction × maintenance_respiration_frac
+///
+/// For determinate plants: nodes form during vegetative/flowering, then stop.
+/// For indeterminate plants: nodes keep forming as long as the plant is alive.
+/// For cut-and-come: "nodes" represent leaf rosettes; harvesting resets them.
+///
+/// Returns (total_nodes, productive_nodes, spent_nodes, productive_fraction, maintenance_tax)
+fn compute_node_dynamics(
+    day: u16,
+    genetics: &PlantGenetics,
+    stage: GrowthStage,
+    growth_progress: f32,
+    growth_rate: f32,
+) -> (f32, f32, f32, f32, f32) {
+    // No node dynamics before the plant starts growing
+    if matches!(stage, GrowthStage::Seed | GrowthStage::Germinating | GrowthStage::Seedling) {
+        return (0.0, 0.0, 0.0, 1.0, 0.0);
+    }
+
+    // Dead plants: all nodes spent
+    if stage == GrowthStage::Senescence {
+        let total = genetics.node_initiation_rate * day as f32 * 0.3;
+        return (total, 0.0, total, 0.0, genetics.maintenance_respiration_frac);
+    }
+
+    let node_rate = genetics.node_initiation_rate;
+    let productive_life = genetics.node_productive_days;
+    let maint_frac = genetics.maintenance_respiration_frac;
+
+    // Estimate when nodes started forming (post-seedling)
+    let germ_end = genetics.days_to_germination.1 + 14; // seedling ends
+    let growing_days = if day > germ_end { (day - germ_end) as f32 } else { 0.0 };
+
+    // Node formation rate depends on growth habit:
+    let effective_rate = match genetics.growth_habit_type {
+        GrowthHabit::Indeterminate => {
+            // Continuous node formation, modulated by growth rate
+            node_rate * growth_rate.clamp(0.1, 1.0)
+        }
+        GrowthHabit::CutAndCome => {
+            // Leaf rosettes form steadily
+            node_rate * 0.8 * growth_rate.clamp(0.1, 1.0)
+        }
+        GrowthHabit::Determinate => {
+            // Nodes only form during vegetative/flowering, then stop
+            match stage {
+                GrowthStage::Vegetative | GrowthStage::Flowering => {
+                    node_rate * growth_rate.clamp(0.1, 1.0)
+                }
+                _ => 0.0, // No new nodes during fruiting for determinates
+            }
+        }
+    };
+
+    // Total nodes formed = integral of rate over growing days
+    // (simplified: rate × days, since rate changes slowly)
+    let total_nodes = (effective_rate * growing_days).max(0.0);
+
+    // Productive nodes = those formed within the last `productive_life` days
+    let productive_window = growing_days.min(productive_life);
+    let productive_nodes = (effective_rate * productive_window).max(0.0).min(total_nodes);
+
+    // Spent nodes = total - productive
+    let spent_nodes = (total_nodes - productive_nodes).max(0.0);
+
+    // Productive fraction = what % of the plant is still earning its keep
+    let productive_fraction = if total_nodes > 0.1 {
+        (productive_nodes / total_nodes).clamp(0.0, 1.0)
+    } else {
+        1.0 // Young plant, all productive
+    };
+
+    // Maintenance tax = how much photosynthate goes to keeping spent biomass alive
+    // This is the key insight: as spent_nodes grow, more energy is wasted on maintenance
+    let spent_fraction = if total_nodes > 0.1 {
+        spent_nodes / total_nodes
+    } else {
+        0.0
+    };
+    let maintenance_tax = (spent_fraction * maint_frac).clamp(0.0, 0.5);
+
+    (total_nodes, productive_nodes, spent_nodes, productive_fraction, maintenance_tax)
+}
+
 /// Determine carbon allocation to fruit vs vegetative growth.
 /// During fruiting, carbon is redirected from vegetative growth to fruit fill.
 /// Returns (vegetative_fraction, fruit_fraction).
@@ -1312,6 +1436,10 @@ pub fn simulate_plant(
         stage, genetics.fruit_sink_strength, growth_progress,
     );
 
+    // -- Node architecture dynamics --
+    let (total_nodes, productive_nodes, spent_nodes, productive_fraction, maintenance_tax) =
+        compute_node_dynamics(day, genetics, stage, growth_progress, net_photo);
+
     // -- Structural efficiency vs daily metabolic rate --
     //
     // KEY INSIGHT: Height, spread, and root depth are CUMULATIVE structural
@@ -1388,6 +1516,22 @@ pub fn simulate_plant(
         }
     };
 
+    // Apply node architecture penalties:
+    // 1. maintenance_tax: spent biomass consumes photosynthate that could go to fruit
+    // 2. productive_fraction: only productive nodes are actually making fruit
+    let daily_yield_rate = match genetics.growth_habit_type {
+        GrowthHabit::Indeterminate | GrowthHabit::CutAndCome => {
+            // For indeterminate plants, yield is proportional to productive nodes
+            // and penalized by maintenance cost of spent nodes
+            daily_yield_rate * productive_fraction * (1.0 - maintenance_tax)
+        }
+        GrowthHabit::Determinate => {
+            // Determinate plants don't have ongoing node dynamics penalty
+            // (they fruit all at once, then stop)
+            daily_yield_rate * (1.0 - maintenance_tax * 0.3)
+        }
+    };
+
     // is_producing: can you harvest RIGHT NOW?
     let is_producing = daily_yield_rate > 0.001 && match genetics.harvest_type {
         HarvestType::Fruit | HarvestType::Pod => stage == GrowthStage::Fruiting,
@@ -1461,6 +1605,11 @@ pub fn simulate_plant(
         is_producing,
         yield_trend: 0.0,           // filled by simulate_season
         env_terminated,
+        total_nodes,
+        productive_nodes,
+        spent_nodes,
+        productive_fraction,
+        maintenance_tax,
     }
 }
 
@@ -1684,7 +1833,45 @@ pub fn genetics_from_json(plant: &serde_json::Value) -> Option<PlantGenetics> {
         harvest_type,
         kill_temp_c,
         heat_ceiling_c,
+        node_initiation_rate: lt.and_then(|l| l.get("node_initiation_rate"))
+            .and_then(|v| v.as_f64()).map(|v| v as f32)
+            .unwrap_or_else(|| node_rate_from_habit(&growth_habit_type, &harvest_type)),
+        node_productive_days: lt.and_then(|l| l.get("node_productive_days"))
+            .and_then(|v| v.as_f64()).map(|v| v as f32)
+            .unwrap_or_else(|| node_lifespan_from_habit(&growth_habit_type)),
+        maintenance_respiration_frac: lt.and_then(|l| l.get("maintenance_respiration_frac"))
+            .and_then(|v| v.as_f64()).map(|v| v as f32)
+            .unwrap_or(default_maint_cost()),
+        prunable: lt.and_then(|l| l.get("prunable"))
+            .and_then(|v| v.as_bool())
+            .unwrap_or(matches!(growth_habit_type, GrowthHabit::Indeterminate)),
     })
+}
+
+/// Derive node initiation rate from growth habit and harvest type.
+fn node_rate_from_habit(habit: &GrowthHabit, harvest: &HarvestType) -> f32 {
+    match habit {
+        GrowthHabit::Indeterminate => match harvest {
+            HarvestType::Fruit | HarvestType::Pod => 0.4,  // tomato/pepper: ~truss every 2-3 days
+            HarvestType::Leaf => 0.3,                       // leafy indeterminate
+            _ => 0.3,
+        },
+        GrowthHabit::CutAndCome => 0.25,  // rosette regrowth
+        GrowthHabit::Determinate => match harvest {
+            HarvestType::Grain => 0.1,     // corn: few ear sites
+            HarvestType::Root => 0.15,     // root crops: few crown nodes
+            _ => 0.2,
+        },
+    }
+}
+
+/// Derive productive node lifespan from growth habit.
+fn node_lifespan_from_habit(habit: &GrowthHabit) -> f32 {
+    match habit {
+        GrowthHabit::Indeterminate => 28.0,  // ~4 weeks per truss flush
+        GrowthHabit::CutAndCome => 21.0,     // ~3 weeks between harvests
+        GrowthHabit::Determinate => 40.0,    // longer since it's all at once
+    }
 }
 
 /// Derive growth habit type from growth_habit string and family.
@@ -1768,8 +1955,12 @@ mod tests {
             fruit_sink_strength: 0.65,
             growth_habit_type: GrowthHabit::Indeterminate,
             harvest_type: HarvestType::Fruit,
-            kill_temp_c: 0.0,       // tomatoes die at first frost
-            heat_ceiling_c: 35.0,   // fruit set drops above 35°C
+            kill_temp_c: 0.0,
+            heat_ceiling_c: 35.0,
+            node_initiation_rate: 0.4,     // tomatoes: ~1 new truss every 2-3 days
+            node_productive_days: 25.0,    // each truss produces for ~25 days
+            maintenance_respiration_frac: 0.03, // 3% of photosynthate to maintenance per spent fraction
+            prunable: true,
         }
     }
 
@@ -1807,6 +1998,10 @@ mod tests {
             harvest_type: HarvestType::Grain,
             kill_temp_c: -1.0,
             heat_ceiling_c: 40.0,
+            node_initiation_rate: 0.1,     // corn: few nodes (ears)
+            node_productive_days: 40.0,    // ears fill over ~40 days
+            maintenance_respiration_frac: 0.01,
+            prunable: false,
         }
     }
 
@@ -2663,4 +2858,126 @@ mod tests {
             "Solanaceae heat ceiling should be 35°C, got {}", g.heat_ceiling_c);
     }
 
+
+    // =========================================================================
+    // NODE ARCHITECTURE TESTS
+    // =========================================================================
+
+    #[test]
+    fn test_node_dynamics_seedling_no_nodes() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        let snap = simulate_plant(&genetics, 3, &env, 0.0);
+        assert_eq!(snap.total_nodes, 0.0,
+            "Seedling should have no nodes");
+        assert_eq!(snap.productive_fraction, 1.0,
+            "Young plant should be 100% productive");
+        assert_eq!(snap.maintenance_tax, 0.0,
+            "Young plant should have zero maintenance tax");
+    }
+
+    #[test]
+    fn test_node_dynamics_vegetative_nodes_forming() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        let snap = simulate_plant(&genetics, 30, &env, 200.0);
+        assert!(snap.total_nodes > 0.0,
+            "Vegetative plant should have nodes forming, got {}", snap.total_nodes);
+        assert!(snap.productive_fraction > 0.9,
+            "Young vegetative plant should be mostly productive, got {}", snap.productive_fraction);
+    }
+
+    #[test]
+    fn test_node_dynamics_spent_nodes_accumulate() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        // Day 90: deep into fruiting. With node_productive_days=25, early nodes should be spent.
+        let snap = simulate_plant(&genetics, 90, &env, 1500.0);
+        assert!(snap.spent_nodes > 0.0,
+            "Late-season tomato should have spent nodes, got {}", snap.spent_nodes);
+        assert!(snap.productive_fraction < 1.0,
+            "Late-season tomato productive_fraction should be < 1.0, got {}", snap.productive_fraction);
+        assert!(snap.maintenance_tax > 0.0,
+            "Late-season tomato should have maintenance tax, got {}", snap.maintenance_tax);
+    }
+
+    #[test]
+    fn test_node_dynamics_maintenance_tax_grows_over_time() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        let early = simulate_plant(&genetics, 60, &env, 800.0);
+        let late = simulate_plant(&genetics, 120, &env, 2400.0);
+        // Both should be fruiting (indeterminate tomato)
+        if early.is_producing && late.is_producing {
+            assert!(late.maintenance_tax >= early.maintenance_tax,
+                "Late-season maintenance_tax ({}) should be >= early ({})",
+                late.maintenance_tax, early.maintenance_tax);
+        }
+    }
+
+    #[test]
+    fn test_node_dynamics_determinate_stops_node_formation() {
+        let genetics = corn_genetics();
+        let env = summer_env();
+        let snap60 = simulate_plant(&genetics, 60, &env, 900.0);
+        let snap90 = simulate_plant(&genetics, 90, &env, 1500.0);
+        // For determinate plants in fruiting stage, no new nodes form
+        if snap60.stage == GrowthStage::Fruiting && snap90.stage == GrowthStage::Fruiting {
+            assert!((snap90.total_nodes - snap60.total_nodes).abs() < 0.01,
+                "Determinate plant should stop forming nodes during fruiting: d60={}, d90={}",
+                snap60.total_nodes, snap90.total_nodes);
+        }
+    }
+
+    #[test]
+    fn test_node_dynamics_indeterminate_keeps_forming() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        let snap60 = simulate_plant(&genetics, 60, &env, 800.0);
+        let snap90 = simulate_plant(&genetics, 90, &env, 1500.0);
+        assert!(snap90.total_nodes > snap60.total_nodes,
+            "Indeterminate plant should keep forming nodes: d60={}, d90={}",
+            snap60.total_nodes, snap90.total_nodes);
+    }
+
+    #[test]
+    fn test_compute_node_dynamics_directly() {
+        let genetics = tomato_genetics();
+        let (total, prod, spent, frac, tax) = compute_node_dynamics(
+            20, &genetics, GrowthStage::Vegetative, 0.3, 0.5,
+        );
+        assert!(total >= 0.0);
+        assert!(prod >= 0.0);
+        assert!(spent >= 0.0);
+        assert!(frac >= 0.0 && frac <= 1.0);
+        assert!(tax >= 0.0 && tax <= 0.5);
+    }
+
+    #[test]
+    fn test_compute_node_dynamics_seed_returns_clean() {
+        let genetics = tomato_genetics();
+        let (total, prod, spent, frac, tax) = compute_node_dynamics(
+            3, &genetics, GrowthStage::Seed, 0.0, 0.0,
+        );
+        assert_eq!(total, 0.0);
+        assert_eq!(prod, 0.0);
+        assert_eq!(spent, 0.0);
+        assert_eq!(frac, 1.0);
+        assert_eq!(tax, 0.0);
+    }
+
+    #[test]
+    fn test_node_productive_fraction_bounds() {
+        let genetics = tomato_genetics();
+        let env = summer_env();
+        // Check at many days that productive_fraction stays bounded [0, 1]
+        for day in (5..150).step_by(10) {
+            let gdd = day as f32 * 15.0;
+            let snap = simulate_plant(&genetics, day, &env, gdd);
+            assert!(snap.productive_fraction >= 0.0 && snap.productive_fraction <= 1.0,
+                "productive_fraction out of bounds at day {}: {}", day, snap.productive_fraction);
+            assert!(snap.maintenance_tax >= 0.0 && snap.maintenance_tax <= 0.5,
+                "maintenance_tax out of bounds at day {}: {}", day, snap.maintenance_tax);
+        }
+    }
 }
