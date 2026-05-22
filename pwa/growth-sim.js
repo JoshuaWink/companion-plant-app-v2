@@ -658,7 +658,7 @@ function drawHeightChart(plant) {
   const maxVal = Math.max(maxH, maxS, maxR);
 
   // Grid lines
-  ctx.strokeStyle = '#334';
+  ctx.strokeStyle = 'rgba(45, 58, 45, 0.15)';
   ctx.lineWidth = 0.5;
   for (let i = 0; i <= 4; i++) {
     const y = pad.top + ch - (i / 4) * ch;
@@ -666,7 +666,7 @@ function drawHeightChart(plant) {
     ctx.moveTo(pad.left, y);
     ctx.lineTo(pad.left + cw, y);
     ctx.stroke();
-    ctx.fillStyle = '#8899aa';
+    ctx.fillStyle = '#6b705c';
     ctx.font = '11px system-ui';
     ctx.textAlign = 'right';
     ctx.fillText(`${(maxVal * i / 4).toFixed(0)}`, pad.left - 6, y + 4);
@@ -674,7 +674,7 @@ function drawHeightChart(plant) {
 
   // X-axis labels
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#8899aa';
+  ctx.fillStyle = '#6b705c';
   const step = Math.max(1, Math.floor(seasonData.length / 6));
   const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
   for (let d = 0; d < seasonData.length; d += step) {
@@ -712,7 +712,7 @@ function drawHeightChart(plant) {
   legends.forEach(({ color, label }) => {
     ctx.fillStyle = color;
     ctx.fillRect(lx, legendY - 8, 12, 3);
-    ctx.fillStyle = '#aabbcc';
+    ctx.fillStyle = '#2d3a2d';
     ctx.textAlign = 'left';
     ctx.fillText(label, lx + 16, legendY);
     lx += ctx.measureText(label).width + 30;
@@ -764,7 +764,7 @@ function drawStressChart() {
   const ch = h - pad.top - pad.bottom;
 
   // Title
-  ctx.fillStyle = '#8899aa';
+  ctx.fillStyle = '#6b705c';
   ctx.font = '11px system-ui';
   ctx.textAlign = 'left';
   ctx.fillText('Stress Events', pad.left, 12);
@@ -814,7 +814,7 @@ function drawStressChart() {
   });
 
   // Y-axis
-  ctx.fillStyle = '#8899aa';
+  ctx.fillStyle = '#6b705c';
   ctx.textAlign = 'right';
   ctx.fillText('0%', pad.left - 6, pad.top + ch + 4);
   ctx.fillText('100%', pad.left - 6, pad.top + 4);
@@ -1187,7 +1187,7 @@ function drawTransplantReadinessChart(advisor, activeDay) {
   const yFromPct = (pct) => pad.top + ch - (clamp(pct / 100, 0, 1) * ch);
   const xFromDay = (day) => pad.left + (day / dayCount) * cw;
 
-  ctx.strokeStyle = '#334';
+  ctx.strokeStyle = 'rgba(45, 58, 45, 0.15)';
   ctx.lineWidth = 0.5;
   [0, 25, 50, 75, 100].forEach((pct) => {
     const y = yFromPct(pct);
@@ -1239,7 +1239,7 @@ function drawTransplantReadinessChart(advisor, activeDay) {
   }
 
   ctx.setLineDash([]);
-  ctx.fillStyle = '#8899aa';
+  ctx.fillStyle = '#6b705c';
   ctx.font = '11px system-ui';
   ctx.textAlign = 'right';
   ctx.fillText('0', pad.left - 6, yFromPct(0) + 4);
@@ -1257,12 +1257,12 @@ function drawTransplantReadinessChart(advisor, activeDay) {
   ctx.textAlign = 'left';
   ctx.fillStyle = '#66bb6a';
   ctx.fillRect(pad.left, 8, 12, 3);
-  ctx.fillStyle = '#aabbcc';
+  ctx.fillStyle = '#2d3a2d';
   ctx.fillText('Readiness', pad.left + 16, 12);
 
   ctx.fillStyle = '#ef5350';
   ctx.fillRect(pad.left + 88, 8, 12, 3);
-  ctx.fillStyle = '#aabbcc';
+  ctx.fillStyle = '#2d3a2d';
   ctx.fillText('Root rot risk', pad.left + 104, 12);
 }
 
@@ -1287,7 +1287,7 @@ function drawHardeningPlanChart(advisor) {
   const xFromIdx = (idx) => pad.left + (idx / count) * cw;
   const yFromPct = (pct) => pad.top + ch - (clamp(pct / 100, 0, 1) * ch);
 
-  ctx.strokeStyle = '#334';
+  ctx.strokeStyle = 'rgba(45, 58, 45, 0.15)';
   ctx.lineWidth = 0.5;
   [0, 25, 50, 75, 100].forEach((pct) => {
     const y = yFromPct(pct);
@@ -1328,7 +1328,7 @@ function drawHardeningPlanChart(advisor) {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  ctx.fillStyle = '#8899aa';
+  ctx.fillStyle = '#6b705c';
   ctx.font = '11px system-ui';
   ctx.textAlign = 'right';
   ctx.fillText('0', pad.left - 6, yFromPct(0) + 4);
@@ -1343,12 +1343,12 @@ function drawHardeningPlanChart(advisor) {
   ctx.textAlign = 'left';
   ctx.fillStyle = '#26a69a';
   ctx.fillRect(pad.left, 8, 12, 3);
-  ctx.fillStyle = '#aabbcc';
+  ctx.fillStyle = '#2d3a2d';
   ctx.fillText('Exposure hours', pad.left + 16, 12);
 
   ctx.fillStyle = '#ff7043';
   ctx.fillRect(pad.left + 118, 8, 12, 3);
-  ctx.fillStyle = '#aabbcc';
+  ctx.fillStyle = '#2d3a2d';
   ctx.fillText('Shock risk', pad.left + 134, 12);
 }
 

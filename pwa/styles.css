@@ -2147,7 +2147,7 @@ select.bed-action {
 }
 .growth-no-stress {
   font-size: 0.7rem;
-  color: #66bb6a;
+  color: var(--cup-color-success);
   font-weight: 600;
 }
 
@@ -2247,23 +2247,23 @@ select.bed-action {
 
 .growth-intro {
   font-size: 0.85rem;
-  color: #8899aa;
+  color: var(--cup-color-text-muted);
   line-height: 1.5;
   margin: -0.25rem 0 0.75rem;
 }
 .growth-intro strong {
-  color: #aabbcc;
+  color: var(--cup-color-on-surface);
 }
 
 .growth-hint {
   font-size: 0.7rem;
-  color: #667788;
+  color: var(--cup-color-text-muted);
   font-weight: 400;
 }
 
 .growth-alt {
   font-size: 0.65rem;
-  color: #667788;
+  color: var(--cup-color-text-muted);
   margin-left: 0.2em;
 }
 
@@ -2281,13 +2281,13 @@ select.bed-action {
 
 .growth-stage-desc {
   font-size: 0.78rem;
-  color: #8899aa;
+  color: var(--cup-color-text-muted);
   font-style: italic;
 }
 
 .growth-chart-label {
   font-size: 0.75rem;
-  color: #667788;
+  color: var(--cup-color-text-muted);
   margin: 0.5rem 0 0.15rem;
 }
 
@@ -2299,7 +2299,7 @@ select.bed-action {
 .growth-chart-hint {
   margin-left: 0.4rem;
   font-size: 0.7rem;
-  color: #8899aa;
+  color: var(--cup-color-text-muted);
 }
 
 #growth-chart-height,
@@ -2394,7 +2394,7 @@ select.bed-action {
   gap: 0.75rem;
   margin: 0.25rem 0 0.45rem;
   font-size: 0.72rem;
-  color: #77889a;
+  color: var(--cup-color-text-muted);
 }
 
 .growth-stress-help-item {
@@ -2447,9 +2447,9 @@ select.bed-action {
   max-width: min(92vw, 300px);
   padding: 0.55rem 0.65rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(16, 20, 28, 0.96);
-  color: #e7edf5;
+  border: 1px solid rgba(163, 177, 138, 0.45);
+  background: rgba(45, 58, 45, 0.97);
+  color: #f0f5ea;
   font-size: 0.72rem;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
   pointer-events: none;
@@ -2462,7 +2462,7 @@ select.bed-action {
 }
 
 .growth-stress-tooltip-sub {
-  color: #aebcd0;
+  color: #a3b18a;
   margin-bottom: 0.35rem;
 }
 
@@ -2479,20 +2479,20 @@ select.bed-action {
 
 .growth-stress-tooltip-head {
   font-weight: 600;
-  color: #f1f5fa;
+  color: #f5f8f0;
 }
 
 .growth-stress-tooltip-desc {
-  color: #c9d4e3;
+  color: #d4e0c8;
 }
 
 .growth-stress-tooltip-detail {
-  color: #9eb0c8;
+  color: #b8cba6;
   margin-top: 0.1rem;
 }
 
 .growth-stress-tooltip-empty {
-  color: #c9d4e3;
+  color: #d4e0c8;
 }
 
 
@@ -2562,9 +2562,9 @@ select.bed-action {
 
 .growth-advisor {
   margin-top: 0.9rem;
-  border: 1px solid rgba(170, 187, 204, 0.25);
-  border-radius: 10px;
-  background: rgba(24, 30, 40, 0.25);
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-md);
+  background: rgba(255, 255, 255, 0.55);
   padding: 0.8rem;
 }
 
@@ -2575,13 +2575,13 @@ select.bed-action {
 .growth-advisor-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #c8d5e8;
+  color: var(--cup-color-on-surface);
 }
 
 .growth-advisor-intro {
   margin: 0.22rem 0 0;
   font-size: 0.76rem;
-  color: #97a8be;
+  color: var(--cup-color-text-muted);
   line-height: 1.4;
 }
 
@@ -2609,29 +2609,29 @@ select.bed-action {
 }
 
 .growth-advisor-card {
-  border: 1px solid rgba(170, 187, 204, 0.22);
-  border-radius: 8px;
-  background: rgba(12, 18, 28, 0.45);
+  border: 1px solid var(--cup-color-border);
+  border-radius: var(--cup-radius-sm);
+  background: rgba(255, 255, 255, 0.75);
   padding: 0.55rem;
 }
 
 .growth-advisor-card-label {
   font-size: 0.68rem;
-  color: #90a4ba;
+  color: var(--cup-color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .growth-advisor-card-value {
   font-size: 0.82rem;
-  color: #dce6f5;
+  color: var(--cup-color-on-surface);
   font-weight: 600;
   margin-top: 0.16rem;
 }
 
 .growth-advisor-card-note {
   font-size: 0.72rem;
-  color: #a8b8cc;
+  color: var(--cup-color-text-muted);
   margin-top: 0.16rem;
 }
 
@@ -2643,26 +2643,26 @@ select.bed-action {
 }
 
 .growth-advisor-status--good {
-  background: rgba(46, 125, 50, 0.22);
-  color: #b8e5ba;
+  background: rgba(74, 124, 89, 0.12);
+  color: var(--cup-color-success);
 }
 
 .growth-advisor-status--warn {
-  background: rgba(251, 140, 0, 0.2);
-  color: #ffd8aa;
+  background: rgba(233, 196, 106, 0.25);
+  color: #4a3200;
 }
 
 .growth-advisor-math {
   margin: 0.45rem 0 0.55rem;
-  border: 1px dashed rgba(170, 187, 204, 0.25);
-  border-radius: 8px;
+  border: 1px dashed var(--cup-color-border);
+  border-radius: var(--cup-radius-sm);
   padding: 0.5rem;
-  background: rgba(8, 12, 20, 0.45);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .growth-advisor-math-line {
   font-size: 0.72rem;
-  color: #b5c3d7;
+  color: var(--cup-color-text-muted);
   margin: 0.2rem 0;
   line-height: 1.4;
 }
@@ -2677,7 +2677,7 @@ select.bed-action {
 .growth-hardening-steps {
   margin: 0.55rem 0 0;
   padding-left: 1.2rem;
-  color: #b5c3d7;
+  color: var(--cup-color-on-surface);
 }
 
 .growth-hardening-steps li {
