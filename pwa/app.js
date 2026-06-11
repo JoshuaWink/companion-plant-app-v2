@@ -51,6 +51,31 @@ function emojiFor(id) {
   return PLANT_EMOJI[id] || '🌱';
 }
 
+const CONFIDENCE_META = {
+  verified: { label: 'Verified', short: 'V', className: 'confidence-badge--verified' },
+  consensus: { label: 'Consensus', short: 'C', className: 'confidence-badge--consensus' },
+  empirical: { label: 'Empirical', short: 'E', className: 'confidence-badge--empirical' },
+  traditional: { label: 'Traditional', short: 'T', className: 'confidence-badge--traditional' },
+  speculative: { label: 'Speculative', short: '?', className: 'confidence-badge--speculative' },
+};
+
+function confidenceMeta(confidence) {
+  return CONFIDENCE_META[confidence] || CONFIDENCE_META.speculative;
+}
+
+function confidenceBadge(confidence, evidence) {
+  const meta = confidenceMeta(confidence);
+  const title = evidence ? `${meta.label} — ${evidence}` : meta.label;
+  return `<span class="confidence-badge ${meta.className}" title="${title}">${meta.short}</span>`;
+}
+
+function relationshipReasonHtml(reason, confidence, evidence, sourceLabel) {
+  const prefix = sourceLabel
+    ? `<strong class="reason-source">${sourceLabel}</strong> `
+    : '';
+  return `<span class="reason-entry">${confidenceBadge(confidence, evidence)}${prefix}${reason || ''}</span>`;
+}
+
 // --- Helpers ---
 
 function getVisiblePlants(query) {
@@ -333,7 +358,7 @@ function updateResults() {
     conflictsPanel.hidden = false;
     conflictList.innerHTML = conflicts.map(c =>
       `<li>${emojiFor(c.source)} <strong>${nameFor(c.source)}</strong> ✕ ${emojiFor(c.target)} <strong>${nameFor(c.target)}</strong>` +
-      (c.reason ? `<span class="reason">${c.reason}</span>` : '') +
+      (c.reason ? `<span class="reason">${relationshipReasonHtml(c.reason, c.confidence, c.evidence, '')}</span>` : '') +
       `</li>`
     ).join('');
   } else {
@@ -357,12 +382,14 @@ function updateResults() {
     companionList.innerHTML = [...shared].map(id => {
       const reasons = [...selected].map(sel => {
         const rel = JSON.parse(garden.relationship(sel, id));
-        return rel && rel.reason ? `${nameFor(sel)}: ${rel.reason}` : null;
+        return rel && rel.reason
+          ? relationshipReasonHtml(rel.reason, rel.confidence, rel.evidence, `${nameFor(sel)}:`)
+          : null;
       }).filter(Boolean);
 
       return `<li><span class="companion-main">${emojiFor(id)} <strong>${nameFor(id)}</strong></span>` +
         `<button type="button" class="companion-add-btn" data-add-id="${id}" aria-label="Add ${nameFor(id)} to your garden">+ Add</button>` +
-        (reasons.length > 0 ? `<span class="reason">${reasons.join(' | ')}</span>` : '') +
+        (reasons.length > 0 ? `<span class="reason">${reasons.join('')}</span>` : '') +
         `</li>`;
     }).join('');
   } else {
@@ -409,7 +436,7 @@ function updateSuccession() {
       `<span class="succession-arrow">→</span>` +
       `${emojiFor(d.successor)} <strong>${nameFor(d.successor)}</strong>` +
       gapText +
-      (d.reason ? `<span class="reason">${d.reason}</span>` : '') +
+      (d.reason ? `<span class="reason">${relationshipReasonHtml(d.reason, d.confidence, d.evidence, '')}</span>` : '') +
       `</li>`;
   }).join('');
 }

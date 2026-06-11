@@ -5,7 +5,7 @@
  * renders height/spread/root curves on canvas, shows snapshot cards,
  * and lets the user scrub through days with a slider.
  */
-import { simulate_season, simulate_growth } from './pkg/companion_graph.js';
+import { simulate_season, simulate_growth, simulate_plan, simulate_plan_weather } from './pkg/companion_graph.js';
 import { fetchDailyWeather, fetchCurrentConditions, fetchForecast, fetchCropAlerts, doyToDate as doyToIsoDate, defaultWeatherYear } from './weather.js';
 import { optimizeGrowth, compareWithCurrent, sensitivityAnalysis, doyLabel } from './optimizer.js';
 
@@ -188,6 +188,639 @@ let forecastData = null; // 7-day forecast from NWS/Open-Meteo
 let currentConditions = null; // current observation snapshot
 let activeAlerts = []; // active weather alerts for location
 let currentLocation = { lat: 42, lon: -71.1, label: '' };
+let planData = null; // multi-plant results from simulate_plan or weather plan runner
+let growthScope = 'single';
+let uploadedWeatherData = null;
+let uploadedWeatherLabel = '';
+
+const COUNT_FORMAT = new Intl.NumberFormat('en-US');
+const DEFAULT_PLANNER_CELL_CM = 15;
+
+function getGrowthScope() {
+  return document.getElementById('growth-scope-select')?.value || 'single';
+}
+
+function getGardenGeometrySource() {
+  return document.getElementById('growth-garden-source')?.value || 'manual';
+}
+
+function getEnabledSelectedGrowthIds() {
+  return [...document.querySelectorAll('#growth-selected-list .linked-chip:not([disabled])')]
+    .map((btn) => btn.dataset.id)
+    .filter(Boolean)
+    .filter((id, idx, arr) => arr.indexOf(id) === idx);
+}
+
+function readPlannerBeds() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('garden-beds') || '[]');
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+function plannerCellInside(bed, row, col) {
+  if (bed?.shape === 'circle') {
+    const cr = (bed.rows - 1) / 2;
+    const cc = (bed.cols - 1) / 2;
+    const dr = cr ? (row - cr) / cr : 0;
+    const dc = cc ? (col - cc) / cc : 0;
+    return (dr * dr + dc * dc) <= 1.05;
+  }
+  return true;
+}
+
+function plannerBedDimensionsCm(bed) {
+  return bed?.dimensions_cm || {
+    width: (bed?.cols || 0) * DEFAULT_PLANNER_CELL_CM,
+    depth: (bed?.rows || 0) * DEFAULT_PLANNER_CELL_CM,
+    soil_depth: 30,
+  };
+}
+
+function plannerBedAreaM2(bed) {
+  const dim = plannerBedDimensionsCm(bed);
+  const widthM = (dim.width || 0) / 100;
+  const depthM = (dim.depth || 0) / 100;
+  if (bed?.shape === 'circle') {
+    return Math.PI * (widthM / 2) * (depthM / 2);
+  }
+  return widthM * depthM;
+}
+
+function plannerBedPlantCounts(bed) {
+  const counts = new Map();
+  if (!bed?.cells || !bed?.rows || !bed?.cols) return counts;
+
+  for (let row = 0; row < bed.rows; row += 1) {
+    for (let col = 0; col < bed.cols; col += 1) {
+      if (!plannerCellInside(bed, row, col)) continue;
+      const plantId = bed.cells[row]?.[col];
+      if (!plantId) continue;
+      counts.set(plantId, (counts.get(plantId) || 0) + 1);
+    }
+  }
+
+  return counts;
+}
+
+function getPlannerBedInfos() {
+  return readPlannerBeds()
+    .map((bed, index) => ({
+      index,
+      bed,
+      counts: plannerBedPlantCounts(bed),
+      areaM2: plannerBedAreaM2(bed),
+    }))
+    .filter((info) => info.counts.size > 0);
+}
+
+function populatePlannerBedOptions() {
+  const select = document.getElementById('growth-garden-bed-select');
+  const infos = getPlannerBedInfos();
+  if (!select) return infos;
+
+  const previous = select.value;
+  select.innerHTML = '';
+
+  infos.forEach((info) => {
+    const option = document.createElement('option');
+    option.value = String(info.index);
+    const totalPlants = [...info.counts.values()].reduce((sum, value) => sum + value, 0);
+    option.textContent = `${info.bed.name || `Bed ${info.index + 1}`} · ${formatAreaLabel(info.areaM2)} · ${COUNT_FORMAT.format(totalPlants)} plants`;
+    select.appendChild(option);
+  });
+
+  if (infos.length === 0) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'No planted planner beds found';
+    select.appendChild(option);
+    select.disabled = true;
+  } else {
+    select.disabled = false;
+    const values = infos.map((info) => String(info.index));
+    select.value = values.includes(previous) ? previous : values[0];
+  }
+
+  return infos;
+}
+
+function syncGrowthScopeUI() {
+  growthScope = getGrowthScope();
+  const gardenRow = document.getElementById('growth-garden-row');
+  const manualGardenRow = document.getElementById('growth-garden-manual-row');
+  const gardenBedField = document.getElementById('growth-garden-bed-field');
+  const hint = document.getElementById('growth-scope-hint');
+  const optimizeBtn = document.getElementById('growth-optimize-btn');
+  const optimizerPanel = document.getElementById('growth-optimizer-panel');
+  const gardenSummary = document.getElementById('growth-garden-summary');
+  const geometrySource = getGardenGeometrySource();
+  const plannerInfos = populatePlannerBedOptions();
+
+  if (gardenRow) gardenRow.hidden = growthScope !== 'garden';
+  if (manualGardenRow) manualGardenRow.hidden = growthScope !== 'garden' || geometrySource !== 'manual';
+  if (gardenBedField) gardenBedField.hidden = growthScope !== 'garden' || geometrySource !== 'planner-bed';
+  if (hint) {
+    hint.textContent = growthScope === 'single'
+      ? 'Charts and advisor target one plant.'
+      : growthScope === 'selected'
+        ? 'Simulate all selected crops together. Charts stay focused on the chosen plant.'
+        : geometrySource === 'manual'
+          ? 'Simulate selected crops over a scaled field. Counts are derived from spacing and garden area.'
+          : geometrySource === 'planner-bed'
+            ? (plannerInfos.length > 0
+              ? 'Simulate the saved planner bed using its planted crops, shape, and dimensions.'
+              : 'Planner bed geometry is selected, but no planted planner beds are available yet.')
+            : (plannerInfos.length > 0
+              ? 'Simulate all planted planner beds together using their saved geometry and crop counts.'
+              : 'All planner beds are selected, but no planted planner beds are available yet.');
+  }
+  if (optimizeBtn) {
+    const disabled = growthScope !== 'single';
+    optimizeBtn.disabled = disabled;
+    optimizeBtn.title = disabled
+      ? 'Optimizer currently targets a single focus plant. Switch scope to Single Plant to use it.'
+      : 'Find the best planting date, water, and nitrogen for maximum yield';
+  }
+  if (optimizerPanel && growthScope !== 'single') {
+    optimizerPanel.hidden = true;
+  }
+  if (gardenSummary && growthScope === 'single') {
+    gardenSummary.hidden = true;
+  }
+}
+
+function resolvePlanPlants(focusPlant) {
+  if (growthScope === 'single') return [focusPlant].filter(Boolean);
+
+  const selectedIds = getEnabledSelectedGrowthIds();
+  const selectedPlants = selectedIds
+    .map((id) => plants.find((plant) => plant.id === id))
+    .filter(Boolean);
+
+  if (selectedPlants.length === 0) {
+    return [focusPlant].filter(Boolean);
+  }
+
+  return selectedPlants;
+}
+
+function getGardenScaleConfig() {
+  const unit = document.getElementById('growth-garden-unit')?.value || 'ft';
+  const widthRaw = parseFloat(document.getElementById('growth-garden-width')?.value) || 500;
+  const depthRaw = parseFloat(document.getElementById('growth-garden-depth')?.value) || 500;
+  const width = Math.max(1, widthRaw);
+  const depth = Math.max(1, depthRaw);
+  const meterFactor = unit === 'ft' ? 0.3048 : 1;
+  const widthM = width * meterFactor;
+  const depthM = depth * meterFactor;
+  const areaM2 = widthM * depthM;
+  return { unit, width, depth, widthM, depthM, areaM2 };
+}
+
+function getPlannerGeometryConfig() {
+  const source = getGardenGeometrySource();
+  if (growthScope !== 'garden' || source === 'manual') return null;
+
+  const infos = getPlannerBedInfos();
+  if (infos.length === 0) return null;
+
+  const bedSelect = document.getElementById('growth-garden-bed-select');
+  const selectedInfos = source === 'planner-bed'
+    ? infos.filter((info) => String(info.index) === String(bedSelect?.value || ''))
+    : infos;
+
+  if (selectedInfos.length === 0) return null;
+
+  const countsById = new Map();
+  let areaM2 = 0;
+
+  selectedInfos.forEach((info) => {
+    areaM2 += info.areaM2;
+    info.counts.forEach((count, plantId) => {
+      countsById.set(plantId, (countsById.get(plantId) || 0) + count);
+    });
+  });
+
+  const planPlants = [...countsById.keys()]
+    .map((plantId) => plants.find((plant) => plant.id === plantId))
+    .filter(Boolean);
+
+  if (planPlants.length === 0) return null;
+
+  return {
+    source,
+    areaM2,
+    countsById,
+    planPlants,
+    scaleLabel: source === 'planner-bed' ? 'Planner Bed' : 'Planner Beds',
+    scaleValue: source === 'planner-bed'
+      ? `${selectedInfos[0].bed.name || 'Planner bed'} · ${formatAreaLabel(areaM2)}`
+      : `${selectedInfos.length} beds · ${formatAreaLabel(areaM2)}`,
+    countLabel: 'Planner Plants',
+    note: source === 'planner-bed'
+      ? 'Using saved planner geometry, shape, and planted crop counts for this bed.'
+      : 'Using all planted planner beds together with their saved geometry and crop counts.',
+  };
+}
+
+function estimateScaledPlantCount(plant, shareAreaM2) {
+  const spacingCm = plant?.properties?.metric?.spacing_cm
+    || plant?.properties?.metric?.spread_cm
+    || 30;
+  const spacingM = Math.max(spacingCm / 100, 0.15);
+  const footprintM2 = spacingM * spacingM;
+  return Math.max(1, Math.floor(shareAreaM2 / footprintM2));
+}
+
+function formatAreaLabel(areaM2) {
+  const areaFt2 = areaM2 * 10.7639;
+  const acres = areaFt2 / 43560;
+  if (areaFt2 >= 43560) {
+    return `${COUNT_FORMAT.format(Math.round(areaFt2))} ft² (${acres.toFixed(2)} ac)`;
+  }
+  return `${COUNT_FORMAT.format(Math.round(areaFt2))} ft² (${areaM2.toFixed(1)} m²)`;
+}
+
+function buildPlanSummary(focusPlant, planPlants, results, waterMl, numDays, geometryConfig = null) {
+  if (!results || results.length === 0) return null;
+
+  const area = growthScope === 'garden' && !geometryConfig ? getGardenScaleConfig() : geometryConfig;
+  const perSpeciesArea = growthScope === 'garden' && !geometryConfig
+    ? area.areaM2 / Math.max(planPlants.length, 1)
+    : 0;
+
+  let totalPlants = 0;
+  let totalYieldKg = 0;
+  let totalWaterLDay = 0;
+
+  const breakdown = results.map((result) => {
+    const plant = planPlants.find((entry) => entry.id === result.plant_id)
+      || plants.find((entry) => entry.id === result.plant_id);
+    const last = result.snapshots[result.snapshots.length - 1] || null;
+    const count = geometryConfig?.countsById?.get(result.plant_id)
+      || (growthScope === 'garden'
+        ? estimateScaledPlantCount(plant, perSpeciesArea)
+        : 1);
+    const perPlantYieldKg = last?.cumulative_yield_kg || 0;
+    const totalSpeciesYieldKg = perPlantYieldKg * count;
+    const totalSpeciesWaterLDay = (waterMl * count) / 1000;
+    totalPlants += count;
+    totalYieldKg += totalSpeciesYieldKg;
+    totalWaterLDay += totalSpeciesWaterLDay;
+
+    return {
+      id: result.plant_id,
+      name: plant?.name || result.plant_id,
+      count,
+      peakHeightCm: last?.height_cm || 0,
+      totalYieldKg: totalSpeciesYieldKg,
+      totalWaterLDay: totalSpeciesWaterLDay,
+    };
+  });
+
+  return {
+    scope: growthScope,
+    focusPlantName: focusPlant?.name || 'focus plant',
+    scaleLabel: geometryConfig?.scaleLabel || (growthScope === 'garden' ? 'Area' : 'Scale'),
+    scaleValue: geometryConfig?.scaleValue || (growthScope === 'garden' ? formatAreaLabel(area.areaM2) : '1 plant per crop'),
+    countLabel: geometryConfig?.countLabel || (growthScope === 'garden' ? 'Estimated Plants' : 'Plants'),
+    totalPlants,
+    totalYieldKg,
+    totalWaterLDay,
+    seasonWaterL: totalWaterLDay * numDays,
+    breakdown,
+    note: geometryConfig?.note || (growthScope === 'garden'
+      ? 'Each crop is simulated once at species level, then scaled by spacing-derived plant count. The representative mix includes canopy shade and root competition, which keeps 500 ft × 500 ft and larger plots fast.'
+      : 'Selected crops are simulated together with canopy shade and root competition. Charts below stay focused on the chosen plant while totals summarize the whole mix.'),
+  };
+}
+
+function renderPlanSummary(summary) {
+  const container = document.getElementById('growth-garden-summary');
+  if (!container) return;
+  if (!summary || summary.scope === 'single') {
+    container.hidden = true;
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="growth-garden-card">
+      <div class="growth-garden-head">
+        <div>
+          <div class="growth-garden-title">${summary.scope === 'garden' ? 'Scaled Garden Simulation' : 'Multi-Crop Simulation'}</div>
+          <div class="growth-garden-note">${escapeHtml(summary.note)} Charts below are focused on ${escapeHtml(summary.focusPlantName)}.</div>
+        </div>
+      </div>
+      <div class="growth-garden-grid">
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">${summary.scaleLabel}</span>
+          <span class="growth-garden-metric-value">${summary.scaleValue}</span>
+        </div>
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">Species</span>
+          <span class="growth-garden-metric-value">${COUNT_FORMAT.format(summary.breakdown.length)}</span>
+        </div>
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">${summary.countLabel}</span>
+          <span class="growth-garden-metric-value">${COUNT_FORMAT.format(summary.totalPlants)}</span>
+        </div>
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">Season Yield</span>
+          <span class="growth-garden-metric-value">${summary.totalYieldKg.toFixed(1)} kg</span>
+        </div>
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">Water / Day</span>
+          <span class="growth-garden-metric-value">${summary.totalWaterLDay.toFixed(1)} L</span>
+        </div>
+        <div class="growth-garden-metric">
+          <span class="growth-garden-metric-label">Water / Season</span>
+          <span class="growth-garden-metric-value">${COUNT_FORMAT.format(Math.round(summary.seasonWaterL))} L</span>
+        </div>
+      </div>
+      <div class="growth-garden-breakdown">
+        <div class="growth-garden-breakdown-title">Per-Crop Breakdown</div>
+        <div class="growth-garden-breakdown-table">
+          <div class="growth-garden-breakdown-row growth-garden-breakdown-row--head">
+            <span>Crop</span>
+            <span class="growth-garden-breakdown-cell--num">Count</span>
+            <span class="growth-garden-breakdown-cell--num">Peak Height</span>
+            <span class="growth-garden-breakdown-cell--num">Yield</span>
+            <span class="growth-garden-breakdown-cell--num">Water / Day</span>
+          </div>
+          ${summary.breakdown.map((item) => `
+            <div class="growth-garden-breakdown-row">
+              <span class="growth-garden-breakdown-cell--plant">${escapeHtml(item.name)}</span>
+              <span class="growth-garden-breakdown-cell--num">${COUNT_FORMAT.format(item.count)}</span>
+              <span class="growth-garden-breakdown-cell--num">${item.peakHeightCm.toFixed(0)} cm</span>
+              <span class="growth-garden-breakdown-cell--num">${item.totalYieldKg.toFixed(1)} kg</span>
+              <span class="growth-garden-breakdown-cell--num">${item.totalWaterLDay.toFixed(1)} L</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  container.hidden = false;
+}
+
+function updateWeatherUploadNote(message = '') {
+  const note = document.getElementById('growth-weather-upload-note');
+  if (!note) return;
+  const weatherOn = document.getElementById('growth-weather-toggle')?.checked;
+
+  if (message) {
+    note.textContent = message;
+    note.hidden = false;
+    return;
+  }
+
+  if (!weatherOn) {
+    note.hidden = true;
+    note.textContent = '';
+    return;
+  }
+
+  if (uploadedWeatherData && uploadedWeatherData.length > 0) {
+    note.textContent = `Uploaded ${uploadedWeatherLabel}. This overrides the archive year for simulation runs.`;
+    note.hidden = false;
+    return;
+  }
+
+  note.hidden = true;
+  note.textContent = '';
+}
+
+function normalizeWeatherHeader(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\s\-\/()]+/g, '_');
+}
+
+function parseCsvLine(line) {
+  const cells = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let idx = 0; idx < line.length; idx += 1) {
+    const char = line[idx];
+    const next = line[idx + 1];
+
+    if (char === '"') {
+      if (inQuotes && next === '"') {
+        current += '"';
+        idx += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      cells.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  cells.push(current.trim());
+  return cells;
+}
+
+function parseOptionalNumber(value) {
+  if (value == null || value === '') return null;
+  const cleaned = String(value).trim().replace(/[^0-9.+-]/g, '');
+  if (!cleaned) return null;
+  const parsed = Number.parseFloat(cleaned);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function getWeatherField(row, keys) {
+  for (const key of keys) {
+    if (row[key] != null && row[key] !== '') return row[key];
+  }
+  return null;
+}
+
+function normalizeWeatherRow(row) {
+  const low = parseOptionalNumber(getWeatherField(row, [
+    'temp_low_c', 'temp_min_c', 'low_c', 'tmin_c', 'temperature_2m_min', 'min_temp_c'
+  ]));
+  const high = parseOptionalNumber(getWeatherField(row, [
+    'temp_high_c', 'temp_max_c', 'high_c', 'tmax_c', 'temperature_2m_max', 'max_temp_c'
+  ]));
+  const humidity = parseOptionalNumber(getWeatherField(row, [
+    'humidity_pct', 'relative_humidity', 'relative_humidity_pct', 'humidity'
+  ]));
+  const precip = parseOptionalNumber(getWeatherField(row, [
+    'precip_mm', 'precipitation_mm', 'rain_mm', 'precipitation_sum'
+  ]));
+  const windRaw = parseOptionalNumber(getWeatherField(row, [
+    'wind_speed_ms', 'wind_ms', 'wind_speed', 'wind_speed_mps', 'wind_speed_10m_max', 'wind_speed_kph'
+  ]));
+  const windKey = Object.keys(row).find((key) => row[key] === getWeatherField(row, [
+    'wind_speed_ms', 'wind_ms', 'wind_speed', 'wind_speed_mps', 'wind_speed_10m_max', 'wind_speed_kph'
+  ])) || '';
+
+  if (high == null && low == null) return null;
+
+  let wind = windRaw;
+  if (wind != null && /kph/.test(windKey)) {
+    wind /= 3.6;
+  }
+
+  return {
+    date: getWeatherField(row, ['date', 'day', 'time']) || null,
+    temp_high_c: high,
+    temp_low_c: low,
+    humidity_pct: humidity,
+    precip_mm: precip ?? 0,
+    wind_speed_ms: wind,
+  };
+}
+
+function normalizeWeatherRows(rows) {
+  const days = rows
+    .map((row) => normalizeWeatherRow(row))
+    .filter(Boolean);
+
+  if (days.every((day) => day.date)) {
+    days.sort((left, right) => String(left.date).localeCompare(String(right.date)));
+  }
+
+  return days;
+}
+
+function parseUploadedWeatherCsv(text) {
+  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (lines.length < 2) {
+    throw new Error('CSV needs a header row and at least one data row.');
+  }
+
+  const headers = parseCsvLine(lines[0]).map(normalizeWeatherHeader);
+  const rows = lines.slice(1).map((line) => {
+    const values = parseCsvLine(line);
+    const row = {};
+    headers.forEach((header, idx) => {
+      row[header] = values[idx] ?? '';
+    });
+    return row;
+  });
+
+  return normalizeWeatherRows(rows);
+}
+
+function parseUploadedWeatherJson(text) {
+  const payload = JSON.parse(text);
+  const rows = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.days)
+      ? payload.days
+      : Array.isArray(payload?.weather)
+        ? payload.weather
+        : [];
+
+  if (!rows.length) {
+    throw new Error('JSON weather upload must be an array or an object with a days array.');
+  }
+
+  return normalizeWeatherRows(rows.map((row) => {
+    const normalized = {};
+    Object.entries(row || {}).forEach(([key, value]) => {
+      normalized[normalizeWeatherHeader(key)] = value;
+    });
+    return normalized;
+  }));
+}
+
+async function loadUploadedWeatherFile(file) {
+  const text = await file.text();
+  const isJson = /\.json$/i.test(file.name) || /^\s*[\[{]/.test(text);
+  const days = isJson ? parseUploadedWeatherJson(text) : parseUploadedWeatherCsv(text);
+
+  if (!days.length) {
+    throw new Error('No usable daily weather rows were found in the uploaded file.');
+  }
+
+  uploadedWeatherData = days;
+  uploadedWeatherLabel = `${file.name} · ${days.length} days`;
+  updateWeatherUploadNote();
+}
+
+function runPlanWithWeather(planPlants, numDays, baseEnv, weather) {
+  return planPlants.map((plant, idx) => {
+    const plantJson = JSON.stringify(plant);
+    const snapshots = [];
+    let gdd = 0;
+    let soilMoisture = 0;
+    let peakHeight = 0;
+    let peakSpread = 0;
+    let peakRoot = 0;
+    let cumulativeYield = 0;
+    let peakDailyYield = 0;
+    let flushCount = 0;
+    let wasProducing = false;
+
+    for (let day = 0; day < numDays; day++) {
+      const w = weather[day];
+      const dayEnv = {
+        ...baseEnv,
+        day_of_year: ((baseEnv.day_of_year + day - 1) % 365) + 1,
+      };
+
+      if (w) {
+        if (w.temp_high_c != null) dayEnv.temp_high_c = w.temp_high_c;
+        if (w.temp_low_c != null) dayEnv.temp_low_c = w.temp_low_c;
+        if (w.humidity_pct) dayEnv.humidity_pct = w.humidity_pct;
+        if (w.precip_mm) dayEnv.precip_mm = w.precip_mm;
+        if (w.wind_speed_ms) dayEnv.wind_speed_ms = w.wind_speed_ms;
+      }
+      if (soilMoisture > 0) {
+        dayEnv.soil_moisture_mm = soilMoisture;
+      }
+
+      const snapJson = simulate_growth(plantJson, day, JSON.stringify(dayEnv), gdd);
+      const snap = JSON.parse(snapJson);
+      gdd = snap.gdd_accumulated;
+      soilMoisture = snap.soil_moisture_mm || 0;
+
+      peakHeight = Math.max(peakHeight, snap.height_cm);
+      peakSpread = Math.max(peakSpread, snap.spread_cm);
+      peakRoot = Math.max(peakRoot, snap.root_depth_cm);
+      snap.height_cm = peakHeight;
+      snap.spread_cm = peakSpread;
+      snap.root_depth_cm = peakRoot;
+
+      cumulativeYield += (snap.daily_yield_rate || 0);
+      snap.cumulative_yield_kg = cumulativeYield;
+
+      const producing = snap.is_producing || false;
+      if (producing && !wasProducing) flushCount++;
+      wasProducing = producing;
+      snap.harvest_flush_count = flushCount;
+
+      peakDailyYield = Math.max(peakDailyYield, snap.daily_yield_rate || 0);
+      snap.yield_trend = peakDailyYield > 0.001
+        ? (snap.daily_yield_rate || 0) / peakDailyYield : 0;
+      snap.day = day;
+
+      snapshots.push(snap);
+    }
+
+    return {
+      plant_id: plant.id,
+      role: idx === 0 ? 'primary' : 'support',
+      planting_day_offset: 0,
+      snapshots,
+    };
+  });
+}
 
 function getChartDayFromClientX(canvas, clientX) {
   if (!seasonData || seasonData.length < 2 || !canvas._chartParams) return null;
@@ -404,6 +1037,20 @@ export function initGrowthSim(plantList) {
     `<option value="${p.id}">${p.name}</option>`
   ).join('');
 
+  const scopeSelect = document.getElementById('growth-scope-select');
+  const gardenSourceSelect = document.getElementById('growth-garden-source');
+  const gardenBedSelect = document.getElementById('growth-garden-bed-select');
+  if (scopeSelect) {
+    scopeSelect.addEventListener('change', syncGrowthScopeUI);
+  }
+  if (gardenSourceSelect) {
+    gardenSourceSelect.addEventListener('change', syncGrowthScopeUI);
+  }
+  if (gardenBedSelect) {
+    gardenBedSelect.addEventListener('change', syncGrowthScopeUI);
+  }
+  syncGrowthScopeUI();
+
   // Init location picker
   initLocationPicker();
 
@@ -501,9 +1148,32 @@ export function setGrowthPlant(plantId, runAfterSelect = false) {
 
 // ── Run simulation ──
 async function runSimulation() {
+  growthScope = getGrowthScope();
   const plantId = document.getElementById('growth-plant-select').value;
-  const plant = plants.find(p => p.id === plantId);
+  let plant = plants.find(p => p.id === plantId);
   if (!plant) return;
+
+  const geometrySource = getGardenGeometrySource();
+  const geometryConfig = growthScope === 'garden' ? getPlannerGeometryConfig() : null;
+  if (growthScope === 'garden' && geometrySource !== 'manual' && !geometryConfig) {
+    renderPlanSummary(null);
+    document.getElementById('growth-results').hidden = true;
+    document.getElementById('growth-empty').hidden = false;
+    document.getElementById('growth-empty').textContent =
+      geometrySource === 'planner-bed'
+        ? 'Planner bed geometry is selected, but no planted planner bed is available. Add crops in the planner or switch geometry source to Manual Area.'
+        : 'All planner beds are selected, but no planted planner beds are available. Add crops in the planner or switch geometry source to Manual Area.';
+    return;
+  }
+
+  const planPlants = growthScope === 'garden' && geometryConfig
+    ? geometryConfig.planPlants
+    : resolvePlanPlants(plant);
+  if (planPlants.length === 0) return;
+  if (growthScope !== 'single' && !planPlants.some((entry) => entry.id === plant.id)) {
+    plant = planPlants[0];
+    document.getElementById('growth-plant-select').value = plant.id;
+  }
 
   const latitude = parseFloat(document.getElementById('growth-latitude').value) || 42;
   const plantDoy = parseInt(document.getElementById('growth-planting-doy').value) || 120;
@@ -514,12 +1184,15 @@ async function runSimulation() {
   const soil = SOIL_TYPES[soilKey] || SOIL_TYPES.loam;
 
   // Determine simulation length: maturity max + 30 days for senescence
-  const matMax = plant.timing.days_to_maturity[1] || 90;
+  const matMax = Math.max(...planPlants.map((entry) => entry.timing?.days_to_maturity?.[1] || 90));
   const numDays = Math.min(matMax + 30, 365);
 
   const useWeather = document.getElementById('growth-weather-toggle')?.checked || false;
   const weatherYear = parseInt(document.getElementById('growth-weather-year')?.value) || defaultWeatherYear();
   const weatherBadge = document.getElementById('growth-weather-badge');
+  const uploadedWeather = uploadedWeatherData && uploadedWeatherData.length > 0
+    ? uploadedWeatherData.slice(0, numDays)
+    : null;
 
   // Fetch real weather if enabled
   weatherData = null;
@@ -527,7 +1200,9 @@ async function runSimulation() {
   currentConditions = null;
   activeAlerts = [];
 
-  if (useWeather && currentLocation.lon !== 0) {
+  if (useWeather && uploadedWeather && uploadedWeather.length > 0) {
+    weatherData = uploadedWeather;
+  } else if (useWeather && currentLocation.lon !== 0) {
     try {
       const btn = document.getElementById('growth-run-btn');
       btn.textContent = '☁️ Fetching weather…';
@@ -563,8 +1238,12 @@ async function runSimulation() {
   // Update weather badge
   if (weatherBadge) {
     if (weatherData && weatherData.length > 0) {
-      const src = forecastData?.source === 'nws' ? 'NWS + Open-Meteo' : 'Open-Meteo';
-      weatherBadge.textContent = `☁️ ${src} · ${weatherYear}`;
+      if (uploadedWeather && uploadedWeather.length > 0) {
+        weatherBadge.textContent = `☁️ Uploaded · ${uploadedWeatherLabel}`;
+      } else {
+        const src = forecastData?.source === 'nws' ? 'NWS + Open-Meteo' : 'Open-Meteo';
+        weatherBadge.textContent = `☁️ ${src} · ${weatherYear}`;
+      }
       weatherBadge.hidden = false;
     } else {
       weatherBadge.textContent = '';
@@ -591,17 +1270,56 @@ async function runSimulation() {
   };
 
   try {
-    if (weatherData && weatherData.length > 0) {
-      // Per-day simulation with real weather
-      seasonData = runWithWeather(plant, numDays, baseEnv, weatherData);
+    if (growthScope === 'single') {
+      planData = null;
+      renderPlanSummary(null);
+
+      if (weatherData && weatherData.length > 0) {
+        // Per-day simulation with real weather
+        seasonData = runWithWeather(plant, numDays, baseEnv, weatherData);
+      } else {
+        // Original: fixed-temp season simulation
+        const resultJson = simulate_season(
+          JSON.stringify(plant),
+          numDays,
+          JSON.stringify(baseEnv)
+        );
+        seasonData = JSON.parse(resultJson);
+      }
     } else {
-      // Original: fixed-temp season simulation
-      const resultJson = simulate_season(
-        JSON.stringify(plant),
-        numDays,
-        JSON.stringify(baseEnv)
-      );
-      seasonData = JSON.parse(resultJson);
+      const planJson = JSON.stringify({
+        plan_name: growthScope === 'garden' ? 'Scaled Garden' : 'Selected Crop Mix',
+        management_mode: 'managed',
+        plantings: planPlants.map((entry, idx) => ({
+          plant_id: entry.id,
+          role: idx === 0 ? 'primary' : 'support',
+          planting_day_offset: 0,
+          seed_treatments: [],
+        })),
+      });
+
+      if (weatherData && weatherData.length > 0) {
+        const resultJson = simulate_plan_weather(
+          planJson,
+          JSON.stringify(planPlants),
+          JSON.stringify(weatherData),
+          numDays,
+          JSON.stringify(baseEnv)
+        );
+        planData = JSON.parse(resultJson);
+      } else {
+        const resultJson = simulate_plan(
+          planJson,
+          JSON.stringify(planPlants),
+          numDays,
+          JSON.stringify(baseEnv)
+        );
+        planData = JSON.parse(resultJson);
+      }
+
+      const focusPlan = planData.find((entry) => entry.plant_id === plant.id) || planData[0];
+      seasonData = focusPlan?.snapshots || [];
+      renderPlanSummary(buildPlanSummary(plant, planPlants, planData, waterMl, numDays, geometryConfig));
     }
   } catch (err) {
     console.error('Growth simulation error:', err);
@@ -613,6 +1331,13 @@ async function runSimulation() {
   // Show results
   document.getElementById('growth-empty').hidden = true;
   document.getElementById('growth-results').hidden = false;
+
+  if (!seasonData || seasonData.length === 0) {
+    document.getElementById('growth-empty').textContent = 'No simulation output was produced for the current scope.';
+    document.getElementById('growth-empty').hidden = false;
+    document.getElementById('growth-results').hidden = true;
+    return;
+  }
 
   // Set slider range
   const slider = document.getElementById('growth-day-slider');
@@ -1741,6 +2466,8 @@ function initWeatherControls() {
   const toggle = document.getElementById('growth-weather-toggle');
   const yearField = document.getElementById('growth-weather-year-field');
   const yearSelect = document.getElementById('growth-weather-year');
+  const fileField = document.getElementById('growth-weather-file-field');
+  const fileInput = document.getElementById('growth-weather-file');
   if (!toggle || !yearSelect) return;
 
   // Populate year picker: 2020 → last full year
@@ -1753,16 +2480,50 @@ function initWeatherControls() {
   }
   yearSelect.value = defaultWeatherYear();
 
-  // Toggle behavior: show year picker, dim manual temp fields
-  toggle.addEventListener('change', () => {
+  function syncWeatherControls() {
     const on = toggle.checked;
     if (yearField) yearField.hidden = !on;
+    if (fileField) fileField.hidden = !on;
+
+    const usingUpload = Boolean(uploadedWeatherData && uploadedWeatherData.length > 0);
+    yearSelect.disabled = usingUpload;
+    if (yearField) yearField.style.opacity = usingUpload ? '0.45' : '1';
 
     const tempH = document.getElementById('growth-temp-high');
     const tempL = document.getElementById('growth-temp-low');
     if (tempH) tempH.closest('.growth-field').style.opacity = on ? '0.4' : '1';
     if (tempL) tempL.closest('.growth-field').style.opacity = on ? '0.4' : '1';
-  });
+    updateWeatherUploadNote();
+  }
+
+  // Toggle behavior: show year picker and upload controls, dim manual temp fields
+  toggle.addEventListener('change', syncWeatherControls);
+
+  if (fileInput) {
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        uploadedWeatherData = null;
+        uploadedWeatherLabel = '';
+        updateWeatherUploadNote();
+        syncWeatherControls();
+        return;
+      }
+
+      try {
+        toggle.checked = true;
+        await loadUploadedWeatherFile(file);
+      } catch (err) {
+        uploadedWeatherData = null;
+        uploadedWeatherLabel = '';
+        updateWeatherUploadNote(`Weather upload failed: ${err.message}`);
+      }
+
+      syncWeatherControls();
+    });
+  }
+
+  syncWeatherControls();
 }
 
 /** Draw real weather temperature overlay on the growth height chart. */
@@ -1850,6 +2611,8 @@ function initOptimizerControls() {
 let lastOptimizerResult = null;
 
 async function runOptimizer() {
+  if (getGrowthScope() !== 'single') return;
+
   const plantId = document.getElementById('growth-plant-select').value;
   const plant = plants.find(p => p.id === plantId);
   if (!plant) return;

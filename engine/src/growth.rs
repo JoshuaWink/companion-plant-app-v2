@@ -1402,6 +1402,16 @@ pub fn simulate_plant(
     env: &Environment,
     gdd_so_far: f32,
 ) -> Snapshot {
+    simulate_plant_with_light(genetics, day, env, gdd_so_far, 1.0)
+}
+
+pub(crate) fn simulate_plant_with_light(
+    genetics: &PlantGenetics,
+    day: u16,
+    env: &Environment,
+    gdd_so_far: f32,
+    incoming_light_factor: f32,
+) -> Snapshot {
     // -- Resolve environment defaults --
     let humidity = if env.humidity_pct > 0.0 {
         env.humidity_pct
@@ -1432,7 +1442,8 @@ pub fn simulate_plant(
     // -- Atmospheric calculations --
     let t_avg = (env.temp_high_c + env.temp_low_c) / 2.0;
     let vpd = calc_vpd(env.temp_high_c, env.temp_low_c, humidity);
-    let dli = estimate_dli(env.latitude, env.day_of_year, env.altitude_m);
+    let dli = estimate_dli(env.latitude, env.day_of_year, env.altitude_m)
+        * incoming_light_factor.clamp(0.0, 1.0);
     let day_hours = day_length_hours(env.latitude, env.day_of_year);
 
     // -- GDD --

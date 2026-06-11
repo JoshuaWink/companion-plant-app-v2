@@ -271,6 +271,15 @@
             <label for="growth-plant-select" class="field-label">Plant</label>
             <select id="growth-plant-select" class="field-input"></select>
           </div>
+          <div class="growth-field">
+            <label for="growth-scope-select" class="field-label">Scope</label>
+            <select id="growth-scope-select" class="field-input">
+              <option value="single">Single Plant</option>
+              <option value="selected">Selected Crop Mix</option>
+              <option value="garden">Scaled Garden / Field</option>
+            </select>
+            <span id="growth-scope-hint" class="growth-hint">Charts stay focused on the chosen plant. Multi-crop modes add whole-garden totals above the charts.</span>
+          </div>
           <div class="growth-field growth-field--location">
             <label class="field-label">Location <span class="growth-hint">Sets latitude for sunlight calculation</span></label>
             <div class="growth-location-row">
@@ -334,7 +343,51 @@
             <label for="growth-weather-year" class="field-label">Weather Year</label>
             <select id="growth-weather-year" class="field-input"></select>
           </div>
+          <div class="growth-field growth-weather-field" id="growth-weather-file-field" hidden>
+            <label for="growth-weather-file" class="field-label">Upload Historical Weather</label>
+            <input type="file" id="growth-weather-file" class="field-input" accept=".csv,.json,text/csv,application/json">
+            <span class="growth-hint">CSV or JSON daily weather overrides the archive year for this run.</span>
+          </div>
           <span id="growth-weather-badge" class="growth-weather-badge" hidden></span>
+        </div>
+        <div id="growth-weather-upload-note" class="growth-weather-note" hidden></div>
+
+        <div class="growth-control-row growth-garden-row" id="growth-garden-row" hidden>
+          <div class="growth-field">
+            <label for="growth-garden-source" class="field-label">Geometry Source</label>
+            <select id="growth-garden-source" class="field-input">
+              <option value="manual" selected>Manual Area</option>
+              <option value="planner-bed">Planner Bed</option>
+              <option value="planner-all">All Planner Beds</option>
+            </select>
+            <span class="growth-hint">Use saved planner bed geometry and planted cells instead of a manual field rectangle.</span>
+          </div>
+          <div class="growth-field" id="growth-garden-bed-field" hidden>
+            <label for="growth-garden-bed-select" class="field-label">Planner Bed</label>
+            <select id="growth-garden-bed-select" class="field-input"></select>
+            <span class="growth-hint">Uses the bed's saved shape, dimensions, and planted crop counts.</span>
+          </div>
+        </div>
+
+        <div class="growth-control-row growth-garden-row" id="growth-garden-manual-row" hidden>
+          <div class="growth-field">
+            <label for="growth-garden-width" class="field-label">Garden Width</label>
+            <input type="number" id="growth-garden-width" class="field-input" value="500" min="1" max="50000" step="1">
+            <span class="growth-hint">Supports 500 ft × 500 ft and larger</span>
+          </div>
+          <div class="growth-field">
+            <label for="growth-garden-depth" class="field-label">Garden Depth</label>
+            <input type="number" id="growth-garden-depth" class="field-input" value="500" min="1" max="50000" step="1">
+            <span class="growth-hint">Rectangular area for full-garden scaling</span>
+          </div>
+          <div class="growth-field">
+            <label for="growth-garden-unit" class="field-label">Area Unit</label>
+            <select id="growth-garden-unit" class="field-input">
+              <option value="ft" selected>Feet</option>
+              <option value="m">Meters</option>
+            </select>
+            <span class="growth-hint">Plant counts use per-crop spacing and equal area share</span>
+          </div>
         </div>
 
         <!-- Action buttons -->
@@ -389,6 +442,7 @@
 
       <div id="growth-empty" class="empty-state center-text">Select a plant and click <strong>Run</strong> to simulate its full growing season day by day</div>
       <div id="growth-results" hidden>
+        <div id="growth-garden-summary" class="growth-garden-summary" hidden></div>
         <div class="growth-snapshot-card" id="growth-snapshot"></div>
         <div class="growth-day-control">
           <label for="growth-day-slider" class="field-label">Day <span id="growth-day-label">0</span></label>

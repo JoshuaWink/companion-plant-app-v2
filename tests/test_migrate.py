@@ -209,10 +209,13 @@ def test_build_companion_edges():
     assert companion_edges[0]["source"] == "basil"
     assert companion_edges[0]["target"] == "tomatoes"
     assert "repels" in companion_edges[0]["reason"].lower()
+    assert companion_edges[0]["confidence"] == "empirical"
+    assert companion_edges[0]["evidence"] == "observed-garden-practice"
 
     assert len(antagonist_edges) == 1
     assert antagonist_edges[0]["source"] == "basil"
     assert antagonist_edges[0]["target"] == "thyme"
+    assert antagonist_edges[0]["confidence"] == "empirical"
 
 
 def test_edges_have_required_fields():
@@ -230,6 +233,22 @@ def test_edges_have_required_fields():
         assert "type" in edge
         assert edge["type"] in ("companion", "antagonist")
         assert "reason" in edge
+        assert "confidence" in edge
+        assert "evidence" in edge
+
+
+def test_disease_reason_gets_consensus_confidence():
+    raw = {
+        "Plant Name": "Pepper",
+        "Companions": "",
+        "Companion Benefits": "",
+        "Keep Away From": "Tomatoes",
+        "Why Is It Bad?": "Tomatoes and peppers are susceptible to verticillium wilt and share pests."
+    }
+    edges = build_relationship_edges(raw)
+    assert len(edges) == 1
+    assert edges[0]["confidence"] == "consensus"
+    assert edges[0]["evidence"] == "disease-avoidance"
 
 
 # --- detect_contradictions ---

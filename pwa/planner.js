@@ -46,6 +46,97 @@ function getSoilType(bed) {
   return SOIL_TYPES[bed.soilType || 'loam'] || SOIL_TYPES.loam;
 }
 
+// ── Soil Coaching Messages ──
+const SOIL_COACHING = {
+  'sandy':      'Drains fast — water more often and mulch heavily. Great for root vegetables (carrots, radishes). Nitrogen leaches quickly; fixers help a lot.',
+  'sandy-loam': 'Good drainage and workability. Versatile for most crops. Moderate amendments needed.',
+  'loam':       'Ideal balance of drainage and moisture retention. Most plants thrive here with minimal adjustments.',
+  'silt-loam':  'Retains moisture well — watch for waterlogging in wet seasons. Avoid compaction; minimize foot traffic.',
+  'clay-loam':  'Compact when wet. Work it only when moist, not wet. Deep-rooted plants (daikon, parsnip) help break it open over time.',
+  'clay':       'Root spread is reduced ~50% in clay. Consider raised beds or deep-tillage cover crops. Daikon radish and compost are your best tools.',
+};
+
+// ── Garden Harmony Score ──
+// Returns { score (0–5), suggestion (string), level ('good'|'warn'|'needs-work') }
+function buildHarmonyCoaching(conflictPairs, nCoverage, pollinatorScore, familyCount, rootLayerCount, totalFeeders) {
+  let score = 0;
+  if (conflictPairs === 0) score++;
+  if (nCoverage >= 75 || totalFeeders === 0) score++;
+  if (pollinatorScore >= 1) score++;
+  if (familyCount >= 3) score++;
+  if (rootLayerCount >= 2) score++;
+
+  let suggestion = '';
+  if (conflictPairs > 0) {
+    suggestion = 'Resolve conflicts first — separate or replace conflicting plants.';
+  } else if (totalFeeders > 0 && nCoverage < 50) {
+    suggestion = 'Nitrogen gap — add a fixer near heavy feeders (beans, peas, or clover).';
+  } else if (pollinatorScore === 0) {
+    suggestion = 'No pollinators — add dill, borage, or marigold to attract beneficial insects.';
+  } else if (familyCount < 3) {
+    suggestion = 'Low diversity — try a different plant family to balance soil biology.';
+  } else if (rootLayerCount < 2) {
+    suggestion = 'Single root layer — add a deep-rooted plant (parsnip, carrot, or daikon) for subsoil access.';
+  } else {
+    suggestion = 'Garden is well-balanced — good polyculture.';
+  }
+
+  const level = score >= 4 ? 'good' : (score >= 2 ? 'warn' : 'needs-work');
+  return { score, suggestion, level };
+}
+
+// ── Rotation Helpers ──
+
+// Extract the set of plant families currently in a bed's cells
+function extractBedFamilies(bed) {
+  const families = new Set();
+  for (let r = 0; r < bed.rows; r++) {
+    for (let c = 0; c < bed.cols; c++) {
+      const pid = bed.cells[r]?.[c];
+      if (!pid || !isInsideShape(bed, r, c)) continue;
+      const p = plannerPlants.find(pp => pp.id === pid);
+      if (p && p.family) families.add(p.family);
+    }
+  }
+  return [...families];
+}
+
+// HIGH_RISK_FAMILIES: families where rotation gap matters most for disease prevention
+const HIGH_RISK_FAMILIES = {
+  'solanaceae':    { name: 'Nightshade', emoji: '🍅', risk: 'Blight, nematodes' },
+  'brassicaceae':  { name: 'Brassica',   emoji: '🥦', risk: 'Club root, downy mildew' },
+  'cucurbitaceae': { name: 'Cucurbit',   emoji: '🥒', risk: 'Powdery mildew, vine borers' },
+  'apiaceae':      { name: 'Carrot',     emoji: '🥕', risk: 'Carrot fly, Alternaria blight' },
+};
+
+// Check for rotation warnings: families repeated within the rule window
+function checkRotationWarnings(bed, currentFamilies) {
+  const ruleYears = bed.rotationRuleYears || 3;
+  const currentYear = new Date().getFullYear();
+  const warnings = [];
+  if (!bed.rotations || bed.rotations.length === 0) return warnings;
+
+  currentFamilies.forEach(fam => {
+    bed.rotations.forEach(rot => {
+      if (!rot.families || !rot.families.includes(fam)) return;
+      const rotYear = rot.year || (currentYear - 1);
+      const gap = currentYear - rotYear;
+      if (gap > 0 && gap < ruleYears) {
+        warnings.push({ family: fam, lastYear: rotYear, gap, ruleYears });
+      }
+    });
+  });
+  return warnings;
+}
+
+// Migrate old rotation snapshots (no year/families) to new schema
+function migrateRotation(rot, idx) {
+  if (!rot.year) rot.year = new Date().getFullYear() - (idx + 1);
+  // families can only be populated if plannerPlants is loaded; best effort
+  if (!rot.families) rot.families = [];
+  return rot;
+}
+
 // ── Undo/Redo ──
 let undoStack = [];
 let redoStack = [];
@@ -1392,8 +1483,51 @@ function renderBedStats(bed) {
   const nCoverage = totalFeeders > 0 ? Math.round((coveredFeeders / totalFeeders) * 100) : 100;
   const nClass = nCoverage >= 75 ? 'bed-stat--good' : (nCoverage >= 40 ? '' : 'bed-stat--bad');
 
+  // ── Harmony Score inputs ──
+  let pollinatorScore = 0;
+  const rootDepths = new Set();
+  const familySet = new Set();
+  for (const pid of plantIds) {
+    const p = plannerPlants.find(pp => pp.id === pid);
+    if (!p) continue;
+    if (p.family) familySet.add(p.family);
+    const pr = p.properties || {};
+    if ((pr.pollinator_score || 0) > 0) pollinatorScore += pr.pollinator_score;
+    if (pr.root_depth) rootDepths.add(pr.root_depth);
+    else if (pr.metric && pr.metric.root_depth_cm) {
+      rootDepths.add(pr.metric.root_depth_cm >= 45 ? 'deep' : (pr.metric.root_depth_cm >= 20 ? 'medium' : 'shallow'));
+    }
+  }
+  const harmony = buildHarmonyCoaching(conflictPairs, nCoverage, pollinatorScore, familySet.size, rootDepths.size, totalFeeders);
+
+  // ── Rotation warnings for current layout ──
+  const currentFamilies = extractBedFamilies(bed);
+  const rotWarnings = checkRotationWarnings(bed, currentFamilies);
+
   // ── Build HTML ──
   let html = '';
+
+  // ── Harmony coaching card (top of panel) ──
+  if (plantCount > 0) {
+    const dots = Array.from({ length: 5 }, (_, i) =>
+      '<span class="harmony-dot' + (i < harmony.score ? ' harmony-dot--filled' : '') + '"></span>'
+    ).join('');
+    html += '<div class="bed-harmony bed-harmony--' + harmony.level + '">' +
+      '<div class="bed-harmony-score">' + dots + '<span class="bed-harmony-label">' +
+      (harmony.level === 'good' ? 'Thriving' : (harmony.level === 'warn' ? 'Developing' : 'Needs Work')) +
+      '</span></div>' +
+      '<div class="bed-harmony-suggestion">' + harmony.suggestion + '</div>' +
+      '</div>';
+  }
+
+  // Rotation warnings card
+  if (rotWarnings.length > 0) {
+    const warnItems = rotWarnings.map(w => {
+      const info = HIGH_RISK_FAMILIES[w.family] || { emoji: '🌿', name: w.family, risk: 'rotation advised' };
+      return info.emoji + ' ' + info.name + ' repeated after ' + w.gap + ' yr — ' + info.risk;
+    }).join('<br>');
+    html += '<div class="bed-coaching bed-coaching--warn">⚠ Rotation alert:<br>' + warnItems + '</div>';
+  }
 
   // Row 1: basic counts
   html += '<div class="bed-stat"><span class="bed-stat-label">Plants</span><span class="bed-stat-value">' + plantCount + ' varieties</span></div>';
@@ -1421,6 +1555,12 @@ function renderBedStats(bed) {
     if (soil.waterFactor !== 1.0) {
       const wAdj = soil.waterFactor > 1 ? '+' + Math.round((soil.waterFactor - 1) * 100) + '% (drains fast)' : Math.round((soil.waterFactor - 1) * 100) + '% (retains well)';
       html += '<div class="bed-stat"><span class="bed-stat-label">🌊 Moisture</span><span class="bed-stat-value">' + wAdj + '</span></div>';
+    }
+
+    // Soil coaching tip
+    const soilTip = SOIL_COACHING[bed.soilType || 'loam'];
+    if (soilTip) {
+      html += '<div class="bed-coaching">' + soilTip + '</div>';
     }
 
     if (totalFeeders > 0) {
@@ -1765,8 +1905,11 @@ function setSeasonMonth(m) {
 
 function addRotationSeason(bed) {
   if (!bed.rotations) bed.rotations = [];
+  const year = new Date().getFullYear();
   bed.rotations.push({
     label: 'Season ' + (bed.rotations.length + 1),
+    year,
+    families: extractBedFamilies(bed),
     cells: JSON.parse(JSON.stringify(bed.cells)),
   });
   saveBeds();
@@ -1774,16 +1917,77 @@ function addRotationSeason(bed) {
 
 function renderRotationTabs(bed) {
   const container = document.getElementById('rotation-tabs');
-  if (!container || !bed.rotations || bed.rotations.length === 0) {
-    if (container) container.hidden = true;
+  if (!container) return;
+  if (!bed.rotations || bed.rotations.length === 0) {
+    container.hidden = true;
     return;
   }
   container.hidden = false;
-  container.innerHTML = '<span class="rotation-label">Rotations:</span> ' +
-    bed.rotations.map((rot, i) =>
-      '<button class="rotation-tab" data-rot-idx="' + i + '">' + rot.label + '</button>'
-    ).join('') +
-    '<button class="rotation-tab rotation-tab-save" id="save-rotation-btn">💾 Save Current</button>';
+
+  // Migrate old snapshots (no year/families)
+  bed.rotations.forEach((rot, i) => migrateRotation(rot, i));
+
+  const currentYear = new Date().getFullYear();
+  const currentFamilies = extractBedFamilies(bed);
+  const ruleYears = bed.rotationRuleYears || 3;
+
+  // ── Tab row ──
+  let html = '<span class="rotation-label">Rotations:</span> ';
+  html += bed.rotations.map((rot, i) =>
+    '<button class="rotation-tab" data-rot-idx="' + i + '">' +
+    rot.label + (rot.year ? ' (' + rot.year + ')' : '') + '</button>'
+  ).join('');
+  html += '<button class="rotation-tab rotation-tab-save" id="save-rotation-btn">💾 Save Current</button>';
+
+  // ── Rule selector ──
+  html += '<select class="rotation-rule-select" id="rotation-rule-select" title="Rotation rule (years)">';
+  [1, 2, 3, 4].forEach(y => {
+    const sel = ruleYears === y ? ' selected' : '';
+    html += '<option value="' + y + '"' + sel + '>' + y + '-yr rule</option>';
+  });
+  html += '</select>';
+
+  // ── History panel (≥1 saved rotation) ──
+  html += '<div class="rotation-history">';
+  bed.rotations.forEach(rot => {
+    const rotYear = rot.year || '?';
+    let rowHtml = '<div class="rotation-history-row"><span class="rotation-history-year">' + rotYear + '</span>';
+    (rot.families || []).forEach(fam => {
+      const info = HIGH_RISK_FAMILIES[fam] || null;
+      rowHtml += '<span class="family-chip">' + (info ? info.emoji + ' ' : '') + fam + '</span>';
+    });
+    rowHtml += '</div>';
+    html += rowHtml;
+  });
+
+  // Current layout row with warnings
+  if (currentFamilies.length > 0) {
+    const warnings = checkRotationWarnings(bed, currentFamilies);
+    const warnSet = new Set(warnings.map(w => w.family));
+    html += '<div class="rotation-history-row rotation-history-row--current"><span class="rotation-history-year">' + currentYear + ' (now)</span>';
+    currentFamilies.forEach(fam => {
+      const info = HIGH_RISK_FAMILIES[fam] || null;
+      const isWarn = warnSet.has(fam);
+      const w = warnings.find(ww => ww.family === fam);
+      const chipClass = isWarn ? ' family-chip--warn' : '';
+      const title = isWarn ? ' title="' + (info ? info.risk : '') + ' — repeated after ' + w.gap + ' yr"' : '';
+      html += '<span class="family-chip' + chipClass + '"' + title + '>' + (info ? info.emoji + ' ' : '') + fam + (isWarn ? ' ⚠' : '') + '</span>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>'; // .rotation-history
+
+  container.innerHTML = html;
+
+  // Wire rule selector
+  const ruleEl = document.getElementById('rotation-rule-select');
+  if (ruleEl) {
+    ruleEl.onchange = function() {
+      const b = getActiveBed();
+      if (b) { b.rotationRuleYears = parseInt(this.value, 10); saveBeds(); renderBed(); }
+    };
+  }
 }
 
 function handleRotationTabClick(e) {

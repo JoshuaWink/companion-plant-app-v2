@@ -3,7 +3,7 @@ Migrate legacy docs.js plant data into graph-ready JSON.
 
 Produces:
   - plants.json: plant nodes with IDs and property stubs
-  - relationships.json: per-edge declared relationships with reasons
+    - relationships.json: per-edge declared relationships with reasons + confidence
   - contradictions.json: cross-document conflicts for human review
 """
 import json
@@ -150,6 +150,44 @@ def extract_per_edge_reasons(plant_names: list, paragraph: str) -> dict:
     return reasons
 
 
+def infer_relationship_confidence(rel_type: str, reason: str) -> tuple[str, str]:
+    """Deterministically classify relationship confidence from the reason text."""
+    text = (reason or "").strip().lower()
+    if not text:
+        return ("speculative", "missing-reason")
+
+    disease_terms = (
+        "verticillium", "fusarium", "blight", "wilt", "club root",
+        "clubroot", "nematode", "nematodes", "susceptible", "share pests",
+        "same family",
+    )
+    if any(term in text for term in disease_terms):
+        return ("consensus", "disease-avoidance")
+
+    if rel_type == "precedes" and any(
+        term in text for term in ("gap", "soil", "nitrogen", "weed", "suppression", "establishment")
+    ):
+        return ("consensus", "succession-practice")
+
+    mechanistic_terms = (
+        "repel", "deter", "aphid", "beetle", "insect", "trap crop",
+        "pollinator", "shade", "support", "trellis", "water", "soil",
+        "nutrient", "nitrogen", "sun", "ground cover", "growing conditions",
+        "resources", "lime",
+    )
+    hedged_terms = (" may ", " might ", " can ", "sometimes", "thought to", "often")
+
+    if any(term in text for term in mechanistic_terms):
+        if any(term in text for term in hedged_terms):
+            return ("traditional", "garden-tradition")
+        return ("empirical", "observed-garden-practice")
+
+    if any(term in text for term in hedged_terms):
+        return ("traditional", "garden-tradition")
+
+    return ("speculative", "inferred-from-text")
+
+
 def build_plant_node(raw: dict) -> dict:
     """Build a plant node from a raw docs.js entry."""
     name = raw["Plant Name"].strip()
@@ -209,11 +247,16 @@ def build_relationship_edges(raw: dict) -> list:
     )
 
     for target in cp_slugs:
+        confidence, evidence = infer_relationship_confidence(
+            "companion", cp_reasons.get(target, "").strip()
+        )
         edges.append({
             "source": source,
             "target": target,
             "type": "companion",
             "reason": cp_reasons.get(target, "").strip(),
+            "confidence": confidence,
+            "evidence": evidence,
         })
 
     # Antagonist edges
@@ -223,11 +266,16 @@ def build_relationship_edges(raw: dict) -> list:
     )
 
     for target in kaf_slugs:
+        confidence, evidence = infer_relationship_confidence(
+            "antagonist", kaf_reasons.get(target, "").strip()
+        )
         edges.append({
             "source": source,
             "target": target,
             "type": "antagonist",
             "reason": kaf_reasons.get(target, "").strip(),
+            "confidence": confidence,
+            "evidence": evidence,
         })
 
     return edges
