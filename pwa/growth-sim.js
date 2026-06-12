@@ -7,7 +7,7 @@
  */
 import { simulate_season, simulate_growth, simulate_plan, simulate_plan_weather } from './pkg/companion_graph.js';
 import { fetchDailyWeather, fetchCurrentConditions, fetchForecast, fetchCropAlerts, doyToDate as doyToIsoDate, defaultWeatherYear } from './weather.js';
-import { optimizeGrowth, compareWithCurrent, sensitivityAnalysis, doyLabel } from './optimizer.js';
+import { optimizeGrowth, compareWithCurrent, sensitivityAnalysis, doyLabel, optimizerPriorityLabel } from './optimizer.js';
 
 // ── Soil presets (mirrors planner.js) ──
 const SOIL_TYPES = {
@@ -204,6 +204,10 @@ function getGardenGeometrySource() {
   return document.getElementById('growth-garden-source')?.value || 'manual';
 }
 
+function getOptimizerPriorityMode() {
+  return document.getElementById('growth-optimize-priority')?.value || 'balanced';
+}
+
 function getEnabledSelectedGrowthIds() {
   return [...document.querySelectorAll('#growth-selected-list .linked-chip:not([disabled])')]
     .map((btn) => btn.dataset.id)
@@ -314,14 +318,18 @@ function syncGrowthScopeUI() {
   const gardenBedField = document.getElementById('growth-garden-bed-field');
   const hint = document.getElementById('growth-scope-hint');
   const optimizeBtn = document.getElementById('growth-optimize-btn');
+  const optimizePriorityRow = document.getElementById('growth-optimize-priority-row');
+  const optimizePriorityHint = document.getElementById('growth-optimize-priority-hint');
   const optimizerPanel = document.getElementById('growth-optimizer-panel');
   const gardenSummary = document.getElementById('growth-garden-summary');
   const geometrySource = getGardenGeometrySource();
   const plannerInfos = populatePlannerBedOptions();
+  const plannerOptimizerBlocked = growthScope === 'garden' && geometrySource !== 'manual' && plannerInfos.length === 0;
 
   if (gardenRow) gardenRow.hidden = growthScope !== 'garden';
   if (manualGardenRow) manualGardenRow.hidden = growthScope !== 'garden' || geometrySource !== 'manual';
   if (gardenBedField) gardenBedField.hidden = growthScope !== 'garden' || geometrySource !== 'planner-bed';
+  if (optimizePriorityRow) optimizePriorityRow.hidden = growthScope === 'single';
   if (hint) {
     hint.textContent = growthScope === 'single'
       ? 'Charts and advisor target one plant.'
@@ -337,14 +345,21 @@ function syncGrowthScopeUI() {
               ? 'Simulate all planted planner beds together using their saved geometry and crop counts.'
               : 'All planner beds are selected, but no planted planner beds are available yet.');
   }
+  if (optimizePriorityHint) {
+    optimizePriorityHint.textContent = growthScope === 'single'
+      ? 'Single-plant optimization uses the focused crop directly.'
+      : 'Balanced averages the current crop mix. Prioritize Focus Crop leans toward the chosen plant. Protect Weakest Crop optimizes the limiting crop first.';
+  }
   if (optimizeBtn) {
-    const disabled = growthScope !== 'single';
+    const disabled = plannerOptimizerBlocked;
     optimizeBtn.disabled = disabled;
     optimizeBtn.title = disabled
-      ? 'Optimizer currently targets a single focus plant. Switch scope to Single Plant to use it.'
-      : 'Find the best planting date, water, and nitrogen for maximum yield';
+      ? 'Planner geometry is selected, but no planted planner beds are available yet.'
+      : growthScope === 'single'
+        ? 'Find the best planting date, water, and nitrogen for maximum yield'
+        : 'Optimize planting date, water, and nitrogen across the current crop mix';
   }
-  if (optimizerPanel && growthScope !== 'single') {
+  if (optimizerPanel) {
     optimizerPanel.hidden = true;
   }
   if (gardenSummary && growthScope === 'single') {
@@ -423,6 +438,40 @@ function getPlannerGeometryConfig() {
     note: source === 'planner-bed'
       ? 'Using saved planner geometry, shape, and planted crop counts for this bed.'
       : 'Using all planted planner beds together with their saved geometry and crop counts.',
+  };
+}
+
+function buildOptimizerContext(focusPlant) {
+  const geometryConfig = growthScope === 'garden' ? getPlannerGeometryConfig() : null;
+  const planPlants = growthScope === 'garden' && geometryConfig
+    ? geometryConfig.planPlants
+    : resolvePlanPlants(focusPlant);
+
+  if (!planPlants.length) return null;
+
+  const resolvedFocus = planPlants.find((entry) => entry.id === focusPlant?.id) || planPlants[0];
+  const plantCounts = geometryConfig?.countsById
+    ? Object.fromEntries([...geometryConfig.countsById.entries()])
+    : null;
+  const totalPlants = plantCounts
+    ? Object.values(plantCounts).reduce((sum, count) => sum + count, 0)
+    : planPlants.length;
+
+  return {
+    scope: growthScope,
+    planPlants,
+    focusPlant: resolvedFocus,
+    focusPlantId: resolvedFocus?.id || null,
+    priorityMode: getOptimizerPriorityMode(),
+    plantCounts,
+    totalPlants,
+    areaM2: geometryConfig?.areaM2
+      || (growthScope === 'garden' ? (getGardenScaleConfig()?.areaM2 || 0) : 0),
+    planLabel: growthScope === 'garden'
+      ? geometryConfig?.scaleValue || 'Scaled Garden'
+      : growthScope === 'selected'
+        ? 'Selected Crop Mix'
+        : resolvedFocus?.name || 'Single Plant',
   };
 }
 
@@ -1040,6 +1089,7 @@ export function initGrowthSim(plantList) {
   const scopeSelect = document.getElementById('growth-scope-select');
   const gardenSourceSelect = document.getElementById('growth-garden-source');
   const gardenBedSelect = document.getElementById('growth-garden-bed-select');
+  const optimizePrioritySelect = document.getElementById('growth-optimize-priority');
   if (scopeSelect) {
     scopeSelect.addEventListener('change', syncGrowthScopeUI);
   }
@@ -1048,6 +1098,11 @@ export function initGrowthSim(plantList) {
   }
   if (gardenBedSelect) {
     gardenBedSelect.addEventListener('change', syncGrowthScopeUI);
+  }
+  if (optimizePrioritySelect) {
+    optimizePrioritySelect.addEventListener('change', () => {
+      document.getElementById('growth-optimizer-panel').hidden = true;
+    });
   }
   syncGrowthScopeUI();
 
@@ -2611,11 +2666,18 @@ function initOptimizerControls() {
 let lastOptimizerResult = null;
 
 async function runOptimizer() {
-  if (getGrowthScope() !== 'single') return;
-
+  growthScope = getGrowthScope();
   const plantId = document.getElementById('growth-plant-select').value;
-  const plant = plants.find(p => p.id === plantId);
-  if (!plant) return;
+  const selectedPlant = plants.find((plant) => plant.id === plantId);
+  if (!selectedPlant) return;
+
+  const optimizerContext = buildOptimizerContext(selectedPlant);
+  if (!optimizerContext) return;
+
+  let plant = optimizerContext.focusPlant;
+  if (plant && plant.id !== plantId) {
+    document.getElementById('growth-plant-select').value = plant.id;
+  }
 
   const latitude = parseFloat(document.getElementById('growth-latitude').value) || 42;
   const tempHigh = parseFloat(document.getElementById('growth-temp-high').value) || 28;
@@ -2645,22 +2707,22 @@ async function runOptimizer() {
   await new Promise(resolve => requestAnimationFrame(resolve));
 
   // Run the sweep
-  const result = optimizeGrowth(plant, latitude, soil, tempHigh, tempLow, (pct) => {
+  const result = optimizeGrowth(optimizerContext, latitude, soil, tempHigh, tempLow, (pct) => {
     progressFill.style.width = (pct * 100) + '%';
-    progressLabel.textContent = `Sweeping… ${Math.round(pct * 100)}%`;
+    progressLabel.textContent = `Sweeping ${optimizerPriorityLabel(optimizerContext.priorityMode).toLowerCase()}… ${Math.round(pct * 100)}%`;
   });
 
   // Get current settings score
-  const current = compareWithCurrent(plant, latitude, soil, currentDoy, currentWater, currentN, tempHigh, tempLow);
+  const current = compareWithCurrent(optimizerContext, latitude, soil, currentDoy, currentWater, currentN, tempHigh, tempLow);
 
   // Get sensitivity at optimal point
   const sensitivity = sensitivityAnalysis(
-    plant, latitude, soil,
+    optimizerContext, latitude, soil,
     result.best.doy, result.best.waterMl, result.best.nAvail,
     tempHigh, tempLow
   );
 
-  lastOptimizerResult = { ...result, current, sensitivity, soilKey };
+  lastOptimizerResult = { ...result, current, sensitivity, soilKey, optimizerContext };
 
   // Render results
   progress.hidden = true;
@@ -2668,11 +2730,17 @@ async function runOptimizer() {
   btn.disabled = false;
   btn.textContent = '🔬 Optimize';
 
-  renderOptimizerResults(result, current, sensitivity, plant, soilKey);
+  renderOptimizerResults(result, current, sensitivity, optimizerContext, soilKey);
 }
 
-function renderOptimizerResults(result, current, sensitivity, plant, soilKey) {
+function renderOptimizerResults(result, current, sensitivity, optimizerContext, soilKey) {
   const best = result.best;
+  const priorityLabel = optimizerPriorityLabel(optimizerContext.priorityMode);
+  const focusPlant = optimizerContext.focusPlant;
+  const isMulti = optimizerContext.planPlants.length > 1 || optimizerContext.scope !== 'single';
+  const targetLabel = isMulti
+    ? `${optimizerContext.planPlants.length} crops · ${optimizerContext.planLabel}`
+    : (focusPlant?.name || 'Focused crop');
 
   // Current vs Optimal scores
   const curScoreEl = document.getElementById('opt-current-score');
@@ -2691,11 +2759,17 @@ function renderOptimizerResults(result, current, sensitivity, plant, soilKey) {
 
   // Recommendations
   const recs = document.getElementById('opt-recommendations');
-  const improvement = ((best.score - current.score) / current.score * 100);
+  const improvement = current.score > 0
+    ? ((best.score - current.score) / current.score * 100)
+    : (best.score > 0 ? 100 : 0);
   const impStr = improvement > 0 ? `+${improvement.toFixed(0)}%` : `${improvement.toFixed(0)}%`;
+  const memberRows = (members = []) => members.map((member) => {
+    const countLabel = member.count > 1 ? ` × ${member.count}` : '';
+    return `<li><strong>${member.name}</strong>${countLabel}: ${(member.score * 100).toFixed(0)}%</li>`;
+  }).join('');
 
   let html = `<div class="opt-rec-summary">`;
-  html += `<strong>${plant.name}</strong> in <strong>${soilKey}</strong> soil — `;
+  html += `<strong>${targetLabel}</strong> in <strong>${soilKey}</strong> soil with <strong>${priorityLabel.toLowerCase()}</strong> — `;
   if (improvement > 10) {
     html += `<span class="opt-gain">${impStr} potential gain</span>`;
   } else if (improvement > 0) {
@@ -2706,15 +2780,73 @@ function renderOptimizerResults(result, current, sensitivity, plant, soilKey) {
   html += `</div>`;
 
   html += `<ul class="opt-rec-list">`;
-  html += `<li><strong>Plant:</strong> ${doyLabel(best.doy)} (DOY ${best.doy})</li>`;
+  html += `<li><strong>Planting window:</strong> ${doyLabel(best.doy)} (DOY ${best.doy})</li>`;
   html += `<li><strong>Water:</strong> ${best.waterMl} mL/day</li>`;
   html += `<li><strong>Nitrogen:</strong> ${best.nAvail} g/m²</li>`;
-  if (best.raw) {
+  if (!isMulti && best.raw) {
     html += `<li><strong>Peak yield:</strong> ${best.raw.peakYield.toFixed(2)} kg/m²</li>`;
     html += `<li><strong>Avg growth rate:</strong> ${(best.raw.avgGrowthRate * 100).toFixed(0)}%</li>`;
     html += `<li><strong>Stress-free days:</strong> ${(best.raw.stressFreePct * 100).toFixed(0)}%</li>`;
   }
   html += `</ul>`;
+
+  if (isMulti) {
+    html += `<div class="opt-rec-summary"><strong>Focused crop:</strong> ${focusPlant?.name || 'First selected crop'} · <strong>Total plants represented:</strong> ${optimizerContext.totalPlants}</div>`;
+    html += `<div class="opt-rec-summary"><strong>Current per-crop scores</strong></div>`;
+    html += `<ul class="opt-rec-list">${memberRows(current.members || [])}</ul>`;
+    html += `<div class="opt-rec-summary"><strong>Optimal per-crop scores</strong></div>`;
+    html += `<ul class="opt-rec-list">${memberRows(best.members || [])}</ul>`;
+  }
+
+  // Garden-scale layout recommendation: show plant counts and estimated yield
+  if (isMulti && optimizerContext.scope === 'garden' && optimizerContext.areaM2 > 0) {
+    const totalAreaM2 = optimizerContext.areaM2;
+    const numCrops = optimizerContext.planPlants.length;
+    const shareAreaM2 = totalAreaM2 / numCrops;
+
+    html += `<div class="opt-rec-summary" style="margin-top:0.75rem">`;
+    html += `<strong>Recommended Garden Layout — ${formatAreaLabel(totalAreaM2)}</strong></div>`;
+    html += `<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-bottom:0.5rem">`;
+    html += `<thead><tr style="border-bottom:1px solid var(--cup-color-border,#ccc)">`;
+    html += `<th style="text-align:left;padding:2px 4px">Crop</th>`;
+    html += `<th style="text-align:center;padding:2px 4px">Spacing</th>`;
+    html += `<th style="text-align:right;padding:2px 4px">Count</th>`;
+    html += `<th style="text-align:right;padding:2px 4px">Est. Yield</th>`;
+    html += `</tr></thead><tbody>`;
+
+    let grandTotalKg = 0;
+    for (const plant of optimizerContext.planPlants) {
+      const spacingCm = plant.properties?.metric?.spacing_cm
+        || plant.properties?.metric?.spread_cm
+        || 45;
+      const spacingM = Math.max(spacingCm / 100, 0.1);
+      const count = optimizerContext.plantCounts?.[plant.id]
+        || estimateScaledPlantCount(plant, shareAreaM2);
+      const memberBest = best.members?.find((m) => m.plantId === plant.id);
+      const yieldPerM2 = memberBest?.raw?.peakYield || 0;
+      const yieldKg = yieldPerM2 * spacingM * spacingM * count;
+      grandTotalKg += yieldKg;
+      const yieldStr = yieldKg >= 1000
+        ? `${(yieldKg / 1000).toFixed(1)} t`
+        : `${Math.round(yieldKg)} kg`;
+      html += `<tr style="border-bottom:1px solid var(--cup-color-border-light,#eee)">`;
+      html += `<td style="padding:2px 4px">${plant.name}</td>`;
+      html += `<td style="text-align:center;padding:2px 4px">${spacingCm} cm</td>`;
+      html += `<td style="text-align:right;padding:2px 4px">${COUNT_FORMAT.format(count)}</td>`;
+      html += `<td style="text-align:right;padding:2px 4px">${yieldStr}</td>`;
+      html += `</tr>`;
+    }
+
+    const totalStr = grandTotalKg >= 1000
+      ? `${(grandTotalKg / 1000).toFixed(1)} t`
+      : `${Math.round(grandTotalKg)} kg`;
+    html += `<tr><td colspan="3" style="padding:3px 4px"><strong>Total field yield</strong></td>`;
+    html += `<td style="text-align:right;padding:3px 4px"><strong>${totalStr}</strong></td></tr>`;
+    html += `</tbody></table>`;
+    html += `<p style="font-size:0.7rem;color:var(--cup-color-text-muted,#666);margin:0 0 0.5rem">`;
+    html += `Equal area share per crop. Plant counts derived from species spacing data.`;
+    html += `</p>`;
+  }
 
   recs.innerHTML = html;
 

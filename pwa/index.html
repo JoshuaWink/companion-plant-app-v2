@@ -390,6 +390,18 @@
           </div>
         </div>
 
+        <div class="growth-control-row" id="growth-optimize-priority-row" hidden>
+          <div class="growth-field">
+            <label for="growth-optimize-priority" class="field-label">Optimization Priority</label>
+            <select id="growth-optimize-priority" class="field-input">
+              <option value="balanced" selected>Balance All Selected Crops</option>
+              <option value="focus">Prioritize Focus Crop</option>
+              <option value="weakest">Protect Weakest Crop</option>
+            </select>
+            <span class="growth-hint" id="growth-optimize-priority-hint">Use the focused plant picker to rack and stack around the crop you care about most.</span>
+          </div>
+        </div>
+
         <!-- Action buttons -->
         <div class="growth-action-row">
           <button id="growth-run-btn" class="btn btn--primary">▶ Run Simulation</button>
